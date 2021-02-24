@@ -1,0 +1,31 @@
+% arara: pdflatex
+% arara: biber
+% arara: pdflatex
+% arara: pdflatex
+
+\documentclass[a4paper, 12pt, oneside, egregdoesnotlikesansseriftitles]{scrbook}
+
+\usepackage{import}
+\subimport{settings/}{_all.tex}
+\addbibresource{citations.bib}
+
+\author{Candidate Number: 1054613}
+\title{Sketching for Infeasible Interior-Point Methods}
+
+\begin{document}
+
+\hypersetup{pageanchor=false}
+\maketitle
+\hypersetup{pageanchor=true}
+
+\frontmatter
+\tableofcontents
+
+\mainmatter
+\subimport{chapters/}{proofs.tex}
+
+\backmatter
+\printbibliography[heading=bibintoc]
+\phantomsection  % Fix hyperref problem
+
+\end{document}
