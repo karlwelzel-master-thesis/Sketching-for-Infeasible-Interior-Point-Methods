@@ -1,0 +1,30 @@
+% Generate clickable links in PDF documents
+\usepackage[%
+ pdfpagelabels,
+ hypertexnames=false,  % Make link-names unique -- even in corner cases of subequations
+ bookmarksopen=true,
+ bookmarksopenlevel=1,  % PDF bookmarks are opened to the first level by default
+ colorlinks=true,
+ urlcolor=Blue,
+ citecolor=Green,
+ linkcolor=BrickRed
+]{hyperref}
+\pdfstringdefDisableCommands{\let\boldmath\relax} % allow \boldmath in section titles
+
+% Named colors
+\usepackage[dvipsnames]{xcolor}
+
+% Captions and subcaptions for figures/tables
+\usepackage[
+ labelfont=bf,  % bold labels (eg. for "Figure 1")
+ margin=3em,  % Reduce caption width by this margin on both sides
+]{caption}
+\usepackage{subcaption}
+
+% Tables
+\usepackage{booktabs}  % Great tables
+\usepackage{multirow}
+\usepackage{array}  % fine grained control over tabular spacing
+
+\usepackage[Export]{adjustbox}  % improved includegraphics (ie. with frame options)
+\usepackage{rotating} % provides the sidewaysfigure environment

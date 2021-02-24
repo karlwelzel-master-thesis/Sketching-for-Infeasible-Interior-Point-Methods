@@ -6,19 +6,16 @@
 \usepackage{amsthm}
 \usepackage{amssymb}
 \usepackage{stmaryrd}
-\usepackage{mleftright} \mleftright % improves spacing for \left and \right
-\usepackage{braket} % provides \Set with scaled middle |
+\usepackage{mleftright} \mleftright  % improves spacing for \left and \right
+\usepackage{braket}  % provides \Set with scaled middle |
+\usepackage{siunitx}  % units (SI)
 
-% TODO: Move to more appropriate space
-\usepackage[dvipsnames, usenames]{xcolor}
 \usepackage[
-  colorlinks=true,
-  urlcolor=Blue,
-  citecolor=Green,
-  linkcolor=BrickRed
-]{hyperref}
+ ruled,
+ vlined,
+ linesnumbered,
+]{algorithm2e}
 
-\pdfstringdefDisableCommands{\let\boldmath\relax} % allow \boldmath in section titles
 
 % ----------------------------------------------------------------------
 %  Common abbreviations and words with accents
