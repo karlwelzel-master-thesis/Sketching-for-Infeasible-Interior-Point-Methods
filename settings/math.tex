@@ -10,7 +10,7 @@
 \usepackage{braket} % provides \Set with scaled middle |
 
 % TODO: Move to more appropriate space
-\usepackage[dvipsnames, usenames]{color}
+\usepackage[dvipsnames, usenames]{xcolor}
 \usepackage[
   colorlinks=true,
   urlcolor=Blue,
@@ -18,18 +18,14 @@
   linkcolor=BrickRed
 ]{hyperref}
 
-% Equivalent to \qedhere (used in align or equivalent). Aligns \qedsymbol with bottom of line rather than middle.
-% For details cf. https://tex.stackexchange.com/q/434373/88444.
-\newcommand{\qedalign}[1][&]{\\[-0.82\baselineskip]#1\qedhere}
-
-\hyphenation{co-or-din-ate co-or-din-ates half-plane half-space stereo-iso-mers
-stereo-iso-mer Round-table homol-ogous homol-ogy}
-
 \pdfstringdefDisableCommands{\let\boldmath\relax} % allow \boldmath in section titles
 
 % ----------------------------------------------------------------------
 %  Common abbreviations and words with accents
 % ----------------------------------------------------------------------
+
+\hyphenation{co-or-din-ate co-or-din-ates half-plane half-space stereo-iso-mers
+stereo-iso-mer Round-table homol-ogous homol-ogy}
 
 % ---- LATIN ----
 \newcommand{\etal}{\emph{et~al.}}			% and others
@@ -133,7 +129,9 @@ stereo-iso-mer Round-table homol-ogous homol-ogy}
 \newcommand{\RP}{\Real\Proj}
 \newcommand{\CP}{\Complex\Proj}
 
-% ---- OPERATORS (requires amsmath) ----
+\newcommand*\diff{\mathop{}\!\mathrm{d}}	% Inside of integrals
+
+% ---- OPERATORS ----
 \DeclareMathOperator{\aff}{aff}
 \DeclareMathOperator{\area}{area}
 \DeclareMathOperator{\argmax}{arg\,max}
@@ -190,8 +188,8 @@ stereo-iso-mer Round-table homol-ogous homol-ogy}
 \newcommand{\ceil}[1]{\lceil #1 \rceil}
 \newcommand{\seq}[1]{\langle #1 \rangle}
 \newcommand{\set}[1]{\{ #1 \}}
-\newcommand{\abs}[1]{\mathopen| #1 \mathclose|}			% use instead of $|x|$ 
-\newcommand{\norm}[1]{\mathopen\| #1 \mathclose\|}		% use instead of $\|x\|$ 
+\newcommand{\abs}[1]{\lvert #1 \rvert}		% use instead of $|x|$ 
+\newcommand{\norm}[1]{\lVert #1 \rVert}		% use instead of $\|x\|$ 
 \newcommand{\indic}[1]{\big[#1\big]}		% indicator variable; Iverson notation
 								% e.g., Kronecker delta = [x=0]
 
@@ -200,8 +198,22 @@ stereo-iso-mer Round-table homol-ogous homol-ogy}
 \newcommand{\Ceil}[1]{\left\lceil #1 \right\rceil}
 \newcommand{\Seq}[1]{\left\langle #1 \right\rangle}
 \newcommand{\Set}[1]{\left\{ #1 \right\}}
-\newcommand{\Abs}[1]{\left| #1 \right|}
-\newcommand{\Norm}[1]{\left\| #1 \right\|}
+\newcommand{\Abs}[1]{\left\lvert #1 \right\rvert}
+\newcommand{\Norm}[1]{\left\lVert #1 \right\rVert}
 \newcommand{\Paren}[1]{\left( #1 \right)}		% need better macro name!
 \newcommand{\Brack}[1]{\left[ #1 \right]}		% need better macro name!
 \newcommand{\Indic}[1]{\left[ #1 \right]}		% indicator variable; Iverson notation
+
+% ----------------------------------------------------------------------
+%  Maths environments (using amsthm)
+% ----------------------------------------------------------------------
+
+\newtheorem{theorem}{Theorem}[chapter] % label starts with 'thm:'
+\newtheorem{lemma}[theorem]{Lemma} % label starts with 'thm:'
+\newtheorem{corollary}[theorem]{Corollary} % label starts with 'thm:'
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter] % label starts with 'def:'
+
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark} % label starts with 'rem:'
