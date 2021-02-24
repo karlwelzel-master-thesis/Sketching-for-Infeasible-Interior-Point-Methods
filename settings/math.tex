@@ -1,0 +1,213 @@
+% Taken from https://jeffe.cs.illinois.edu/pubs/latex.html: jeffe.sty
+% Originally designed by Jeff Erickson (jeffe@cs.uiuc.edu)
+% Adapted by Karl Welzel on 24 February 2021
+
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{stmaryrd}
+\usepackage{mleftright} \mleftright % improves spacing for \left and \right
+\usepackage{braket} % provides \Set with scaled middle |
+
+% TODO: Move to more appropriate space
+\usepackage[dvipsnames, usenames]{color}
+\usepackage[
+  colorlinks=true,
+  urlcolor=Blue,
+  citecolor=Green,
+  linkcolor=BrickRed
+]{hyperref}
+
+% Equivalent to \qedhere (used in align or equivalent). Aligns \qedsymbol with bottom of line rather than middle.
+% For details cf. https://tex.stackexchange.com/q/434373/88444.
+\newcommand{\qedalign}[1][&]{\\[-0.82\baselineskip]#1\qedhere}
+
+\hyphenation{co-or-din-ate co-or-din-ates half-plane half-space stereo-iso-mers
+stereo-iso-mer Round-table homol-ogous homol-ogy}
+
+\pdfstringdefDisableCommands{\let\boldmath\relax} % allow \boldmath in section titles
+
+% ----------------------------------------------------------------------
+%  Common abbreviations and words with accents
+% ----------------------------------------------------------------------
+
+% ---- LATIN ----
+\def\etal{\emph{et~al.}}			% and others
+\def\ie{i.e.}						% that is
+\def\eg{e.g.}						% for example
+\def\vitae{vit\ae{}}
+\def\apriori{\emph{a~priori}}
+\def\aposteriori{\emph{a~posteriori}}
+
+% ---- FRENCH ----
+\def\naive{na\"{\i}ve}
+\def\Naive{Na\"{\i}ve}
+\def\naively{na\"{\i}vely}	% Okay, I know, this isn't French.
+\def\Naively{Na\"{\i}vely}
+\def\cafe{caf\'e}
+
+% ---- GERMAN ----
+\def\fur{f\"ur}
+\def\Universitat{Universit\"at}
+\def\Saarbrucken{Saar\-br\"ucken}	% Bypass TeX hyphenation
+\def\Zurich{Z\"urich}
+
+% ---- PORTUGESE (Hi Jorge!) ----
+\def\Computacao{Computa\c{c}\~ao}
+
+% ---- PROPER NAMES (because I'm lazy) ----
+\def\Benes{Bene\v{s}}		% ...network
+\def\Bezier{B\'ezier}		% ...spline/curve/surface
+\def\Bjorner{Bj\"orner}
+\def\Bochis{Bochi\c{s}}		% Daciana
+\def\Boruvka{Bor\.uvka}		% ...'s MST algorithm
+\def\Bragger{Br\"agger}
+\def\Bronnimann{Br\"onnimann}   \def\Herve{Herv\'e}
+\def\Bruckner{Br\"uckner}
+\def\Caratheodory{Carath\'eodory}	% Constantin
+\def\Chvatal{Chv\'atal}         \def\Vasek{Va\v{s}ek}
+				\def\Joao{Jo\~ao}	% Compa
+\def\Cortes{Cort\'es}		% Carmen
+\def\Dujmovic{Dujmovi\'c}	% Vida
+				\def\Fredo{Fr\'edo}	% Durand
+\def\Erdos{Erd\H{o}s}           \def\Pal{P\'al}
+\def\Frechet{Fr\'echet}
+\def\Furedi{F\"uredi}           \def\Zoltan{Zolt\'an}
+\def\Grobner{Gr\"obner}		% ... basis
+\def\Grunbaum{Gr\"unbaum}	% Branko
+\def\Hanoi{Hano\"\i}		% Tower of...
+\def\Jarnik{Jarn\a'{\i}k}	% ...'s (`Prim's') MST algorithm
+\def\Komlos{Koml\'os}
+\def\Kovari{K\"ov\'ari}
+\def\Lovasz{Lov\'asz}           \def\Laszlo{L\'aszl\'o}
+\def\Matousek{Matou\v{s}ek}     \def\Jiri{Ji\v{r}\'\i}
+\def\Mnev{Mn\"ev}
+\def\Mobius{M\"obius}		% ... strip/transformation/function
+\def\Mucke{M\"ucke}		% Ernst
+\def\ODunliang{\'O'D\'unliang}
+\def\Oleinik{Ole\u{\i}nik}
+                                \def\Janos{J\'anos}     % Pach
+\def\Palasti{Pal\'asti}
+				\def\Belen{Bel\'en}	% Palop
+\def\Petrovskii{Petrovski\u{\i}}
+\def\Pinar{P\i nar}		% Ali
+\def\Plucker{Pl\"ucker}		% ... coordinates
+\def\Poincare{Poincar\'e}	% ... duality/halfplane
+                                \def\Gunter{G\"unter}   % Rote, Ziegler
+\def\Sacristan{Sacrist\'an}	% Vera
+\def\Saskin{\v{S}a\v{s}kin}
+\def\Schomer{Sch\"omer}
+\def\Schonhardt{Sch\"onhardt}	% ... polyhedron
+\def\Sos{S\'os}
+\def\Stackel{St\"ackel}		% Paul
+\def\Szekely{Sz\'ekely}
+\def\Szemeredi{Szemer\'edi}
+\def\Toth{T\'{o}th}		% Geza
+\def\Turan{Tur\'an}
+\def\Ungor{\"Ung\"or}		% Alper
+\def\Voronoi{Vorono\"i}		% ... diagram [for francophile pedants only]
+
+% Other
+\def\Cplusplus{C\raisebox{0.5ex}{\tiny\textbf{++}}}
+
+% ----------------------------------------------------------------------
+%  Simple math stuff
+% ----------------------------------------------------------------------
+
+% ---- SYMBOLS ----
+\let\e\varepsilon               % a ``real'' epsilon
+
+\def\Real{\mathbb{R}}
+\def\Proj{\mathbb{P}}
+\def\Hyper{\mathbb{H}}
+\def\Integer{\mathbb{Z}}
+\def\Natural{\mathbb{N}}
+\def\Complex{\mathbb{C}}
+\def\Rational{\mathbb{Q}}
+
+\let\N\Natural
+\let\Q\Rational
+\let\R\Real
+\let\Z\Integer
+\def\Rd{\Real^d}
+\def\RP{\Real\Proj}
+\def\CP{\Complex\Proj}
+
+% ---- OPERATORS (requires amsmath) ----
+\DeclareMathOperator{\aff}{aff}
+\DeclareMathOperator{\area}{area}
+\DeclareMathOperator{\argmax}{arg\,max}
+\DeclareMathOperator{\argmin}{arg\,min}
+\DeclareMathOperator{\Aut}{Aut}			% Automorphism group
+\DeclareMathOperator{\card}{card}		% cardinality, deprecated for \abs
+\DeclareMathOperator{\conv}{conv}
+\DeclareMathOperator{\Hom}{Hom}			% Homomorphism group
+\DeclareMathOperator{\id}{id}			% identity
+\DeclareMathOperator{\im}{im}			% image
+\DeclareMathOperator{\lcm}{lcm}
+\DeclareMathOperator{\poly}{poly}
+\DeclareMathOperator{\polylog}{polylog}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\rel}{rel\,}		% relative (interior, boundary, etc.)
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\vol}{vol}			% volume
+
+\def\fp#1{^{\underline{#1}}}		% falling powers: $n\fp{d}$
+\def\rp#1{^{\overline{#1}}}		% rising powers:  $n\rp{d}$
+
+
+% --- Darts and fences ---
+% less nice replacements for stmaryrd characters
+\@ifundefined{shortrightarrow}{\let\shortrightarrow\rightarrow}{}
+\@ifundefined{shortleftarrow}{\let\shortleftarrow\leftarrow}{}
+\@ifundefined{shortuparrow}{\let\shortuparrow\uparrow}{}
+\@ifundefined{shortdownarrow}{\let\shortdownarrow\downarrow}{}
+
+\def\arcto{\mathord\shortrightarrow}
+\def\arc#1#2{#1\arcto#2}
+\def\cra#1#2{#1\mathord\shortleftarrow#2}
+\def\fence#1#2{#1\mathord\shortuparrow#2}
+\def\ecnef#1#2{#1\mathord\shortdownarrow#2}
+
+% --- Cheap displaystyle operators ---
+\def\Frac#1#2{{\displaystyle\frac{#1}{#2}}}
+\def\Sum{\sum\limits}
+\def\Prod{\prod\limits}
+\def\Union{\bigcup\limits}
+\def\Inter{\bigcap\limits}
+\def\Lor{\bigvee\limits}
+\def\Land{\bigwedge\limits}
+\def\Lim{\lim\limits}
+\def\Max{\max\limits}
+\def\Min{\min\limits}
+
+% ---- RELATORS ----
+\def\deq{\stackrel{\coloneqq}	% Use := instead.
+\def\into{\DOTSB\hookrightarrow}		% = one-to-one
+\def\onto{\DOTSB\twoheadrightarrow}
+\def\inonto{\DOTSB\lhook\joinrel\twoheadrightarrow}
+\def\from{\leftarrow}
+\def\tofrom{\leftrightarrow}
+\def\mapsfrom{\mathrel{\reflectbox{$\mapsto$}}}
+\def\longmapsfrom{\mathrel{\reflectbox{$\longmapsto$}}}
+
+% ---- DELIMITER PAIRS ----
+\def\floor#1{\lfloor #1 \rfloor}
+\def\ceil#1{\lceil #1 \rceil}
+\def\seq#1{\langle #1 \rangle}
+\def\set#1{\{ #1 \}}
+\def\abs#1{\mathopen| #1 \mathclose|}			% use instead of $|x|$ 
+\def\norm#1{\mathopen\| #1 \mathclose\|}		% use instead of $\|x\|$ 
+\def\indic#1{\big[#1\big]}		% indicator variable; Iverson notation
+								% e.g., Kronecker delta = [x=0]
+
+% --- Self-scaling delmiter pairs ---
+\def\Floor#1{\left\lfloor #1 \right\rfloor}
+\def\Ceil#1{\left\lceil #1 \right\rceil}
+\def\Seq#1{\left\langle #1 \right\rangle}
+\def\Set#1{\left\{ #1 \right\}}
+\def\Abs#1{\left| #1 \right|}
+\def\Norm#1{\left\| #1 \right\|}
+\def\Paren#1{\left( #1 \right)}		% need better macro name!
+\def\Brack#1{\left[ #1 \right]}		% need better macro name!
+\def\Indic#1{\left[ #1 \right]}		% indicator variable; Iverson notation
