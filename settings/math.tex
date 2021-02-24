@@ -32,83 +32,83 @@ stereo-iso-mer Round-table homol-ogous homol-ogy}
 % ----------------------------------------------------------------------
 
 % ---- LATIN ----
-\def\etal{\emph{et~al.}}			% and others
-\def\ie{i.e.}						% that is
-\def\eg{e.g.}						% for example
-\def\vitae{vit\ae{}}
-\def\apriori{\emph{a~priori}}
-\def\aposteriori{\emph{a~posteriori}}
+\newcommand{\etal}{\emph{et~al.}}			% and others
+\newcommand{\ie}{i.e.}						% that is
+\newcommand{\eg}{e.g.}						% for example
+\newcommand{\vitae}{vit\ae{}}
+\newcommand{\apriori}{\emph{a~priori}}
+\newcommand{\aposteriori}{\emph{a~posteriori}}
 
 % ---- FRENCH ----
-\def\naive{na\"{\i}ve}
-\def\Naive{Na\"{\i}ve}
-\def\naively{na\"{\i}vely}	% Okay, I know, this isn't French.
-\def\Naively{Na\"{\i}vely}
-\def\cafe{caf\'e}
+\newcommand{\naive}{na\"{\i}ve}
+\newcommand{\Naive}{Na\"{\i}ve}
+\newcommand{\naively}{na\"{\i}vely}	% Okay, I know, this isn't French.
+\newcommand{\Naively}{Na\"{\i}vely}
+\newcommand{\cafe}{caf\'e}
 
 % ---- GERMAN ----
-\def\fur{f\"ur}
-\def\Universitat{Universit\"at}
-\def\Saarbrucken{Saar\-br\"ucken}	% Bypass TeX hyphenation
-\def\Zurich{Z\"urich}
+\newcommand{\fur}{f\"ur}
+\newcommand{\Universitat}{Universit\"at}
+\newcommand{\Saarbrucken}{Saar\-br\"ucken}	% Bypass TeX hyphenation
+\newcommand{\Zurich}{Z\"urich}
 
 % ---- PORTUGESE (Hi Jorge!) ----
-\def\Computacao{Computa\c{c}\~ao}
+\newcommand{\Computacao}{Computa\c{c}\~ao}
 
 % ---- PROPER NAMES (because I'm lazy) ----
-\def\Benes{Bene\v{s}}		% ...network
-\def\Bezier{B\'ezier}		% ...spline/curve/surface
-\def\Bjorner{Bj\"orner}
-\def\Bochis{Bochi\c{s}}		% Daciana
-\def\Boruvka{Bor\.uvka}		% ...'s MST algorithm
-\def\Bragger{Br\"agger}
-\def\Bronnimann{Br\"onnimann}   \def\Herve{Herv\'e}
-\def\Bruckner{Br\"uckner}
-\def\Caratheodory{Carath\'eodory}	% Constantin
-\def\Chvatal{Chv\'atal}         \def\Vasek{Va\v{s}ek}
-				\def\Joao{Jo\~ao}	% Compa
-\def\Cortes{Cort\'es}		% Carmen
-\def\Dujmovic{Dujmovi\'c}	% Vida
-				\def\Fredo{Fr\'edo}	% Durand
-\def\Erdos{Erd\H{o}s}           \def\Pal{P\'al}
-\def\Frechet{Fr\'echet}
-\def\Furedi{F\"uredi}           \def\Zoltan{Zolt\'an}
-\def\Grobner{Gr\"obner}		% ... basis
-\def\Grunbaum{Gr\"unbaum}	% Branko
-\def\Hanoi{Hano\"\i}		% Tower of...
-\def\Jarnik{Jarn\a'{\i}k}	% ...'s (`Prim's') MST algorithm
-\def\Komlos{Koml\'os}
-\def\Kovari{K\"ov\'ari}
-\def\Lovasz{Lov\'asz}           \def\Laszlo{L\'aszl\'o}
-\def\Matousek{Matou\v{s}ek}     \def\Jiri{Ji\v{r}\'\i}
-\def\Mnev{Mn\"ev}
-\def\Mobius{M\"obius}		% ... strip/transformation/function
-\def\Mucke{M\"ucke}		% Ernst
-\def\ODunliang{\'O'D\'unliang}
-\def\Oleinik{Ole\u{\i}nik}
-                                \def\Janos{J\'anos}     % Pach
-\def\Palasti{Pal\'asti}
-				\def\Belen{Bel\'en}	% Palop
-\def\Petrovskii{Petrovski\u{\i}}
-\def\Pinar{P\i nar}		% Ali
-\def\Plucker{Pl\"ucker}		% ... coordinates
-\def\Poincare{Poincar\'e}	% ... duality/halfplane
-                                \def\Gunter{G\"unter}   % Rote, Ziegler
-\def\Sacristan{Sacrist\'an}	% Vera
-\def\Saskin{\v{S}a\v{s}kin}
-\def\Schomer{Sch\"omer}
-\def\Schonhardt{Sch\"onhardt}	% ... polyhedron
-\def\Sos{S\'os}
-\def\Stackel{St\"ackel}		% Paul
-\def\Szekely{Sz\'ekely}
-\def\Szemeredi{Szemer\'edi}
-\def\Toth{T\'{o}th}		% Geza
-\def\Turan{Tur\'an}
-\def\Ungor{\"Ung\"or}		% Alper
-\def\Voronoi{Vorono\"i}		% ... diagram [for francophile pedants only]
+\newcommand{\Benes}{Bene\v{s}}		% ...network
+\newcommand{\Bezier}{B\'ezier}		% ...spline/curve/surface
+\newcommand{\Bjorner}{Bj\"orner}
+\newcommand{\Bochis}{Bochi\c{s}}		% Daciana
+\newcommand{\Boruvka}{Bor\.uvka}		% ...'s MST algorithm
+\newcommand{\Bragger}{Br\"agger}
+\newcommand{\Bronnimann}{Br\"onnimann}   \newcommand{\Herve}{Herv\'e}
+\newcommand{\Bruckner}{Br\"uckner}
+\newcommand{\Caratheodory}{Carath\'eodory}	% Constantin
+\newcommand{\Chvatal}{Chv\'atal}         \newcommand{\Vasek}{Va\v{s}ek}
+				\newcommand{\Joao}{Jo\~ao}	% Compa
+\newcommand{\Cortes}{Cort\'es}		% Carmen
+\newcommand{\Dujmovic}{Dujmovi\'c}	% Vida
+				\newcommand{\Fredo}{Fr\'edo}	% Durand
+\newcommand{\Erdos}{Erd\H{o}s}           \newcommand{\Pal}{P\'al}
+\newcommand{\Frechet}{Fr\'echet}
+\newcommand{\Furedi}{F\"uredi}           \newcommand{\Zoltan}{Zolt\'an}
+\newcommand{\Grobner}{Gr\"obner}		% ... basis
+\newcommand{\Grunbaum}{Gr\"unbaum}	% Branko
+\newcommand{\Hanoi}{Hano\"\i}		% Tower of...
+\newcommand{\Jarnik}{Jarn\a'{\i}k}	% ...'s (`Prim's') MST algorithm
+\newcommand{\Komlos}{Koml\'os}
+\newcommand{\Kovari}{K\"ov\'ari}
+\newcommand{\Lovasz}{Lov\'asz}           \newcommand{\Laszlo}{L\'aszl\'o}
+\newcommand{\Matousek}{Matou\v{s}ek}     \newcommand{\Jiri}{Ji\v{r}\'\i}
+\newcommand{\Mnev}{Mn\"ev}
+\newcommand{\Mobius}{M\"obius}		% ... strip/transformation/function
+\newcommand{\Mucke}{M\"ucke}		% Ernst
+\newcommand{\ODunliang}{\'O'D\'unliang}
+\newcommand{\Oleinik}{Ole\u{\i}nik}
+                                \newcommand{\Janos}{J\'anos}     % Pach
+\newcommand{\Palasti}{Pal\'asti}
+				\newcommand{\Belen}{Bel\'en}	% Palop
+\newcommand{\Petrovskii}{Petrovski\u{\i}}
+\newcommand{\Pinar}{P\i nar}		% Ali
+\newcommand{\Plucker}{Pl\"ucker}		% ... coordinates
+\newcommand{\Poincare}{Poincar\'e}	% ... duality/halfplane
+                                \newcommand{\Gunter}{G\"unter}   % Rote, Ziegler
+\newcommand{\Sacristan}{Sacrist\'an}	% Vera
+\newcommand{\Saskin}{\v{S}a\v{s}kin}
+\newcommand{\Schomer}{Sch\"omer}
+\newcommand{\Schonhardt}{Sch\"onhardt}	% ... polyhedron
+\newcommand{\Sos}{S\'os}
+\newcommand{\Stackel}{St\"ackel}		% Paul
+\newcommand{\Szekely}{Sz\'ekely}
+\newcommand{\Szemeredi}{Szemer\'edi}
+\newcommand{\Toth}{T\'{o}th}		% Geza
+\newcommand{\Turan}{Tur\'an}
+\newcommand{\Ungor}{\"Ung\"or}		% Alper
+\newcommand{\Voronoi}{Vorono\"i}		% ... diagram [for francophile pedants only]
 
 % Other
-\def\Cplusplus{C\raisebox{0.5ex}{\tiny\textbf{++}}}
+\newcommand{\Cplusplus}{C\raisebox{0.5ex}{\tiny\textbf{++}}}
 
 % ----------------------------------------------------------------------
 %  Simple math stuff
@@ -117,21 +117,21 @@ stereo-iso-mer Round-table homol-ogous homol-ogy}
 % ---- SYMBOLS ----
 \let\e\varepsilon               % a ``real'' epsilon
 
-\def\Real{\mathbb{R}}
-\def\Proj{\mathbb{P}}
-\def\Hyper{\mathbb{H}}
-\def\Integer{\mathbb{Z}}
-\def\Natural{\mathbb{N}}
-\def\Complex{\mathbb{C}}
-\def\Rational{\mathbb{Q}}
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Proj}{\mathbb{P}}
+\newcommand{\Hyper}{\mathbb{H}}
+\newcommand{\Integer}{\mathbb{Z}}
+\newcommand{\Natural}{\mathbb{N}}
+\newcommand{\Complex}{\mathbb{C}}
+\newcommand{\Rational}{\mathbb{Q}}
 
 \let\N\Natural
 \let\Q\Rational
 \let\R\Real
 \let\Z\Integer
-\def\Rd{\Real^d}
-\def\RP{\Real\Proj}
-\def\CP{\Complex\Proj}
+\newcommand{\Rd}{\Real^d}
+\newcommand{\RP}{\Real\Proj}
+\newcommand{\CP}{\Complex\Proj}
 
 % ---- OPERATORS (requires amsmath) ----
 \DeclareMathOperator{\aff}{aff}
@@ -152,62 +152,56 @@ stereo-iso-mer Round-table homol-ogous homol-ogy}
 \DeclareMathOperator{\sgn}{sgn}
 \DeclareMathOperator{\vol}{vol}			% volume
 
-\def\fp#1{^{\underline{#1}}}		% falling powers: $n\fp{d}$
-\def\rp#1{^{\overline{#1}}}		% rising powers:  $n\rp{d}$
+\newcommand{\fp}[1]{^{\underline{#1}}}	% falling powers: $n\fp{d}$
+\newcommand{\rp}[1]{^{\overline{#1}}}	% rising powers:  $n\rp{d}$
 
 
 % --- Darts and fences ---
-% less nice replacements for stmaryrd characters
-\@ifundefined{shortrightarrow}{\let\shortrightarrow\rightarrow}{}
-\@ifundefined{shortleftarrow}{\let\shortleftarrow\leftarrow}{}
-\@ifundefined{shortuparrow}{\let\shortuparrow\uparrow}{}
-\@ifundefined{shortdownarrow}{\let\shortdownarrow\downarrow}{}
-
-\def\arcto{\mathord\shortrightarrow}
-\def\arc#1#2{#1\arcto#2}
-\def\cra#1#2{#1\mathord\shortleftarrow#2}
-\def\fence#1#2{#1\mathord\shortuparrow#2}
-\def\ecnef#1#2{#1\mathord\shortdownarrow#2}
+\newcommand{\arcto}{\mathord\shortrightarrow}
+\newcommand{\arc}[2]{#1\arcto#2}
+\newcommand{\cra}[2]{#1\mathord\shortleftarrow#2}
+\newcommand{\fence}[2]{#1\mathord\shortuparrow#2}
+\newcommand{\ecnef}[2]{#1\mathord\shortdownarrow#2}
 
 % --- Cheap displaystyle operators ---
-\def\Frac#1#2{{\displaystyle\frac{#1}{#2}}}
-\def\Sum{\sum\limits}
-\def\Prod{\prod\limits}
-\def\Union{\bigcup\limits}
-\def\Inter{\bigcap\limits}
-\def\Lor{\bigvee\limits}
-\def\Land{\bigwedge\limits}
-\def\Lim{\lim\limits}
-\def\Max{\max\limits}
-\def\Min{\min\limits}
+\newcommand{\Frac}[2]{{\displaystyle\frac{#1}{#2}}}
+\newcommand{\Sum}{\sum\limits}
+\newcommand{\Prod}{\prod\limits}
+\newcommand{\Union}{\bigcup\limits}
+\newcommand{\Inter}{\bigcap\limits}
+\newcommand{\Lor}{\bigvee\limits}
+\newcommand{\Land}{\bigwedge\limits}
+\newcommand{\Lim}{\lim\limits}
+\newcommand{\Max}{\max\limits}
+\newcommand{\Min}{\min\limits}
 
 % ---- RELATORS ----
-\def\deq{\stackrel{\coloneqq}	% Use := instead.
-\def\into{\DOTSB\hookrightarrow}		% = one-to-one
-\def\onto{\DOTSB\twoheadrightarrow}
-\def\inonto{\DOTSB\lhook\joinrel\twoheadrightarrow}
-\def\from{\leftarrow}
-\def\tofrom{\leftrightarrow}
-\def\mapsfrom{\mathrel{\reflectbox{$\mapsto$}}}
-\def\longmapsfrom{\mathrel{\reflectbox{$\longmapsto$}}}
+\newcommand{\deq}{\stackrel{\coloneqq}	% Use := instead.
+\newcommand{\into}{\DOTSB\hookrightarrow}		% = one-to-one
+\newcommand{\onto}{\DOTSB\twoheadrightarrow}
+\newcommand{\inonto}{\DOTSB\lhook\joinrel\twoheadrightarrow}
+\newcommand{\from}{\leftarrow}
+\newcommand{\tofrom}{\leftrightarrow}
+\newcommand{\mapsfrom}{\mathrel{\reflectbox{$\mapsto$}}}
+\newcommand{\longmapsfrom}{\mathrel{\reflectbox{$\longmapsto$}}}
 
 % ---- DELIMITER PAIRS ----
-\def\floor#1{\lfloor #1 \rfloor}
-\def\ceil#1{\lceil #1 \rceil}
-\def\seq#1{\langle #1 \rangle}
-\def\set#1{\{ #1 \}}
-\def\abs#1{\mathopen| #1 \mathclose|}			% use instead of $|x|$ 
-\def\norm#1{\mathopen\| #1 \mathclose\|}		% use instead of $\|x\|$ 
-\def\indic#1{\big[#1\big]}		% indicator variable; Iverson notation
+\newcommand{\floor}[1]{\lfloor #1 \rfloor}
+\newcommand{\ceil}[1]{\lceil #1 \rceil}
+\newcommand{\seq}[1]{\langle #1 \rangle}
+\newcommand{\set}[1]{\{ #1 \}}
+\newcommand{\abs}[1]{\mathopen| #1 \mathclose|}			% use instead of $|x|$ 
+\newcommand{\norm}[1]{\mathopen\| #1 \mathclose\|}		% use instead of $\|x\|$ 
+\newcommand{\indic}[1]{\big[#1\big]}		% indicator variable; Iverson notation
 								% e.g., Kronecker delta = [x=0]
 
 % --- Self-scaling delmiter pairs ---
-\def\Floor#1{\left\lfloor #1 \right\rfloor}
-\def\Ceil#1{\left\lceil #1 \right\rceil}
-\def\Seq#1{\left\langle #1 \right\rangle}
-\def\Set#1{\left\{ #1 \right\}}
-\def\Abs#1{\left| #1 \right|}
-\def\Norm#1{\left\| #1 \right\|}
-\def\Paren#1{\left( #1 \right)}		% need better macro name!
-\def\Brack#1{\left[ #1 \right]}		% need better macro name!
-\def\Indic#1{\left[ #1 \right]}		% indicator variable; Iverson notation
+\newcommand{\Floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Ceil}[1]{\left\lceil #1 \right\rceil}
+\newcommand{\Seq}[1]{\left\langle #1 \right\rangle}
+\newcommand{\Set}[1]{\left\{ #1 \right\}}
+\newcommand{\Abs}[1]{\left| #1 \right|}
+\newcommand{\Norm}[1]{\left\| #1 \right\|}
+\newcommand{\Paren}[1]{\left( #1 \right)}		% need better macro name!
+\newcommand{\Brack}[1]{\left[ #1 \right]}		% need better macro name!
+\newcommand{\Indic}[1]{\left[ #1 \right]}		% indicator variable; Iverson notation
