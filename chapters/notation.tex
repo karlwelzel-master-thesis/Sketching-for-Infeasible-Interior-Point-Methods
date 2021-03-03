@@ -4,15 +4,16 @@ Vectors are denoted in bold \(\vek{x}\), matrices with bold uppercase letters \(
 
 The standard form linear programming (LP) problem is given by
 \begin{equation}
- \min \Set{\vek{c}^T \vek{x} | \mat{A}\vek{x} = \vek{b}, \ \vek{x} \geq 0} 
+ \min \vek{c}^T \vek{x} \quad \text{subject to} \quad \mat{A}\vek{x} = \vek{b}, \ \vek{x} \geq 0
 \end{equation}
-and its dual is given by
+and its dual is
 \begin{equation}
-  \max \Set{\vek{b}^T \vek{y} | \mat{A}^T \vek{y} + \vek{s} = \vek{c}, \ \vek{s} \geq 0 }
+  \max \vek{b}^T \vek{y} \quad \text{subject to} \quad \mat{A}^T \vek{y} + \vek{s} = \vek{c}, \ \vek{s} \geq 0
 \end{equation}
 where \(\mat{A} \in \R^{m \times n}\), \(\vek{b} \in \R^m\) and \(\vek{c} \in \R^n\) are given and \(\vek{x}, \vek{s} \in \R^n\) and \(\vek{y} \in \R^m\) are the variables.
+For feasible \(\vek{x}, \vek{y}, \vek{s}\) we always have \(\vek{c}^T \vek{x} \geq \vek{b}^T \vek{y}\) and the optimal solutions satisfy \(\vek{c}^T \vek{x} = \vek{b}^T \vek{y}\), so \(\vek{x}^T \vek{s} = \vek{c}^T \vek{x} - \vek{b}^T \vek{y}\) can be considered an optimality measure.
 
-The necessary and sufficient optimality conditions for both problems are given by
+Necessary and sufficient optimality conditions for both problems are given by
 \begin{subequations} \label{optimality-conditions}
   \begin{align}
     \mat{A} \vek{x} &= \vek{b} \label{primal-feasibility} \\
@@ -22,14 +23,18 @@ The necessary and sufficient optimality conditions for both problems are given b
   \end{align}
 \end{subequations}
 
-In primal-dual interior-point methods one maintains iterates \((\vek{x}^k, \vek{y}^k, \vek{s}^k)\) that satisfy \(\vek{x}^k, \vek{s}^k > 0\) element-wise.
-The \enquote{distance} to the solution is measured using \(\mu = \vek{x}^T \vek{s}/n\) which is equivalent to \(\left(\vek{c}^T\vek{x} - \vek{b}^T\vek{y}\right)/n\) if \(\vek{x}, \vek{y}, \vek{s}\) are feasible.
-Feasible IPMs require the iterates to always be feasible (satisfying \cref{primal-feasibility} and \cref{dual-feasibility}) while infeasible IPMs allow some non-zero residuals
-\begin{align}
-  \vek{r}^k_p &= \mat{A}\vek{x}^k - \vek{b} \\
-  \vek{r}^k_d &= \mat{A}^T \vek{y}^k + \vek{s}^k - \vek{c}
-\end{align}
-as long as their size goes to zero at approximately the same rate as \(\mu\).
+How close a given triple \((\vek{x}, \vek{y}, \vek{s})\) with \(\vek{x}, \vek{s} \geq 0\) is to satisfying these conditions is measured by
+\begin{subequations}
+  \begin{align}
+    \vek{r}_p &= \vek{r}_p(\vek{x}) = \mat{A}\vek{x} - \vek{b} \\
+    \vek{r}_d &= \vek{r}_d(\vek{y}, \vek{s}) = \mat{A}^T \vek{y} - \vek{c} \\
+    \vek{r}   &= \vek{r}(\vek{x}, \vek{y}, \vek{s}) = (\vek{r}_p, \vek{r}_d) \\
+    \mu       &= \mu(\vek{x}, \vek{s}) = \vek{x}^T \vek{s} / n
+  \end{align}
+\end{subequations}
+
+In primal-dual interior-point methods one maintains iterates \((\vek{x}^k, \vek{y}^k, \vek{s}^k)\) that satisfy \(\vek{x}^k, \vek{s}^k > 0\).
+Feasible IPMs require the iterates to always be feasible (satisfying \cref{primal-feasibility} and \cref{dual-feasibility}) while infeasible IPMs allow some non-zero residuals \(\vek{r}^k\) as long as their size goes to zero at approximately the same rate as \(\mu\).
 
 The \emph{central path} is given by \(\Set{(\vek{x}_\tau, \vek{y}_\tau, \vek{s}_\tau) | \tau > 0}\) where \(\vek{x}_\tau, \vek{y}_\tau, \vek{s}_\tau\) are uniquely determined by
 \begin{subequations}
@@ -40,13 +45,13 @@ The \emph{central path} is given by \(\Set{(\vek{x}_\tau, \vek{y}_\tau, \vek{s}_
     \vek{x}_\tau, \vek{s}_\tau &> 0
   \end{align}
 \end{subequations}
-if a solution satisfying \cref{optimality-conditions} exists, see \cite{Mizuno-PolynomialTimeConvergenceInexactIPM}.
+if a solution satisfying \cref{optimality-conditions} exists (Wright says strict feasibility is required, ?), see \cite{Mizuno-PolynomialTimeConvergenceInexactIPM}.
 In this case, the elements of the central path converge towards a solution as \(\tau \to 0\).
 In a \emph{long-step} infeasible IPM all iterates are required to belong to a neighbourhoood of this central path given by
 \begin{equation}
   \mathcal{N}_{-\infty}(\gamma) = \Set{ (\vek{x}, \vek{y}, \vek{s}) | \vek{x}, \vek{s} > 0, \ \vek{x} \circ \vek{s} \geq (1 - \gamma) \mu \vek{1}, \ \frac{\norm{\vek{r}}}{\norm{\vek{r}^0}} \leq \frac{\mu}{\mu^0} }
 \end{equation}
-where \(\gamma \in (0, 1)\) is a parameter controlling the size of the neighbourhood and \(\vek{r}^0 = (\vek{r}_p^0, \vek{r}_d^0)\).
+where \(\gamma \in (0, 1)\) is a parameter controlling the size of the neighbourhood.
 If it can be shown that \(\mu \to 0\) during the algorithm then by the choice of the neighbourhood the residuals must also converge to \(0\).
 
 The search direction in every iteration is determined by a Newton system, similar to the one used when trying to find a root of 
@@ -63,7 +68,7 @@ The total derivative of \(F\) is given by
 \end{equation}
 where \(\mat{X} = \diag(\vek{x})\) and \(\mat{S} = \diag(\vek{s})\).
 The actual Newton system determining \((\Delta\vek{x}, \Delta\vek{y}, \Delta\vek{s})\) is slightly modified by adding a centering term \(\sigma \mu \vek{1}\) where \(\sigma \in [0,1]\) which allows for larger steps inside the neighbourhood:
-\begin{equation}
+\begin{equation} \label{newton-system}
   \underbrace{
   \begin{pmatrix}
     \mat{A} & 0         & 0       \\
@@ -78,3 +83,33 @@ The actual Newton system determining \((\Delta\vek{x}, \Delta\vek{y}, \Delta\vek
   }_{F(\vek{x}, \vek{y}, \vek{s})}
   + \begin{pmatrix} 0 \\ 0 \\ \sigma \mu \vek{1} \end{pmatrix}
 \end{equation}
+
+This linear system of equations can be rewritten as
+\begin{subequations} \label{augmented-system}
+  \begin{align}
+    \begin{pmatrix}
+      \mat{A}              & 0 \\
+      \mat{X}^{-1} \mat{S} & \mat{A}^T \\
+    \end{pmatrix}
+    \begin{pmatrix}
+      \Delta\vek{x} \\
+      \Delta\vek{y}
+    \end{pmatrix}
+    &=
+    \begin{pmatrix}
+      -\vek{r}_p \\
+      -\vek{r}_d -\vek{s} + \sigma \mu \mat{X}^{-1} \vek{1}
+    \end{pmatrix} \\
+    \Delta\vek{s} &= -\vek{s} + \sigma \mu \mat{X}^{-1} \vek{1} - \mat{X}^{-1} \mat{S} \Delta\vek{x}
+  \end{align}
+\end{subequations}
+which is called the \emph{augmented system}.
+Eliminating \(\Delta\vek{x}\) from the first equation and using \(\mat{D} = \mat{S}^{-1/2} \mat{X}^{1/2}\) we get
+\begin{subequations}
+  \begin{align}
+    \mat{A} \mat{D}^2 \mat{A}^T \Delta\vek{y} &= -\vek{r}_p + \mat{A} ( -\mat{S}^{-1} \mat{X} \vek{r}_d + \vek{x} - \sigma \mu \mat{S}^{-1} \vek{1} ) \eqqcolon \vek{p} \label{normal-equation} \\
+    \Delta\vek{s} &= -\vek{r}_d - \mat{A}^T \Delta\vek{y} \label{s-from-normal} \\
+    \Delta\vek{x} &= -x + \sigma \mu \mat{S}^{-1} \vek{1} - \mat{S}^{-1} \mat{X} \Delta\vek{s} \label{x-from-normal}
+  \end{align}
+\end{subequations}
+The first component is called the \emph{normal equation} because it can be written as the normal equation of a least squares system if \(\vek{r}_p = \vek{0}\).
