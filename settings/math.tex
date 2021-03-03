@@ -1,11 +1,15 @@
-% Taken from https://jeffe.cs.illinois.edu/pubs/latex.html: jeffe.sty
-% Originally designed by Jeff Erickson (jeffe@cs.uiuc.edu)
+% Adapted from https://jeffe.cs.illinois.edu/pubs/latex.html: jeffe.sty
+%   originally designed by Jeff Erickson (jeffe@cs.uiuc.edu)
+% Adapted from https://github.com/vinh-tr-hoang/MathNotations
+%   originally designed by Truong Vinh Hoang
 % Adapted by Karl Welzel on 24 February 2021
 
 \usepackage{mathtools}
 \usepackage{amsthm}
 \usepackage{amssymb}
 \usepackage{stmaryrd}
+\SetSymbolFont{stmry}{bold}{U}{stmry}{m}{n}  % See https://tex.stackexchange.com/questions/106714/stmaryrd-and-boldsymbol-avoid-warnings
+\usepackage{bm}  % provides \bm for bold math. Better than \boldsymbol
 \usepackage{mleftright} \mleftright  % improves spacing for \left and \right
 \usepackage{braket}  % provides \Set with scaled middle |
 \usepackage{siunitx}  % units (SI)
@@ -146,6 +150,8 @@ stereo-iso-mer Round-table homol-ogous homol-ogy}
 \DeclareMathOperator{\rel}{rel\,}		% relative (interior, boundary, etc.)
 \DeclareMathOperator{\sgn}{sgn}
 \DeclareMathOperator{\vol}{vol}			% volume
+\DeclareMathOperator{\nnz}{nnz}			% # nonzero entries in a matrix
+\DeclareMathOperator{\diag}{diag}       % diagonal matrix
 
 \newcommand{\fp}[1]{^{\underline{#1}}}	% falling powers: $n\fp{d}$
 \newcommand{\rp}[1]{^{\overline{#1}}}	% rising powers:  $n\rp{d}$
@@ -210,3 +216,19 @@ stereo-iso-mer Round-table homol-ogous homol-ogy}
 
 \theoremstyle{remark}
 \newtheorem*{remark}{Remark} % label starts with 'rem:'
+
+
+% ----------------------------------------------------------------------
+%  Standard notation for vectors and matrices
+% ----------------------------------------------------------------------
+
+%scalar: serifs, non-bold, lowercase
+%vector: serifs, bold, lowercase
+\newcommand{\vek}[1]{\bm{#1}}
+%matrix: serifs, bold, uppercase
+\newcommand{\mat}[1]{\bm{#1}}
+%tensor: sans-serifs, bold, uppercase
+\newcommand{\tns}[1]{\textsf{\textbf{\textsl{#1}}}}
+%random variable: serifs, non-bold, uppercase
+\newcommand{\rv}[1]{#1}
+
