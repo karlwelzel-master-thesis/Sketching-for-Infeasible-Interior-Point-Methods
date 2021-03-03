@@ -1,0 +1,80 @@
+\chapter{Notation}
+
+Vectors are denoted in bold \(\vek{x}\), matrices with bold uppercase letters \(\mat{A}\). For naming primal, dual and slack variables as well as the choice of the neighbourhood we follow \cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs}.
+
+The standard form linear programming (LP) problem is given by
+\begin{equation}
+ \min \Set{\vek{c}^T \vek{x} | \mat{A}\vek{x} = \vek{b}, \ \vek{x} \geq 0} 
+\end{equation}
+and its dual is given by
+\begin{equation}
+  \max \Set{\vek{b}^T \vek{y} | \mat{A}^T \vek{y} + \vek{s} = \vek{c}, \ \vek{s} \geq 0 }
+\end{equation}
+where \(\mat{A} \in \R^{m \times n}\), \(\vek{b} \in \R^m\) and \(\vek{c} \in \R^n\) are given and \(\vek{x}, \vek{s} \in \R^n\) and \(\vek{y} \in \R^m\) are the variables.
+
+The necessary and sufficient optimality conditions for both problems are given by
+\begin{subequations} \label{optimality-conditions}
+  \begin{align}
+    \mat{A} \vek{x} &= \vek{b} \label{primal-feasibility} \\
+    \mat{A}^T \vek{y} + \vek{s} &= \vek{c} \label{dual-feasibility} \\
+    \vek{x} \circ \vek{s} &= 0 \label{complementarity} \\
+    \vek{x}, \vek{s} &\geq 0 \label{nonnegativity}
+  \end{align}
+\end{subequations}
+
+In primal-dual interior-point methods one maintains iterates \((\vek{x}^k, \vek{y}^k, \vek{s}^k)\) that satisfy \(\vek{x}^k, \vek{s}^k > 0\) element-wise.
+The \enquote{distance} to the solution is measured using \(\mu = \vek{x}^T \vek{s}/n\) which is equivalent to \(\left(\vek{c}^T\vek{x} - \vek{b}^T\vek{y}\right)/n\) if \(\vek{x}, \vek{y}, \vek{s}\) are feasible.
+Feasible IPMs require the iterates to always be feasible (satisfying \cref{primal-feasibility} and \cref{dual-feasibility}) while infeasible IPMs allow some non-zero residuals
+\begin{align}
+  \vek{r}^k_p &= \mat{A}\vek{x}^k - \vek{b} \\
+  \vek{r}^k_d &= \mat{A}^T \vek{y}^k + \vek{s}^k - \vek{c}
+\end{align}
+as long as their size goes to zero at approximately the same rate as \(\mu\).
+
+The \emph{central path} is given by \(\Set{(\vek{x}_\tau, \vek{y}_\tau, \vek{s}_\tau) | \tau > 0}\) where \(\vek{x}_\tau, \vek{y}_\tau, \vek{s}_\tau\) are uniquely determined by
+\begin{subequations}
+  \begin{align}
+    \mat{A}\vek{x}_\tau - \vek{b} &= \tau \vek{r}_p^0 \\
+    \mat{A}^T \vek{y}_\tau + \vek{s}_\tau - \vek{c} &= \tau \vek{r}_d^0 \\
+    \vek{x}_\tau \circ \vek{s}_\tau &= \tau \mu_0 \vek{1} \\
+    \vek{x}_\tau, \vek{s}_\tau &> 0
+  \end{align}
+\end{subequations}
+if a solution satisfying \cref{optimality-conditions} exists, see \cite{Mizuno-PolynomialTimeConvergenceInexactIPM}.
+In this case, the elements of the central path converge towards a solution as \(\tau \to 0\).
+In a \emph{long-step} infeasible IPM all iterates are required to belong to a neighbourhoood of this central path given by
+\begin{equation}
+  \mathcal{N}_{-\infty}(\gamma) = \Set{ (\vek{x}, \vek{y}, \vek{s}) | \vek{x}, \vek{s} > 0, \ \vek{x} \circ \vek{s} \geq (1 - \gamma) \mu \vek{1}, \ \frac{\norm{\vek{r}}}{\norm{\vek{r}^0}} \leq \frac{\mu}{\mu^0} }
+\end{equation}
+where \(\gamma \in (0, 1)\) is a parameter controlling the size of the neighbourhood and \(\vek{r}^0 = (\vek{r}_p^0, \vek{r}_d^0)\).
+If it can be shown that \(\mu \to 0\) during the algorithm then by the choice of the neighbourhood the residuals must also converge to \(0\).
+
+The search direction in every iteration is determined by a Newton system, similar to the one used when trying to find a root of 
+\begin{equation}
+  F(\vek{x}, \vek{y}, \vek{s}) \deq \begin{pmatrix} \mat{A}\vek{x} - \vek{b} \\ \mat{A}^T \vek{y} + \vek{s} - \vek{c} \\ \vek{x} \circ \vek{s} \end{pmatrix}
+\end{equation}
+The total derivative of \(F\) is given by
+\begin{equation}
+  F'(\vek{x}, \vek{y}, \vek{s}) = \begin{pmatrix}
+    \mat{A} & 0         & 0       \\
+    0       & \mat{A}^T & \mat{I} \\
+    \mat{S} & 0         & \mat{X} \\
+  \end{pmatrix}
+\end{equation}
+where \(\mat{X} = \diag(\vek{x})\) and \(\mat{S} = \diag(\vek{s})\).
+The actual Newton system determining \((\Delta\vek{x}, \Delta\vek{y}, \Delta\vek{s})\) is slightly modified by adding a centering term \(\sigma \mu \vek{1}\) where \(\sigma \in [0,1]\) which allows for larger steps inside the neighbourhood:
+\begin{equation}
+  \underbrace{
+  \begin{pmatrix}
+    \mat{A} & 0         & 0       \\
+    0       & \mat{A}^T & \mat{I} \\
+    \mat{S} & 0         & \mat{X} \\
+  \end{pmatrix}
+  }_{F'(\vek{x}, \vek{y}, \vek{s})}
+  \begin{pmatrix} \Delta\vek{x} \\ \Delta\vek{y} \\ \Delta\vek{s} \end{pmatrix}
+  = -
+  \underbrace{
+  \begin{pmatrix} \vek{r}_p \\ \vek{r}_d \\ \vek{x} \circ \vek{s} \end{pmatrix}
+  }_{F(\vek{x}, \vek{y}, \vek{s})}
+  + \begin{pmatrix} 0 \\ 0 \\ \sigma \mu \vek{1} \end{pmatrix}
+\end{equation}

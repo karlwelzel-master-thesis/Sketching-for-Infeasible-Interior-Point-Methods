@@ -1,7 +1,4 @@
-% arara: pdflatex
-% arara: biber
-% arara: pdflatex
-% arara: pdflatex
+% arara: latexmk
 
 \documentclass[a4paper, 12pt, oneside, egregdoesnotlikesansseriftitles]{scrbook}
 
@@ -22,10 +19,10 @@
 \tableofcontents
 
 \mainmatter
-\subimport{chapters/}{proofs.tex}
+\subimport{chapters/}{introduction.tex}
+\subimport{chapters/}{notation.tex}
 
 \backmatter
 \printbibliography[heading=bibintoc]
-\phantomsection  % Fix hyperref problem
 
 \end{document}
