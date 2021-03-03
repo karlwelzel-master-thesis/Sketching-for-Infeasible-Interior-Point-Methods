@@ -12,7 +12,7 @@ If \(\Abs{ \norm{\mat{W}\vek{x}}^2 - 1} \leq \e\) for all \(\vek{x} \in S\) with
 
 \begin{theorem}
 The OSE property can be equivalently stated as
-\[ (1-\e) \Norm{\vek{x}}_2^2 \leq \Norm{\mat{W}\vek{x}}_2^2 \leq (1+\e) \Norm{\vek{x}}_2^2 \quad \forall \vek{x} \in S. \label{ose-inequality} \]
+\[ (1-\e) \Norm{\vek{x}}_2^2 \leq \Norm{\mat{W}\vek{x}}_2^2 \leq (1+\e) \Norm{\vek{x}}_2^2 \quad \forall \vek{x} \in S. \label{eqn:ose-inequality} \]
 
 If the subspace is written as \(S = \set{ \mat{U}\vek{z} | \vek{z} \in \R^d }\) for some matrix \(\mat{U} \in \R^{n \times d}\) with orthonormal columns, then the OSE property for \(S\) is equivalent to
 \[ \Norm{(\mat{W}\mat{U})^T (\mat{W} \mat{U}) - \mat{U}^T \mat{U}}_2 \leq \e \] 
@@ -46,7 +46,7 @@ The following sparse OSE result is taken from \cite{Cohen-NearlyTightObliviousSu
 A \emph{sparse embedding matrix} \(\mat{W} \in \R^{w \times n}\) is constructed in the following way:
 For each column \(s\) entries are sampled randomly without replacement and for each such entry its value is randomly drawn from \(\{ - \frac{1}{\sqrt{s}}, \frac{1}{\sqrt{s}} \}\).
 All other entries of \(\mat{W}\) are set to zero.
-This defines a probability distribution over \(\R^{w \times n}\) where each sampled matrix has exactly \(s \cdot w\) nonzero entries.
+This defines a probability distribution over \(\R^{w \times n}\) where each sampled matrix has exactly \(s \cdot n\) nonzero entries.
 \end{definition}
 
 \begin{theorem}[Theorem 4.2 in \cite{Cohen-NearlyTightObliviousSubspaceEmbeddings}]  \label{thm:sparse-ose}
@@ -55,18 +55,40 @@ For any \(B > 2, \ \delta < 1/2, \ \e < 1/2\) there are
 such that the sparse embedding matrices form a \((d, \e, \delta)\)-OSE.
 \end{theorem}
 
-Such an ensemble of sketching matrices is used to construct a preconditioner for \(\mat{A}^T \mat{D}^2 \mat{A}\) in the form of a matrix \(\mat{Q} \in \R^{m \times m}\) such that
-\( \mat{Q}^{-T} \mat{A}^T \mat{D}^2 \mat{A} \mat{Q}^{-1} \approx \mat{I}_m \).
+Such an ensemble of sketching matrices is used to construct a preconditioner for \(\mat{A} \mat{D}^2 \mat{A}^T\) in the form of a matrix \(\mat{P} \in \R^{m \times m}\) such that
+\( \mat{P}^{-1} \mat{A} \mat{D}^2 \mat{A}^T \mat{P}^{-T} \approx \mat{I}_m \).
 Instead of solving the normal equation we then solve
-\( \mat{Q}^{-T} \mat{A}^T \mat{D}^2 \mat{A} \mat{Q}^{-1} \vek{v} = \mat{Q}^{-T} \vek{p} \)
-using an efficient iterative solver and \(\Delta\vek{y} = \mat{Q}^{-1} \vek{v}\).
+\( \mat{P}^{-1} \mat{A} \mat{D}^2 \mat{A}^T \mat{P}^{-T} \vek{v} = \mat{P}^{-1} \vek{p} \)
+using an efficient iterative solver and \(\Delta\vek{y} = \mat{P}^{-T} \vek{v}\).
 
-Inspired by \textcite{Avron-FasterRandomizedInfeasibleIPMs} we use a QR decomposition of the sketched matrix \((\mat{A}\mat{D})^T\).
-The set \(S = \set{ (\mat{A}\mat{D})^T \vek{z} | \vek{z} \in \R^m}\) is a \(m\)-dimensional subspace of \(\R^n\) assuming that \(\mat{A}\) has full row rank.
+Inspired by \textcite{Avron-FasterRandomizedInfeasibleIPMs} we use a QR decomposition of the sketched matrix \(\mat{D}\mat{A}^T\).
+The set \(S = \set{ \mat{D}\mat{A}^T \vek{z} | \vek{z} \in \R^m}\) is a \(m\)-dimensional subspace of \(\R^n\) assuming that \(\mat{A}\) has full row rank.
 By \cref{thm:sparse-ose} there are
 \[ w = O \Paren{ \frac{m \log(m/\delta)}{\e^2} } \quad \text{and} \quad s = O \Paren{ \frac{\log(m/\delta)}{\e} }\]
 (using a fixed \(B > 2\)) such that \(\mat{W} \in \R^{w \times n}\) drawn from the corresponding probability distribution of sparse embedding matrices satisfies
 \begin{equation}
-  (1-\e) \norm{(\mat{A}\mat{D})^T \vek{z}}_2^2 \leq \norm{\mat{W}(\mat{A}\mat{D})^T \vek{z}}_2^2 \leq (1+\e)\norm{(\mat{A}\mat{D})^T \vek{z}}_2^2 \quad \forall \vek{z} \in \R^m
+  (1-\e) \norm{\mat{D}\mat{A}^T \vek{z}}_2^2 \leq \norm{\mat{W}\mat{D}\mat{A}^T \vek{z}}_2^2 \leq (1+\e)\norm{\mat{D}\mat{A}^T \vek{z}}_2^2 \quad \forall \vek{z} \in \R^m \label{eqn:ose-for-DAT}
 \end{equation}
 with high probability \(1 - \delta\).
+
+\begin{theorem}
+Let \(\mat{W} \in \R^{w \times n}\) be a sparse embedding matrix as above and \(\mat{Q}\mat{R}\) the QR decomposition of \(\mat{W}\mat{D}\mat{A}^T\) with \(\mat{Q} \in \R^{w \times m}\) and \(\mat{R} \in \R^{m \times m}\). With probability at least \(1 - \delta\) the singular values of \(\mat{R}^{-T}\mat{A}\mat{D}\) and \(\mat{D}\mat{A}^T \mat{R}^{-1}\) are bounded by
+\[ \frac{1}{1 + \e} \leq \sigma_i(\mat{R}^{-T}\mat{A}\mat{D}) = \sigma_i(\mat{D}\mat{A}^T \mat{R}^{-1}) \leq \frac{1}{1 - \e} \quad \text{for } i = 1, \ldots, m \]
+which implies that the condition number of both matrices is bounded by \((1 + \e)/(1 - \e)\).
+\end{theorem}
+\begin{proof}
+The matrices \(\mat{R}^{-T}\mat{A}\mat{D}\) and \(\mat{D}\mat{A}^T \mat{R}^{-1}\) are transposes of each other and hence have the same singular values.
+The minimum and maximum singular values of \(\mat{D}\mat{A}^T \mat{R}^{-1}\) are the same as the minimum and maximum values of \( \norm{\mat{D}\mat{A}^T \mat{R}^{-1} \vek{x}}_2^2 / \norm{\vek{x}}_2^2\) over all \(\vek{x} \in \R^n\).
+By \cref{eqn:ose-for-DAT} for \(\vek{z} = \mat{R}^{-1} \vek{x}\) (which holds with probability at least \(1 - \delta\)) and the definition of the QR decomposition
+\[
+  (1-\e) \norm{\mat{D}\mat{A}^T \mat{R}^{-1} \vek{x}}_2^2
+  \leq \norm{\mat{W}\mat{D}\mat{A}^T \mat{R}^{-1}\vek{x}}_2^2
+  = \norm{\mat{Q}\mat{R} \mat{R}^{-1}\vek{x}}_2^2
+  = \norm{\mat{Q}\vek{x}}_2^2
+  = \norm{\vek{x}}_2^2
+\]
+and similarly \((1+\e)\norm{\mat{D}\mat{A}^T \mat{R}^{-1} \vek{x}}_2^2 \geq \norm{\vek{x}}_2^2\).
+Therefore
+\[ \frac{1}{1 + \e} \leq \frac{\norm{\mat{D}\mat{A}^T \mat{R}^{-1} \vek{x}}_2^2}{\norm{\vek{x}}_2^2} \leq \frac{1}{1 - \e} \]
+which proves the claim.
+\end{proof}
