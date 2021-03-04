@@ -14,48 +14,68 @@ Important concepts to cover
 
 Based on \cite{Avron-FasterRandomizedInfeasibleIPMs} we will use sketching to determine a preconditioner for \(\mat{A} \mat{D}^2 \mat{A}^T\) and iterative methods solve the normal equation. Furthermore, the solution gained by directly evaluating \cref{s-from-normal,x-from-normal} is perturbed to ensure any inaccuracies in \(\Delta\vek{y}\) only affect the last line of \cref{newton-system}.
 
-%TODO Rename \vek{x} to \vek{s} because it is in the set Ss
+The following introduction to sketching is based on \cite{Woodruff-Sketching}.
 
-\begin{definition} \label{def:oblivious-subspace-embedding}
-A probability distribution over matrices \(\mat{W} \in \R^{w \times n}\) is a \((d, \e, \delta)\)-oblivious subspace embedding (OSE) if, for any \(d\)-dimensional subspace \(S \subset \R^n\) 
-\[ \Probability \Paren{ \max_{x \in S, \norm{x} = 1} \Abs{ \norm{\mat{W}\vek{x}}^2 - 1} > \e } < \delta. \]
-If \(\Abs{ \norm{\mat{W}\vek{x}}^2 - 1} \leq \e\) for all \(\vek{x} \in S\) with \(\norm{\vek{x}} = 1\) then \(\mat{W}\) satisfies the OSE property for \(S\).
+\begin{definition} \label{def:subspace-embedding}
+A \uline{\((1 \pm \e)\) \(\ell_2\)-subspace embedding} for the column space of a matrix \(\mat{B} \in \R^{n \times d}\) is a matrix \(\mat{W} \in \R^{w \times n}\) such that
+\[ (1-\e) \norm{\mat{B}\vek{x}}_2^2 \leq \norm{\mat{W}\mat{B}\vek{x}}_2^2 \leq (1+\e)\norm{\mat{B}\vek{x}}_2^2 \]
+for all \(\vek{x} \in \R^d\).
 \end{definition}
+Note that this definition does not depend on a particular basis for the representation of the column space of \(\mat{B}\).
+Nonetheless, we will often refer to \(\mat{W}\) as a \((1\pm\e)\)-subspace embedding of \(\mat{B}\).
 
 \begin{theorem}
-The OSE property can be equivalently stated as
-\[ (1-\e) \Norm{\vek{x}}_2^2 \leq \Norm{\mat{W}\vek{x}}_2^2 \leq (1+\e) \Norm{\vek{x}}_2^2 \quad \forall \vek{x} \in S. \label{eqn:ose-inequality} \]
-
-If the subspace is written as \(S = \set{ \mat{U}\vek{z} | \vek{z} \in \R^d }\) for some matrix \(\mat{U} \in \R^{n \times d}\) with orthonormal columns, then the OSE property for \(S\) is equivalent to
-\[ \Norm{(\mat{W}\mat{U})^T (\mat{W} \mat{U}) - \mat{U}^T \mat{U}}_2 \leq \e \] 
+Assume that \(\mat{B}\) has full column rank and let \(\mathcal{S} = \set{ \mat{B}\vek{x} | \vek{x} \in \R^d } = \set{ \mat{U}\vek{x} | \vek{x} \in \R^d }\) for some matrix \(\mat{U} \in \R^{n \times d}\) with orthonormal columns.
+Then the following statements are equivalent
+\begin{enumerate}
+  \item \(\mat{W}\) is a \((1\pm\e)\) \(\ell_2\)-subspace embedding for the column space of \(\mat{B}\)
+  \item \((1-\e) \norm{\mat{B}\vek{x}}_2^2 \leq \norm{\mat{W}\mat{B}\vek{x}}_2^2 \leq (1+\e)\norm{\mat{B}\vek{x}}_2^2\) for all \(\vek{x} \in \R^d\)
+  \item \(\abs{\norm{\mat{W}\vek{s}}_2^2 - 1} \leq \e\) for all \(\vek{s} \in \mathcal{S}\) with \(\norm{\vek{s}}_2 = 1\)
+  \item \(\norm{\mat{U}^T \mat{W}^T \mat{W} \mat{U} - \mat{I}_d}_2 \leq \e\)
+\end{enumerate}
 \end{theorem}
 \begin{proof}
-First, we note that the OSE property is equivalent to \((1-\e) \leq \norm{\mat{W}\mat{x}}^2 \leq (1+\e)\) for all \(\vek{x} \in S\) with \(\norm{\vek{x}} = 1\).
-This implies that the OSE property is equivalent to
-\[     (1-\e) \leq \Norm{\mat{W}\frac{\vek{x}}{\norm{\vek{x}}}}^2 \leq (1+\e)
-  \iff (1-\e)\norm{\vek{x}}^2 \leq \Norm{\mat{W}\vek{x}}^2 \leq (1+\e)\norm{\vek{x}}
-\]
-for all \(\vek{x} \in S\).
+The first equivalence holds by definition. Statement 3 is equivalent to
+\[ 1-\e \leq \norm{\mat{W}\mat{s}}_2^2 \leq 1+\e \quad \forall \vek{s} \in \mathcal{S} \text{ with } \norm{\vek{s}}_2 = 1. \]
+Choosing \(\vek{s} = \norm{\mat{B}\vek{x}}_2^{-1} \mat{B}\vek{x}\) and multiplying both sides by \(\norm{\mat{B}\vek{x}}_2^2\) we obtain that it is equivalent to statement 2.
 
-Next, consider that the 2-norm of a matrix is its largest singular value and that the singular values of a symmetric matrix are the absolute values of its eigenvalues. 
-Because the maximum and minimum eigenvalues are the maximum and minimum values of the Rayleigh quotient we get
+%TODO Citation for linear algebra
+
+Note that the matrix \(\mat{U}^T \mat{W}^T \mat{W} \mat{U} - \mat{I}_d\) is real and symmetric and therefore has real eigenvalues.
+Moreover, its singular values are the absolute values of its eigenvalues.
+The range of eigenvalues of a symmetric matrix \(\mat{A}\) is given by \(\set{ \vek{e}^T \mat{A} \vek{e} | \vek{e} \in \R^d, \norm{\vek{e}}_2 = 1 }\) [Citation] so
 \begin{align*}
-  \Norm{(\mat{W}\mat{U})^T (\mat{W} \mat{U}) - \mat{U}^T \mat{U}}_2
-  &= \max_{\vek{z} \in \R^d, \norm{\vek{z}}=1} \Abs{\vek{z}^T \Paren{(\mat{W}\mat{U})^T (\mat{W} \mat{U}) - \mat{U}^T \mat{U}} \vek{z}} \\
-  &= \max_{\vek{z} \in \R^d, \norm{\vek{z}}=1} \Abs{(\mat{U}\vek{z})^T \Paren{\mat{W}^T \mat{W} - \mat{I}} \mat{U}\vek{z}} \\
-  &= \max_{\vek{x} \in S, \norm{\vek{x}}=1} \Abs{\vek{x}^T \mat{W}^T \mat{W} \vek{x} - \vek{x}^T \vek{x}} \\
-  &= \max_{\vek{x} \in \R^d, \norm{\vek{x}}=1} \Abs{\norm{\mat{W}\vek{x}}^2 - \norm{\vek{x}}^2} \\
-  &= \max_{\vek{x} \in \R^d, \norm{\vek{x}}=1} \Abs{\norm{\mat{W}\vek{x}}^2 - 1}
+  \norm{\mat{U}^T \mat{W}^T \mat{W} \mat{U} - \mat{I}_d}_2
+  &= \sigma_1(\mat{U}^T \mat{W}^T \mat{W} \mat{U} - \mat{I}_d) \\
+  &= \max_{\vek{e} \in \R^d, \norm{\vek{e}}_2 = 1} \Abs{\vek{e}^T \Paren{\mat{U}^T \mat{W}^T \mat{W} \mat{U} - \mat{I}_d} \vek{e} } \\
+  &= \max_{\vek{e} \in \R^d, \norm{\vek{e}}_2 = 1} \Abs{(\mat{U}\vek{e})^T \mat{W}^T \mat{W} (\mat{U}\vek{e}) - \vek{e}^T \vek{e}} \\
+  &= \max_{\vek{s} \in \mathcal{S}, \norm{\vek{s}}_2 = 1} \Abs{\vek{s}^T \mat{W}^T \mat{W} \vek{s} - 1} \\
+  &= \max_{\vek{s} \in \mathcal{S}, \norm{\vek{s}}_2 = 1} \Abs{\norm{\mat{W}\vek{s}}_2^2 - 1}.
 \end{align*}
-so \(\norm{(\mat{W}\mat{U})^T (\mat{W}\mat{U}) - \mat{U}^T \mat{U}} \leq \e\) if and only if \(\mat{W}\) satisfies the OSE property.
+Using \(\norm{\mat{U}\vek{e}}_2 = \norm{\vek{e}}_2\), this proves the equivalence of statements 3 and 4.
 \end{proof}
 
-These OSEs not only exist there are even ensembles of sparse matrices that form such an OSE.
+\begin{definition} \label{def:oblivious-subspace-embedding}
+Let \(w, n, d \in \N\) and \(\e, \delta \in (0, 1)\) be given.
+A probability distribution \(\Pi\) over matrices \(\mat{W} \in \R^{w \times n}\) is an \uline{oblivious \(\ell_2\)-subspace embedding} (OSE) if, for any matrix \(\mat{B} \in \R^{n \times d}\) a matrix \(\mat{W}\) drawn from \(\Pi\) is a \((1\pm\e)\) \(\ell_2\)-subspace embedding with probability at least \(1 - \delta\).
+\end{definition}
+
+Of course, these OSEs do not exist for all values of \(w\), \(n\) and \(d\).
+In particular, we need \(w \geq d\) because otherwise some elements in the \(d\)-dimensional column space of \(\mat{B}\) will be in the nullspace of \(\mat{W}\).
+If \(w \geq n\) we can trivially choose \(\mat{W}\) to have ones on the diagonal and zeros everywhere else, so we are interested in OSEs such that \(d \leq w \leq n\).
+These reduce the size of our matrix \(\mat{B}\) while retaining most of the information in some sense.
+We expect best results for \(d \ll n\) where we can hope for a large reduction in the matrix size.
+
+A classic result in sketching is that matrices with Gaussian entries form an OSE if \(w\) is chosen appropriately depending on \(n\), \(d\), \(\e\) and \(\delta\), namely \(w = O((d + 1/\delta) \e^{-2})\) works.
+%TODO Provide appropriate citation here and extend to distribution Johnson-Lindenstrauss
+
+A matrix \(\mat{W}\) with Gaussian entries is dense so computing the matrix product \(\mat{W}\mat{B}\) takes \(O(w n d)\) operations in general.
+If the matrix \(\mat{B}\) is sparse we need an OSE where all sampled matrices are sparse to take advantage of that.
 The following sparse OSE result is taken from \cite{Cohen-NearlyTightObliviousSubspaceEmbeddings}.
 \Textcite{Avron-FasterRandomizedInfeasibleIPMs} use the sketching result from \cite{Cohen-OptimalApproximateMatrixProduct} but for simplicity we replaced it by a simpler one giving the same complexity guarantees in the end(?).
 
 \begin{definition}
-A \emph{sparse embedding matrix} \(\mat{W} \in \R^{w \times n}\) is constructed in the following way:
+A \uline{sparse embedding matrix} \(\mat{W} \in \R^{w \times n}\) is constructed in the following way:
 For each column \(s\) entries are sampled randomly without replacement and for each such entry its value is randomly drawn from \(\{ - \frac{1}{\sqrt{s}}, \frac{1}{\sqrt{s}} \}\).
 All other entries of \(\mat{W}\) are set to zero.
 This defines a probability distribution over \(\R^{w \times n}\) where each sampled matrix has exactly \(s \cdot n\) nonzero entries.
@@ -64,7 +84,7 @@ This defines a probability distribution over \(\R^{w \times n}\) where each samp
 \begin{theorem}[Theorem 4.2 in \cite{Cohen-NearlyTightObliviousSubspaceEmbeddings}]  \label{thm:sparse-ose}
 For any \(B > 2, \ \delta < 1/2, \ \e < 1/2\) there are
 \[ w = O \Paren{\frac{B d \log(d/\delta)}{\e^2}} \quad \text{and} \quad s = O \Paren{\frac{\log_B(d/\delta)}{\e}}\]
-such that the sparse embedding matrices form a \((d, \e, \delta)\)-OSE.
+such that the sparse embedding matrices form an oblivious \(\ell_2\)-subspace embedding.
 \end{theorem}
 
 Such an ensemble of sketching matrices is used to construct a preconditioner for \(\mat{A} \mat{D}^2 \mat{A}^T\) in the form of a matrix \(\mat{P} \in \R^{m \times m}\) such that
