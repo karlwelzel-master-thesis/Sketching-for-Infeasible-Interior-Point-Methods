@@ -83,7 +83,7 @@ The total derivative of \(F\) is given by
 \end{equation}
 where \(\mat{X} = \diag(\vek{x})\) and \(\mat{S} = \diag(\vek{s})\).
 The actual Newton system determining \((\Delta\vek{x}, \Delta\vek{y}, \Delta\vek{s})\) is slightly modified by adding a centering term \(\sigma \mu \vek{1}\) where \(\sigma \in [0,1]\) which allows for larger steps inside the neighbourhood:
-\begin{equation} \label{newton-system}
+\begin{equation} \label{eqn:newton-system}
   \underbrace{
   \begin{pmatrix}
     \mat{A} & 0         & 0       \\
@@ -100,7 +100,7 @@ The actual Newton system determining \((\Delta\vek{x}, \Delta\vek{y}, \Delta\vek
 \end{equation}
 
 This linear system of equations can be rewritten as
-\begin{subequations} \label{augmented-system}
+\begin{subequations} \label{eqn:augmented-system}
   \begin{align}
     \begin{pmatrix}
       \mat{A}              & 0 \\
@@ -120,11 +120,50 @@ This linear system of equations can be rewritten as
 \end{subequations}
 which is called the \emph{augmented system}.
 Eliminating \(\Delta\vek{x}\) from the first equation and using \(\mat{D} = \mat{S}^{-1/2} \mat{X}^{1/2}\) we get
-\begin{subequations}
+\begin{subequations} \label{eqn:normal-equation-system}
   \begin{align}
-    \mat{A} \mat{D}^2 \mat{A}^T \Delta\vek{y} &= -\vek{r}_p + \mat{A} ( -\mat{S}^{-1} \mat{X} \vek{r}_d + \vek{x} - \sigma \mu \mat{S}^{-1} \vek{1} ) \eqqcolon \vek{p} \label{normal-equation} \\
-    \Delta\vek{s} &= -\vek{r}_d - \mat{A}^T \Delta\vek{y} \label{s-from-normal} \\
-    \Delta\vek{x} &= -x + \sigma \mu \mat{S}^{-1} \vek{1} - \mat{S}^{-1} \mat{X} \Delta\vek{s} \label{x-from-normal}
+    \mat{A} \mat{D}^2 \mat{A}^T \Delta\vek{y} &= -\vek{r}_p + \mat{A} ( -\mat{S}^{-1} \mat{X} \vek{r}_d + \vek{x} - \sigma \mu \mat{S}^{-1} \vek{1} ) \eqqcolon \vek{p} \label{eqn:normal-equation} \\
+    \Delta\vek{s} &= -\vek{r}_d - \mat{A}^T \Delta\vek{y} \label{eqn:s-from-normal} \\
+    \Delta\vek{x} &= -x + \sigma \mu \mat{S}^{-1} \vek{1} - \mat{S}^{-1} \mat{X} \Delta\vek{s} \label{eqn:x-from-normal}
   \end{align}
 \end{subequations}
 The first component is called the \emph{normal equation} because it can be written as the normal equation of a least squares system if \(\vek{r}_p = \vek{0}\).
+
+We will construct a preconditioner for \(\mat{A} \mat{D}^2 \mat{A}^T\) in the form of a nonsingular matrix \(\mat{P} \in \R^{m \times m}\) such that
+\( \mat{P}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{P}^{-1} \approx \mat{I}_m \).
+Instead of solving the normal equation we then solve
+\begin{equation} \label{eqn:preconditioned-system}
+ \mat{P}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{P}^{-1} \vek{q} = \mat{P}^{-T} \vek{p}
+\end{equation}
+using an efficient iterative solver and \(\Delta\vek{y} = \mat{P}^{-1} \vek{q}\).
+Note that applying the preconditioner from the left and from the right in this form ensures that the matrix stays positive definite and we can apply the CG algorithm to this linear system.
+
+Using an iterative method to solve \cref{eqn:preconditioned-system} introduces an error term \(\vek{f}\). Let \(\Delta\tilde{\vek{x}}, \Delta\tilde{\vek{y}}, \Delta\tilde{\vek{s}}\) be calculated using \cref{eqn:s-from-normal,eqn:x-from-normal} given that \(\Delta\tilde{\vek{y}}\) solves
+\begin{equation}
+ \mat{P}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \Delta\tilde{\vek{y}} = \mat{P}^{-T} \vek{p} + \vek{f} \iff \mat{A} \mat{D}^2 \mat{A}^T \Delta\tilde{\vek{y}} = \vek{p} + \mat{P}^{T} \vek{f}
+\end{equation}
+instead of \cref{eqn:normal-equation}. In this case
+\begin{equation}
+  \begin{pmatrix}
+    \mat{A} & 0         & 0       \\
+    0       & \mat{A}^T & \mat{I} \\
+    \mat{S} & 0         & \mat{X} \\
+  \end{pmatrix}
+  \begin{pmatrix} \Delta\tilde{\vek{x}} \\ \Delta\tilde{\vek{y}} \\ \Delta\tilde{\vek{s}} \end{pmatrix}
+  =
+  \begin{pmatrix} -\vek{r}_p \\ -\vek{r}_d \\ -\vek{x} \circ \vek{s} + \sigma \mu \vek{1} \end{pmatrix}
+  +
+  \begin{pmatrix} \mat{P}^T \vek{f} \\ 0 \\ 0 \end{pmatrix}
+\end{equation}
+because calculating \(\Delta\tilde{\vek{x}}, \Delta\tilde{\vek{y}}, \Delta\tilde{\vek{s}}\) in this way is equivalent to using \cref{eqn:normal-equation-system} with \(\vek{b} + \mat{P}^T \vek{f}\) instead of \(\vek{b}\).
+
+For our convergence proofs to work we need that the error in calculating the Newton direction only affects the last line of \cref{eqn:newton-system}.
+This can be achieved by adding a perturbation vector \(\mat{S}^{-1}\vek{v} \in \R^n\) to \(\Delta\tilde{\vek{x}}\) which satisfies \(\mat{A}\mat{S}^{-1}\vek{v} = \mat{P}^T \vek{f}\). %TODO Check why S^{-1} v instead of just v. Probably convergence proof
+The new instructions to get an approximate solution to the Newton system are now given by
+\begin{subequations}
+  \begin{align}
+    \mat{A} \mat{D}^2 \mat{A}^T \Delta\hat{\vek{y}} &= \vek{p} + \mat{P}^{T} \vek{f} \\
+    \Delta\hat{\vek{s}} &= -\vek{r}_d - \mat{A}^T \Delta\hat{\vek{y}} \\
+    \Delta\hat{\vek{x}} &= -x + \sigma \mu \mat{S}^{-1} \vek{1} - \mat{S}^{-1} \mat{X} \Delta\hat{\vek{s}} + \mat{S}^{-1} \vek{v}
+  \end{align}
+\end{subequations}

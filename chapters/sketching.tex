@@ -12,7 +12,7 @@ Important concepts to cover
 
 \hrule
 
-Based on \cite{Avron-FasterRandomizedInfeasibleIPMs} we will use sketching to determine a preconditioner for \(\mat{A} \mat{D}^2 \mat{A}^T\) and iterative methods solve the normal equation. Furthermore, the solution gained by directly evaluating \cref{s-from-normal,x-from-normal} is perturbed to ensure any inaccuracies in \(\Delta\vek{y}\) only affect the last line of \cref{newton-system}.
+Based on \cite{Avron-FasterRandomizedInfeasibleIPMs} we will use sketching to determine a preconditioner for \(\mat{A} \mat{D}^2 \mat{A}^T\) and iterative methods solve the normal equation. Furthermore, the solution gained by directly evaluating \cref{eqn:s-from-normal,eqn:x-from-normal} is perturbed to ensure any inaccuracies in \(\Delta\vek{y}\) only affect the last line of \cref{newton-system}.
 
 The following introduction to sketching is based on \cite{Woodruff-Sketching}.
 
@@ -100,7 +100,7 @@ Such an ensemble of sketching matrices is used to construct a preconditioner for
 \( \mat{P}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{P}^{-1} \approx \mat{I}_m \).
 Instead of solving the normal equation we then solve
 \( \mat{P}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{P}^{-1} \vek{v} = \mat{P}^{-T} \vek{p} \)
-using an efficient iterative solver and \(\Delta\vek{y} = \mat{P}^{-T} \vek{v}\).
+using an efficient iterative solver and \(\Delta\vek{y} = \mat{P}^{-1} \vek{q}\).
 Note that applying the preconditioner from the left and from the right in this form ensures that the matrix stays positive definite and we can apply the CG algorithm to this linear system.
 
 Inspired by \textcite{Avron-FasterRandomizedInfeasibleIPMs} we use a QR decomposition of the sketched matrix \(\mat{D}\mat{A}^T\).
@@ -136,8 +136,8 @@ and we are done.
 
 \begin{theorem} \label{thm:cg-residual-bound}
 Suppose \(\mat{R}\) is defined as in \cref{thm:condition-number-bound}.
-Let \(\vek{v}^j\) be the iterates when solving \( \mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{R}^{-1} \vek{v} = \mat{R}^{-T} \vek{p} \) with the CG algorithm and let \(\vek{f}^j\) be the residuals defined by
-\( \vek{f}^j = \mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{R}^{-1} \vek{v}^j - \mat{R}^{-T} \vek{p} \).
+Let \(\vek{q}^j\) be the iterates when solving \( \mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{R}^{-1} \vek{q} = \mat{R}^{-T} \vek{p} \) with the CG algorithm and let \(\vek{f}^j\) be the residuals defined by
+\( \vek{f}^j = \mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{R}^{-1} \vek{q}^j - \mat{R}^{-T} \vek{p} \).
 Then for \(\e < 1/2\) the \(\ell_2\)-norm of the residuals converges at least linearly to zero
 \[ \norm{\vek{f}^{j+1}}_2 \leq \Paren{\frac{\e}{1-\e}} \norm{ \vek{f}^j }_2 \quad \forall j = 1, 2, \ldots \]
 \end{theorem}
