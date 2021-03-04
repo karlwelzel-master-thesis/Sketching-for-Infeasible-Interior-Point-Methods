@@ -164,6 +164,22 @@ The new instructions to get an approximate solution to the Newton system are now
   \begin{align}
     \mat{A} \mat{D}^2 \mat{A}^T \Delta\hat{\vek{y}} &= \vek{p} + \mat{P}^{T} \vek{f} \\
     \Delta\hat{\vek{s}} &= -\vek{r}_d - \mat{A}^T \Delta\hat{\vek{y}} \\
-    \Delta\hat{\vek{x}} &= -x + \sigma \mu \mat{S}^{-1} \vek{1} - \mat{S}^{-1} \mat{X} \Delta\hat{\vek{s}} + \mat{S}^{-1} \vek{v}
+    \Delta\hat{\vek{x}} &= -x + \sigma \mu \mat{S}^{-1} \vek{1} - \mat{S}^{-1} \mat{X} \Delta\hat{\vek{s}} - \mat{S}^{-1} \vek{v}
   \end{align}
 \end{subequations}
+This approximate solution solves the following system
+\begin{equation}
+  \begin{pmatrix}
+    \mat{A} & 0         & 0       \\
+    0       & \mat{A}^T & \mat{I} \\
+    \mat{S} & 0         & \mat{X} \\
+  \end{pmatrix}
+  \begin{pmatrix} \Delta\hat{\vek{x}} \\ \Delta\hat{\vek{y}} \\ \Delta\hat{\vek{s}} \end{pmatrix}
+  =
+  \begin{pmatrix} -\vek{r}_p \\ -\vek{r}_d \\ -\vek{x} \circ \vek{s} + \sigma \mu \vek{1} \end{pmatrix}
+  +
+  \begin{pmatrix} 0 \\ 0 \\ \vek{v} \end{pmatrix}
+\end{equation}
+so we successfully shifted the error term from the first to the third component.
+
+To control the size of the error \(\norm{\vek{v}}_2\) in terms of the error \(\norm{\vek{f}}_2\) we need to design a clever way of choosing \(\vek{v}\) which will be done in the next chapter.
