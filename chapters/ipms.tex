@@ -1,6 +1,21 @@
-\chapter{Notation}
+\chapter{Interior-Point Methods for Linear Programming}
 
-Vectors are denoted in bold \(\vek{x}\), matrices with bold uppercase letters \(\mat{A}\). For naming primal, dual and slack variables as well as the choice of the neighbourhood we follow \cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs}.
+Important concepts to cover
+\begin{enumerate}
+ \item Notation (A, b, c, x, y, s, residuals, mu)
+ \item Optimality conditions
+ \item Newton system: Complete system (?), augmented system, normal equation
+ \item Focus on infeasible, inexact, long-step IPMs
+ \begin{enumerate}
+   \item Central path
+   \item \(\mathcal{N}_{-\infty}\) neighbourhood
+   \item Error in the normal equation translates to error in \(\mat{A}\Delta\vek{x} = \vek{r}_p\)
+ \end{enumerate}
+\end{enumerate}
+
+\hrule
+
+For naming primal, dual and slack variables as well as the choice of the neighbourhood we follow \cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs}.
 
 The standard form linear programming (LP) problem is given by
 \begin{equation}

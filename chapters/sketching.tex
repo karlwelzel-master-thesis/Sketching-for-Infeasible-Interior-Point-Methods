@@ -1,5 +1,17 @@
 \chapter{Sketching}
 
+Important concepts to cover
+\begin{enumerate}
+  \item Goal of finding a preconditioner
+  \item Definition of a \((1\pm\e)\)-subspace embedding
+  \item Definition of an oblivious subspace embedding
+  \item Equivalent statements for subspace embeddings
+  \item State sparse sketching result
+  \item Apply sparse sketching result to \((\mat{A}\mat{D})^T\) and show that \(\mat{R}^{-1}\) is a good two-sided preconditioner
+\end{enumerate}
+
+\hrule
+
 Based on \cite{Avron-FasterRandomizedInfeasibleIPMs} we will use sketching to determine a preconditioner for \(\mat{A} \mat{D}^2 \mat{A}^T\) and iterative methods solve the normal equation. Furthermore, the solution gained by directly evaluating \cref{s-from-normal,x-from-normal} is perturbed to ensure any inaccuracies in \(\Delta\vek{y}\) only affect the last line of \cref{newton-system}.
 
 %TODO Rename \vek{x} to \vek{s} because it is in the set Ss
