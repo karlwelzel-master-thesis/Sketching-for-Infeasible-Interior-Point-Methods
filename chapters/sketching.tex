@@ -17,7 +17,7 @@ Based on \cite{Avron-FasterRandomizedInfeasibleIPMs} we will use sketching to de
 The following introduction to sketching is based on \cite{Woodruff-Sketching}.
 
 \begin{definition} \label{def:subspace-embedding}
-A \uline{\((1 \pm \e)\) \(\ell_2\)-subspace embedding} for the column space of a matrix \(\mat{B} \in \R^{n \times d}\) is a matrix \(\mat{W} \in \R^{w \times n}\) such that
+Let \(\e \in (0, 1)\). A \uline{\((1 \pm \e)\) \(\ell_2\)-subspace embedding} for the column space of a matrix \(\mat{B} \in \R^{n \times d}\) is a matrix \(\mat{W} \in \R^{w \times n}\) such that
 \[ (1-\e) \norm{\mat{B}\vek{x}}_2^2 \leq \norm{\mat{W}\mat{B}\vek{x}}_2^2 \leq (1+\e)\norm{\mat{B}\vek{x}}_2^2 \]
 for all \(\vek{x} \in \R^d\).
 \end{definition}
@@ -87,40 +87,44 @@ For any \(B > 2, \ \delta < 1/2, \ \e < 1/2\) there are
 such that the sparse embedding matrices form an oblivious \(\ell_2\)-subspace embedding.
 \end{theorem}
 
-Such an ensemble of sketching matrices is used to construct a preconditioner for \(\mat{A} \mat{D}^2 \mat{A}^T\) in the form of a matrix \(\mat{P} \in \R^{m \times m}\) such that
-\( \mat{P}^{-1} \mat{A} \mat{D}^2 \mat{A}^T \mat{P}^{-T} \approx \mat{I}_m \).
+\begin{corollary}
+For any \(\delta < 1/2, \ \e < 1/2\) there are
+\[ w = O \Paren{\frac{d \log(d/\delta)}{\e^2}} \quad \text{and} \quad s = O \Paren{\frac{\log(d/\delta)}{\e}}\]
+such that the sparse embedding matrices form an oblivious \(\ell_2\)-subspace embedding.
+\end{corollary}
+\begin{proof}
+Fix some \(B > 2\).
+\end{proof}
+
+Such an ensemble of sketching matrices is used to construct a preconditioner for \(\mat{A} \mat{D}^2 \mat{A}^T\) in the form of a nonsingular matrix \(\mat{P} \in \R^{m \times m}\) such that
+\( \mat{P}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{P}^{-1} \approx \mat{I}_m \).
 Instead of solving the normal equation we then solve
-\( \mat{P}^{-1} \mat{A} \mat{D}^2 \mat{A}^T \mat{P}^{-T} \vek{v} = \mat{P}^{-1} \vek{p} \)
+\( \mat{P}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{P}^{-1} \vek{v} = \mat{P}^{-T} \vek{p} \)
 using an efficient iterative solver and \(\Delta\vek{y} = \mat{P}^{-T} \vek{v}\).
+Note that applying the preconditioner from the left and from the right in this form ensures that the matrix stays positive definite and we can apply the CG method to this linear system.
 
 Inspired by \textcite{Avron-FasterRandomizedInfeasibleIPMs} we use a QR decomposition of the sketched matrix \(\mat{D}\mat{A}^T\).
-The set \(S = \set{ \mat{D}\mat{A}^T \vek{z} | \vek{z} \in \R^m}\) is a \(m\)-dimensional subspace of \(\R^n\) assuming that \(\mat{A}\) has full row rank.
-By \cref{thm:sparse-ose} there are
-\[ w = O \Paren{ \frac{m \log(m/\delta)}{\e^2} } \quad \text{and} \quad s = O \Paren{ \frac{\log(m/\delta)}{\e} }\]
-(using a fixed \(B > 2\)) such that \(\mat{W} \in \R^{w \times n}\) drawn from the corresponding probability distribution of sparse embedding matrices satisfies
-\begin{equation}
-  (1-\e) \norm{\mat{D}\mat{A}^T \vek{z}}_2^2 \leq \norm{\mat{W}\mat{D}\mat{A}^T \vek{z}}_2^2 \leq (1+\e)\norm{\mat{D}\mat{A}^T \vek{z}}_2^2 \quad \forall \vek{z} \in \R^m \label{eqn:ose-for-DAT}
-\end{equation}
-with high probability \(1 - \delta\).
+We choose \(\mat{P} = \mat{R}\) where \(\mat{Q}\mat{R}\) is the QR decomposition of \(\mat{W}\mat{D}\mat{A}^T\).
+The following theorem shows that this preconditioner leads to bounds on the condition number of \(\mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{R}^{-1}\) which can be used to bound the number of CG iterations needed to reach a certain error estimate.
 
 \begin{theorem}
-Let \(\mat{W} \in \R^{w \times n}\) be a sparse embedding matrix as above and \(\mat{Q}\mat{R}\) the QR decomposition of \(\mat{W}\mat{D}\mat{A}^T\) with \(\mat{Q} \in \R^{w \times m}\) and \(\mat{R} \in \R^{m \times m}\). With probability at least \(1 - \delta\) the singular values of \(\mat{R}^{-T}\mat{A}\mat{D}\) and \(\mat{D}\mat{A}^T \mat{R}^{-1}\) are bounded by
-\[ \frac{1}{1 + \e} \leq \sigma_i(\mat{R}^{-T}\mat{A}\mat{D}) = \sigma_i(\mat{D}\mat{A}^T \mat{R}^{-1}) \leq \frac{1}{1 - \e} \quad \text{for } i = 1, \ldots, m \]
-which implies that the condition number of both matrices is bounded by \((1 + \e)/(1 - \e)\).
+Let \(\mat{W} \in \R^{w \times n}\) be a \((1 \pm \e)\) \(\ell_2\)-subspace embedding of \(\mat{D}\mat{A}^T\) and \(\mat{Q}\mat{R} = \mat{W}\mat{D}\mat{A}^T\) the QR decomposition of the sketched matrix with \(\mat{Q} \in \R^{w \times m}\) and \(\mat{R} \in \R^{m \times m}\). Then the singular values of \(\mat{R}^{-T}\mat{A}\mat{D}\) and \(\mat{D}\mat{A}^T \mat{R}^{-1}\) are bounded by
+\[ \frac{1}{1 + \e} \leq \sigma_i^2(\mat{R}^{-T}\mat{A}\mat{D}) = \sigma_i^2(\mat{D}\mat{A}^T \mat{R}^{-1}) \leq \frac{1}{1 - \e} \quad \text{for } i = 1, \ldots, m \]
+which implies that the condition number of their product \(\mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{R}^{-1}\) is bounded by \((1+\e) / (1-\e)\).
 \end{theorem}
 \begin{proof}
 The matrices \(\mat{R}^{-T}\mat{A}\mat{D}\) and \(\mat{D}\mat{A}^T \mat{R}^{-1}\) are transposes of each other and hence have the same singular values.
-The minimum and maximum singular values of \(\mat{D}\mat{A}^T \mat{R}^{-1}\) are the same as the minimum and maximum values of \( \norm{\mat{D}\mat{A}^T \mat{R}^{-1} \vek{x}}_2^2 / \norm{\vek{x}}_2^2\) over all \(\vek{x} \in \R^n\).
-By \cref{eqn:ose-for-DAT} for \(\vek{z} = \mat{R}^{-1} \vek{x}\) (which holds with probability at least \(1 - \delta\)) and the definition of the QR decomposition
+The minimum and maximum squared singular values of \(\mat{D}\mat{A}^T \mat{R}^{-1}\) are the same as the minimum and maximum values of \( \norm{\mat{D}\mat{A}^T \mat{R}^{-1} \vek{z}}_2^2 / \norm{\vek{z}}_2^2\) over all \(\vek{x} \in \R^n\).
+By \cref{def:subspace-embedding} applied to \(\vek{x} = \mat{R}^{-1} \vek{z}\) we have
 \[
-  (1-\e) \norm{\mat{D}\mat{A}^T \mat{R}^{-1} \vek{x}}_2^2
-  \leq \norm{\mat{W}\mat{D}\mat{A}^T \mat{R}^{-1}\vek{x}}_2^2
-  = \norm{\mat{Q}\mat{R} \mat{R}^{-1}\vek{x}}_2^2
-  = \norm{\mat{Q}\vek{x}}_2^2
-  = \norm{\vek{x}}_2^2
+  (1-\e) \norm{\mat{D}\mat{A}^T \mat{R}^{-1} \vek{z}}_2^2
+  \leq \norm{\mat{W}\mat{D}\mat{A}^T \mat{R}^{-1}\vek{z}}_2^2
+  = \norm{\mat{Q}\mat{R} \mat{R}^{-1}\vek{z}}_2^2
+  = \norm{\mat{Q}\vek{z}}_2^2
+  = \norm{\vek{z}}_2^2
 \]
-and similarly \((1+\e)\norm{\mat{D}\mat{A}^T \mat{R}^{-1} \vek{x}}_2^2 \geq \norm{\vek{x}}_2^2\).
+for all \(\vek{z} \in \R^m\) and similarly \((1+\e)\norm{\mat{D}\mat{A}^T \mat{R}^{-1} \vek{z}}_2^2 \geq \norm{\vek{z}}_2^2\).
 Therefore
-\[ \frac{1}{1 + \e} \leq \frac{\norm{\mat{D}\mat{A}^T \mat{R}^{-1} \vek{x}}_2^2}{\norm{\vek{x}}_2^2} \leq \frac{1}{1 - \e} \]
+\[ \frac{1}{1 + \e} \leq \frac{\norm{\mat{D}\mat{A}^T \mat{R}^{-1} \vek{z}}_2^2}{\norm{\vek{z}}_2^2} \leq \frac{1}{1 - \e} \]
 which proves the claim.
 \end{proof}
