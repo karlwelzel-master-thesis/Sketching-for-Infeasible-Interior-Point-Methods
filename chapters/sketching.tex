@@ -149,3 +149,50 @@ Using the bound on the condition number from \cref{thm:condition-number-bound} w
    \leq \frac{\frac{1+\e}{1-\e} - 1}{2} = \frac{\e}{1 - \e} < 1 \]
 which proves the claim.
 \end{proof}
+
+After designing the preconditioner as \(\mat{P} = \mat{R}\) we also need to choose the perturbation vector \(\vek{v}\) satisfying \(\mat{A}\mat{S}^{-1}\vek{v} = \mat{R}^T \vek{f}\) where \(\vek{f}\), the error term introduced by the CG algorithm, is given.
+We use the method of \textcite{Avron-FasterRandomizedInfeasibleIPMs} which utilises the sketched matrix \(\mat{W}\mat{D}\mat{A}^T\) for which we have already determined a decomposition:
+
+%TODO Where should the definitions for A, W, Q, R and so on go?
+
+\begin{theorem}
+Suppose \(\mat{Q}\) and \(\mat{R}\) are defined as in \cref{thm:condition-number-bound}. Given a vector \(\vek{f} \in \R^m\) the vector
+\[ \vek{v} = (\mat{S}\mat{X})^{1/2} \mat{W}^T \mat{Q} \vek{f} \]
+satisfies \( \mat{A}\mat{S}^{-1}\vek{v} = \mat{R}^T \vek{f} \) and \(\norm{\vek{v}}_2 \leq n \sqrt{\mu} \norm{\vek{f}}_2\).
+\end{theorem}
+\begin{proof}
+Using the definition of \(\mat{Q}\) and \(\mat{R}\) we obtain
+\begin{align*}
+  \mat{A} \mat{S}^{-1} \vek{v}
+  &= \mat{A} \mat{S}^{-1} (\mat{S}\mat{X})^{1/2} \mat{W}^T \mat{Q} \vek{f} \\
+  &= \mat{A} \mat{D} \mat{W}^T \mat{Q} \vek{f} \\
+  &= (\mat{Q} \mat{R})^T \mat{Q} \vek{f} \\
+  &= \mat{R}^T \mat{Q}^T \mat{Q} \vek{f} = \mat{R}^T \vek{f}
+\end{align*}
+which proves the first part.
+To bound the norm consider
+\[ 
+  \norm{\vek{v}}_2
+  = \norm{(\mat{S}\mat{X})^{1/2} \mat{W}^T \mat{Q} \vek{f}}_2
+  \leq \norm{(\mat{S}\mat{X})^{1/2}}_2 \norm{\mat{W}^T}_2 \norm{\mat{Q} \vek{f}}_2.
+\]
+Now, \(\norm{(\mat{S}\mat{X})^{1/2}}_2 \leq \norm{(\mat{S}\mat{X})^{1/2}}_F = \sqrt{n \mu}\) by definition of \(\mu\) and \(\norm{\mat{Q}\vek{f}}_2 = \norm{\vek{f}}_2\) because \(\mat{Q}\) has orthonormal columns.
+Lastly, we need to bound \(\norm{\mat{W}^T}_2\).
+Note that \(\mat{W}\) is constructed by choosing exactly \(s\) nonzero entries per column and each of these entries is drawn from \(\{-\frac{1}{\sqrt{s}}, \frac{1}{\sqrt{s}}\}\).
+Let \(\mathcal{J}_i\) denote the set of indices of the nonzero entries of column \(i\) in \(\mat{W}\) and let \(\vek{z}_{\mathcal{J}_i} \in \R^s\) denote the restriction of \(\vek{z} \in \R^w\) to these indices.
+Using standard norm inequalities
+\begin{align*}
+  \norm{\mat{W}^T \vek{z}}_2^2 &= \sum_{i=1}^{n} \Paren{ \sum_{j=1}^{w} \mat{W}_{ji} \vek{z}_j }^2 = \sum_{i=1}^{n} \Paren{ \sum_{j \in \mathcal{J}_i} \mat{W}_{ji} \vek{z}_j }^2 \\
+  &\leq \sum_{i=1}^{n} \Paren{ \sum_{j \in \mathcal{J}_i} \abs{\mat{W}_{ji}} \abs{\vek{z}_j} }^2 = \sum_{i=1}^{n} \Paren{ \frac{1}{\sqrt{s}} \norm{\vek{z}_{\mathcal{J}_i}}_1 }^2 \\
+  &\leq \sum_{i=1}^{n} \Paren{ \frac{1}{\sqrt{s}} \sqrt{s} \norm{\vek{z}_{\mathcal{J}_i}}_2 }^2 = \sum_{i=1}^{n} \norm{\vek{z}_{\mathcal{J}_i}}_2^2 \\
+  &\leq n \norm{\vek{z}}_2^2
+\end{align*}
+which implies \(\norm{\mat{W}^T}_2 \leq \sqrt{n}\).
+Combining these results,
+\[ 
+  \norm{\vek{v}}_2
+  \leq \norm{(\mat{S}\mat{X})^{1/2}}_2 \norm{\mat{W}^T}_2 \norm{\mat{Q} \vek{f}}_2
+  \leq \sqrt{n \mu} \sqrt{n} \norm{\vek{f}}_2 = n \sqrt{\mu} \norm{\vek{f}}_2
+\]
+as claimed.
+\end{proof}

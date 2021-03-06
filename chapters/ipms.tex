@@ -136,7 +136,7 @@ Instead of solving the normal equation we then solve
  \mat{P}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{P}^{-1} \vek{q} = \mat{P}^{-T} \vek{p}
 \end{equation}
 using an efficient iterative solver and \(\Delta\vek{y} = \mat{P}^{-1} \vek{q}\).
-Note that applying the preconditioner from the left and from the right in this form ensures that the matrix stays positive definite and we can apply the CG algorithm to this linear system.
+Note that applying the preconditioner from the left and from the right in this form ensures that the matrix stays symmetric positive definite and we can apply the CG algorithm to this linear system.
 
 Using an iterative method to solve \cref{eqn:preconditioned-system} introduces an error term \(\vek{f}\). Let \(\Delta\tilde{\vek{x}}, \Delta\tilde{\vek{y}}, \Delta\tilde{\vek{s}}\) be calculated using \cref{eqn:s-from-normal,eqn:x-from-normal} given that \(\Delta\tilde{\vek{y}}\) solves
 \begin{equation}
