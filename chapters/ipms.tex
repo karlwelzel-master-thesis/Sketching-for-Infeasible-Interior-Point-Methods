@@ -42,7 +42,7 @@ How close a given triple \((\vek{x}, \vek{y}, \vek{s})\) with \(\vek{x}, \vek{s}
 \begin{subequations}
   \begin{align}
     \vek{r}_p &= \vek{r}_p(\vek{x}) = \mat{A}\vek{x} - \vek{b} \\
-    \vek{r}_d &= \vek{r}_d(\vek{y}, \vek{s}) = \mat{A}^T \vek{y} - \vek{c} \\
+    \vek{r}_d &= \vek{r}_d(\vek{y}, \vek{s}) = \mat{A}^T \vek{y} + \vek{s} - \vek{c} \\
     \vek{r}   &= \vek{r}(\vek{x}, \vek{y}, \vek{s}) = (\vek{r}_p, \vek{r}_d) \\
     \mu       &= \mu(\vek{x}, \vek{s}) = \vek{x}^T \vek{s} / n
   \end{align}

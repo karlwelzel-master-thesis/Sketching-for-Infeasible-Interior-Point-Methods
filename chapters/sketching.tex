@@ -18,18 +18,18 @@ The following introduction to sketching is based on \cite{Woodruff-Sketching}.
 
 \begin{definition} \label{def:subspace-embedding}
 Let \(\e \in (0, 1)\). A \uline{\((1 \pm \e)\) \(\ell_2\)-subspace embedding} for the column space of a matrix \(\mat{B} \in \R^{n \times d}\) is a matrix \(\mat{W} \in \R^{w \times n}\) such that
-\[ (1-\e) \norm{\mat{B}\vek{x}}_2^2 \leq \norm{\mat{W}\mat{B}\vek{x}}_2^2 \leq (1+\e)\norm{\mat{B}\vek{x}}_2^2 \]
-for all \(\vek{x} \in \R^d\).
+\[ (1-\e) \norm{\mat{B}\vek{z}}_2^2 \leq \norm{\mat{W}\mat{B}\vek{z}}_2^2 \leq (1+\e)\norm{\mat{B}\vek{z}}_2^2 \]
+for all \(\vek{z} \in \R^d\).
 \end{definition}
 Note that this definition does not depend on a particular basis for the representation of the column space of \(\mat{B}\).
 Nonetheless, we will often refer to \(\mat{W}\) as a \((1\pm\e)\)-subspace embedding of \(\mat{B}\).
 
 \begin{theorem}
-Assume that \(\mat{B}\) has full column rank and let \(\mathcal{S} = \set{ \mat{B}\vek{x} | \vek{x} \in \R^d } = \set{ \mat{U}\vek{x} | \vek{x} \in \R^d }\) for some matrix \(\mat{U} \in \R^{n \times d}\) with orthonormal columns.
+Assume that \(\mat{B}\) has full column rank and let \(\mathcal{S} = \set{ \mat{B}\vek{z} | \vek{z} \in \R^d } = \set{ \mat{U}\vek{z} | \vek{z} \in \R^d }\) for some matrix \(\mat{U} \in \R^{n \times d}\) with orthonormal columns.
 Then the following statements are equivalent
 \begin{enumerate}
   \item \(\mat{W}\) is a \((1\pm\e)\) \(\ell_2\)-subspace embedding for the column space of \(\mat{B}\)
-  \item \((1-\e) \norm{\mat{B}\vek{x}}_2^2 \leq \norm{\mat{W}\mat{B}\vek{x}}_2^2 \leq (1+\e)\norm{\mat{B}\vek{x}}_2^2\) for all \(\vek{x} \in \R^d\)
+  \item \((1-\e) \norm{\mat{B}\vek{z}}_2^2 \leq \norm{\mat{W}\mat{B}\vek{z}}_2^2 \leq (1+\e)\norm{\mat{B}\vek{z}}_2^2\) for all \(\vek{z} \in \R^d\)
   \item \(\abs{\norm{\mat{W}\vek{s}}_2^2 - 1} \leq \e\) for all \(\vek{s} \in \mathcal{S}\) with \(\norm{\vek{s}}_2 = 1\)
   \item \(\norm{\mat{U}^T \mat{W}^T \mat{W} \mat{U} - \mat{I}_d}_2 \leq \e\)
 \end{enumerate}
@@ -37,7 +37,7 @@ Then the following statements are equivalent
 \begin{proof}
 The first equivalence holds by definition. Statement 3 is equivalent to
 \[ 1-\e \leq \norm{\mat{W}\mat{s}}_2^2 \leq 1+\e \quad \forall \vek{s} \in \mathcal{S} \text{ with } \norm{\vek{s}}_2 = 1. \]
-Choosing \(\vek{s} = \norm{\mat{B}\vek{x}}_2^{-1} \mat{B}\vek{x}\) and multiplying both sides by \(\norm{\mat{B}\vek{x}}_2^2\) we obtain that it is equivalent to statement 2.
+Choosing \(\vek{s} = \norm{\mat{B}\vek{z}}_2^{-1} \mat{B}\vek{z}\) and multiplying both sides by \(\norm{\mat{B}\vek{z}}_2^2\) we obtain that it is equivalent to statement 2.
 
 %TODO Citation for linear algebra
 
@@ -87,46 +87,43 @@ For any \(B > 2, \ \delta < 1/2, \ \e < 1/2\) there are
 such that the sparse embedding matrices form an oblivious \(\ell_2\)-subspace embedding.
 \end{theorem}
 
-\begin{corollary}
-For any \(\delta < 1/2, \ \e < 1/2\) there are
-\[ w = O \Paren{\frac{d \log(d/\delta)}{\e^2}} \quad \text{and} \quad s = O \Paren{\frac{\log(d/\delta)}{\e}}\]
-such that the sparse embedding matrices form an oblivious \(\ell_2\)-subspace embedding.
-\end{corollary}
-\begin{proof}
-Fix some \(B > 2\).
-\end{proof}
+For our purposes we will from now on fix some \(B > 2\) and \(\e = 1/3 < 1/2\) and furthermore assume that \(\mat{W} \in \R^{w \times n}\) is a sparse embedding matrix and a \((1\pm\e)\) \(\ell_2\)-subspace embedding of the column space of \(\mat{D}\mat{A}^T \in \R^{n \times m}\).
+From the previous result we get that choosing
+\begin{equation}
+  w = O \Paren{m \log(m/\delta)} \quad \text{and} \quad s = O \Paren{\log(m/\delta)}
+\end{equation}
+suffices to guarantee that the last assumption holds with probability at least \(1 - \delta\).
+After we obtain a bound on the number of IPM iterations we will choose \(\delta\) in such a way that the failure probability over all iterations is low.
+Note that because \(\e < 1\) none of the elements in the column space of \(\mat{D}\mat{A}^T\) can be in the nullspace of \(\mat{W}\) so \(\rank(\mat{W}\mat{D}\mat{A}^T) = m\).
 
-Such an ensemble of sketching matrices is used to construct a preconditioner for \(\mat{A} \mat{D}^2 \mat{A}^T\) in the form of a nonsingular matrix \(\mat{P} \in \R^{m \times m}\) such that
-\( \mat{P}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{P}^{-1} \approx \mat{I}_m \).
-Instead of solving the normal equation we then solve
-\( \mat{P}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{P}^{-1} \vek{v} = \mat{P}^{-T} \vek{p} \)
-using an efficient iterative solver and \(\Delta\vek{y} = \mat{P}^{-1} \vek{q}\).
-Note that applying the preconditioner from the left and from the right in this form ensures that the matrix stays positive definite and we can apply the CG algorithm to this linear system.
-
-Inspired by \textcite{Avron-FasterRandomizedInfeasibleIPMs} we use a QR decomposition of the sketched matrix \(\mat{D}\mat{A}^T\).
-We choose \(\mat{P} = \mat{R}\) where \(\mat{Q}\mat{R}\) is the QR decomposition of \(\mat{W}\mat{D}\mat{A}^T\).
-Assuming that \(\mat{W}\) is a \((1\pm\e)\) \(\ell_2\)-subspace embedding for \(\mat{D}\mat{A}^T\) for some \(\e < 1\) we get that the column space of \(\mat{D}\mat{A}^T\) does not intersect with the nullspace of \(\mat{W}\) so \(\rank(\mat{W}\mat{D}\mat{A}^T) = m\) and the QR decomposition exists.
+Inspired by \textcite{Avron-FasterRandomizedInfeasibleIPMs} we use a decomposition of the sketched matrix \(\mat{D}\mat{A}^T\) to find a preconditioner for the normal equation.
+They constructed the preconditioner from the SVD of \(\mat{W}\mat{D}\mat{A}^T\) but we decided to go with the more practical choice of constructing it using the QR decomposition \(\mat{Q}\mat{R} = \mat{W}\mat{D}\mat{A}^T\).
+Here \(\mat{R} \in \R^{m \times m}\) is upper triangular and \(\mat{Q} \in \R^{w \times m}\) has orthonormal columns.
+The preconditioned system has the form
+\begin{equation} \label{eqn:preconditioned-system2}
+ \mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{R}^{-1} \vek{q} = \mat{R}^{-T} \vek{p}
+\end{equation}
 The following theorem shows that this preconditioner leads to bounds on the condition number of \(\mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{R}^{-1}\) which can be used to bound the number of CG iterations needed to reach a certain error estimate.
 
 \begin{theorem} \label{thm:condition-number-bound}
-Let \(\mat{W} \in \R^{w \times n}\) be a \((1 \pm \e)\) \(\ell_2\)-subspace embedding of \(\mat{D}\mat{A}^T\) and \(\mat{Q}\mat{R} = \mat{W}\mat{D}\mat{A}^T\) the QR decomposition of the sketched matrix with \(\mat{Q} \in \R^{w \times m}\) and \(\mat{R} \in \R^{m \times m}\). Then the singular values of \(\mat{R}^{-T}\mat{A}\mat{D}\) and \(\mat{D}\mat{A}^T \mat{R}^{-1}\) are bounded by
-\[ \frac{1}{1 + \e} \leq \sigma_i^2(\mat{R}^{-T}\mat{A}\mat{D}) = \sigma_i^2(\mat{D}\mat{A}^T \mat{R}^{-1}) \leq \frac{1}{1 - \e} \quad \text{for } i = 1, \ldots, m \]
-which implies that the condition number of their product \(\mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{R}^{-1}\) is bounded by \((1+\e) / (1-\e)\).
+The singular values of \(\mat{R}^{-T}\mat{A}\mat{D}\) and \(\mat{D}\mat{A}^T \mat{R}^{-1}\) are bounded by
+\[ \frac{3}{4} = \frac{1}{1 + \e} \leq \sigma_i^2(\mat{R}^{-T}\mat{A}\mat{D}) = \sigma_i^2(\mat{D}\mat{A}^T \mat{R}^{-1}) \leq \frac{1}{1 - \e} = \frac{3}{2} \quad \text{for } i = 1, \ldots, m \]
+which implies that the condition number of their product \(\mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{R}^{-1}\) is bounded by \((1+\e) / (1-\e) = 2\).
 \end{theorem}
 \begin{proof}
 The matrices \(\mat{R}^{-T}\mat{A}\mat{D}\) and \(\mat{D}\mat{A}^T \mat{R}^{-1}\) are transposes of each other and hence have the same singular values.
-The minimum and maximum squared singular values of \(\mat{D}\mat{A}^T \mat{R}^{-1}\) are the same as the minimum and maximum values of \( \norm{\mat{D}\mat{A}^T \mat{R}^{-1} \vek{z}}_2^2 / \norm{\vek{z}}_2^2\) over all \(\vek{z} \in \R^n\).
-By \cref{def:subspace-embedding} applied to \(\vek{x} = \mat{R}^{-1} \vek{z}\) we have
+The minimum and maximum squared singular values of \(\mat{D}\mat{A}^T \mat{R}^{-1}\) are the same as the minimum and maximum values of \( \norm{\mat{D}\mat{A}^T \mat{R}^{-1} \tilde{\vek{z}}}_2^2 / \norm{\tilde{\vek{z}}}_2^2\) over all \(\tilde{\vek{z}} \in \R^n\).
+By \cref{def:subspace-embedding} applied to \(\vek{z} = \mat{R}^{-1} \tilde{\vek{z}}\) we have
 \[
-  (1-\e) \norm{\mat{D}\mat{A}^T \mat{R}^{-1} \vek{z}}_2^2
-  \leq \norm{\mat{W}\mat{D}\mat{A}^T \mat{R}^{-1}\vek{z}}_2^2
-  = \norm{\mat{Q}\mat{R} \mat{R}^{-1}\vek{z}}_2^2
-  = \norm{\mat{Q}\vek{z}}_2^2
-  = \norm{\vek{z}}_2^2
+  (1-\e) \norm{\mat{D}\mat{A}^T \mat{R}^{-1} \tilde{\vek{z}}}_2^2
+  \leq \norm{\mat{W}\mat{D}\mat{A}^T \mat{R}^{-1}\tilde{\vek{z}}}_2^2
+  = \norm{\mat{Q}\mat{R} \mat{R}^{-1}\tilde{\vek{z}}}_2^2
+  = \norm{\mat{Q}\tilde{\vek{z}}}_2^2
+  = \norm{\tilde{\vek{z}}}_2^2
 \]
-for all \(\vek{z} \in \R^m\) and similarly \((1+\e)\norm{\mat{D}\mat{A}^T \mat{R}^{-1} \vek{z}}_2^2 \geq \norm{\vek{z}}_2^2\).
+for all \(\tilde{\vek{z}} \in \R^m\) and similarly \((1+\e)\norm{\mat{D}\mat{A}^T \mat{R}^{-1} \tilde{\vek{z}}}_2^2 \geq \norm{\tilde{\vek{z}}}_2^2\).
 Therefore
-\[ \frac{1}{1 + \e} \leq \frac{\norm{\mat{D}\mat{A}^T \mat{R}^{-1} \vek{z}}_2^2}{\norm{\vek{z}}_2^2} \leq \frac{1}{1 - \e} \]
+\[ \frac{1}{1 + \e} \leq \frac{\norm{\mat{D}\mat{A}^T \mat{R}^{-1} \tilde{\vek{z}}}_2^2}{\norm{\tilde{\vek{z}}}_2^2} \leq \frac{1}{1 - \e} \]
 which proves the bounds on the singular values.
 The condition number of a matrix is defined as the largest singular value divided by the smallest singular value.
 Because \(\mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{R}^{-1} = (\mat{D} \mat{A}^T \mat{R}^{-1})^T (\mat{D} \mat{A}^T \mat{R}^{-1})\) the singular values of this matrix are just the squares of the singular values of \(\mat{D} \mat{A}^T \mat{R}^{-1}\), so
@@ -136,25 +133,23 @@ and we are done.
 \end{proof}
 
 \begin{theorem} \label{thm:cg-residual-bound}
-Suppose \(\mat{R}\) is defined as in \cref{thm:condition-number-bound}.
 Let \(\vek{q}^j\) be the iterates when solving \( \mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{R}^{-1} \vek{q} = \mat{R}^{-T} \vek{p} \) with the CG algorithm and let \(\vek{f}^j\) be the residuals defined by
 \( \vek{f}^j = \mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{R}^{-1} \vek{q}^j - \mat{R}^{-T} \vek{p} \).
-Then for \(\e < 1/2\) the \(\ell_2\)-norm of the residuals converges at least linearly to zero
-\[ \norm{\vek{f}^{j+1}}_2 \leq \Paren{\frac{\e}{1-\e}} \norm{ \vek{f}^j }_2 \quad \forall j = 1, 2, \ldots \]
+Then the \(\ell_2\)-norm of the residuals converges at least linearly to zero
+\[ \norm{\vek{f}^{j+1}}_2 \leq \frac{1}{2} \norm{ \vek{f}^j }_2 \quad \forall j = 1, 2, \ldots \]
 \end{theorem}
 \begin{proof}
 Theorem 8 of \cite{Bouyouli-ConjugateGradientConvergence} showed that
 \[ \norm{\vek{f}^{j+1}}_2 \leq \frac{\kappa_2(\mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{R}^{-1}) - 1}{2} \norm{\vek{f}^j}_2 .\]
 Using the bound on the condition number from \cref{thm:condition-number-bound} we obtain
 \[ \frac{\kappa_2(\mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{R}^{-1}) - 1}{2}
-   \leq \frac{\frac{1+\e}{1-\e} - 1}{2} = \frac{\e}{1 - \e} < 1 \]
+   \leq \frac{2 - 1}{2} = \frac{1}{2} \]
 which proves the claim.
 \end{proof}
 
-After designing the preconditioner as \(\mat{P} = \mat{R}\) we also need to choose the perturbation vector \(\vek{v}\) satisfying \(\mat{A}\mat{S}^{-1}\vek{v} = \mat{R}^T \vek{f}\) where \(\vek{f}\), the error term introduced by the CG algorithm, is given.
-We use the method of \textcite{Avron-FasterRandomizedInfeasibleIPMs} which utilises the sketched matrix \(\mat{W}\mat{D}\mat{A}^T\) for which we have already determined a decomposition:
-
-%TODO Where should the definitions for A, W, Q, R and so on go?
+After designing the preconditioner we also need to choose the perturbation vector \(\vek{v}\) satisfying \(\mat{A}\mat{S}^{-1}\vek{v} = \mat{R}^T \vek{f}\) where \(\vek{f}\), the error term introduced by the CG algorithm, is given.
+We use the method of \textcite{Avron-FasterRandomizedInfeasibleIPMs} which utilises the sketched matrix \(\mat{W}\mat{D}\mat{A}^T\) for which we have already determined a decomposition.
+This also allows us to bound the size of the perturbation vector by the size of \(\vek{f}\).
 
 \begin{theorem}
 Suppose \(\mat{Q}\) and \(\mat{R}\) are defined as in \cref{thm:condition-number-bound}. Given a vector \(\vek{f} \in \R^m\) the vector
@@ -165,10 +160,11 @@ satisfies \( \mat{A}\mat{S}^{-1}\vek{v} = \mat{R}^T \vek{f} \) and \(\norm{\vek{
 Using the definition of \(\mat{Q}\) and \(\mat{R}\) we obtain
 \begin{align*}
   \mat{A} \mat{S}^{-1} \vek{v}
-  &= \mat{A} \mat{S}^{-1} (\mat{S}\mat{X})^{1/2} \mat{W}^T \mat{Q} \vek{f} \\
-  &= \mat{A} \mat{D} \mat{W}^T \mat{Q} \vek{f} \\
-  &= (\mat{Q} \mat{R})^T \mat{Q} \vek{f} \\
-  &= \mat{R}^T \mat{Q}^T \mat{Q} \vek{f} = \mat{R}^T \vek{f}
+  &= \mat{A} \mat{S}^{-1} (\mat{S}\mat{X})^{1/2} \mat{W}^T \mat{Q} \vek{f}
+   = \mat{A} \mat{D} \mat{W}^T \mat{Q} \vek{f} \\
+  &= (\mat{Q} \mat{R})^T \mat{Q} \vek{f}
+   = \mat{R}^T \mat{Q}^T \mat{Q} \vek{f}
+   = \mat{R}^T \vek{f}
 \end{align*}
 which proves the first part.
 To bound the norm consider
@@ -179,7 +175,7 @@ To bound the norm consider
 \]
 Now, \(\norm{(\mat{S}\mat{X})^{1/2}}_2 \leq \norm{(\mat{S}\mat{X})^{1/2}}_F = \sqrt{n \mu}\) by definition of \(\mu\) and \(\norm{\mat{Q}\vek{f}}_2 = \norm{\vek{f}}_2\) because \(\mat{Q}\) has orthonormal columns.
 Lastly, we need to bound \(\norm{\mat{W}^T}_2\).
-Note that \(\mat{W}\) is constructed by choosing exactly \(s\) nonzero entries per column and each of these entries is drawn from \(\{-\frac{1}{\sqrt{s}}, \frac{1}{\sqrt{s}}\}\).
+Remember that \(\mat{W}\) is constructed by choosing exactly \(s\) nonzero entries per column and each of these entries is drawn from \(\{-\frac{1}{\sqrt{s}}, \frac{1}{\sqrt{s}}\}\).
 Let \(\mathcal{J}_i\) denote the set of indices of the nonzero entries of column \(i\) in \(\mat{W}\) and let \(\vek{z}_{\mathcal{J}_i} \in \R^s\) denote the restriction of \(\vek{z} \in \R^w\) to these indices.
 Using standard norm inequalities
 \begin{align*}
