@@ -105,6 +105,7 @@ Note that applying the preconditioner from the left and from the right in this f
 
 Inspired by \textcite{Avron-FasterRandomizedInfeasibleIPMs} we use a QR decomposition of the sketched matrix \(\mat{D}\mat{A}^T\).
 We choose \(\mat{P} = \mat{R}\) where \(\mat{Q}\mat{R}\) is the QR decomposition of \(\mat{W}\mat{D}\mat{A}^T\).
+Assuming that \(\mat{W}\) is a \((1\pm\e)\) \(\ell_2\)-subspace embedding for \(\mat{D}\mat{A}^T\) for some \(\e < 1\) we get that the column space of \(\mat{D}\mat{A}^T\) does not intersect with the nullspace of \(\mat{W}\) so \(\rank(\mat{W}\mat{D}\mat{A}^T) = m\) and the QR decomposition exists.
 The following theorem shows that this preconditioner leads to bounds on the condition number of \(\mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{R}^{-1}\) which can be used to bound the number of CG iterations needed to reach a certain error estimate.
 
 \begin{theorem} \label{thm:condition-number-bound}
@@ -114,7 +115,7 @@ which implies that the condition number of their product \(\mat{R}^{-T} \mat{A} 
 \end{theorem}
 \begin{proof}
 The matrices \(\mat{R}^{-T}\mat{A}\mat{D}\) and \(\mat{D}\mat{A}^T \mat{R}^{-1}\) are transposes of each other and hence have the same singular values.
-The minimum and maximum squared singular values of \(\mat{D}\mat{A}^T \mat{R}^{-1}\) are the same as the minimum and maximum values of \( \norm{\mat{D}\mat{A}^T \mat{R}^{-1} \vek{z}}_2^2 / \norm{\vek{z}}_2^2\) over all \(\vek{x} \in \R^n\).
+The minimum and maximum squared singular values of \(\mat{D}\mat{A}^T \mat{R}^{-1}\) are the same as the minimum and maximum values of \( \norm{\mat{D}\mat{A}^T \mat{R}^{-1} \vek{z}}_2^2 / \norm{\vek{z}}_2^2\) over all \(\vek{z} \in \R^n\).
 By \cref{def:subspace-embedding} applied to \(\vek{x} = \mat{R}^{-1} \vek{z}\) we have
 \[
   (1-\e) \norm{\mat{D}\mat{A}^T \mat{R}^{-1} \vek{z}}_2^2
