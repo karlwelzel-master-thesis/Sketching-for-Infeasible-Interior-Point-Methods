@@ -37,6 +37,12 @@ Necessary and sufficient optimality conditions for both problems are given by
     \vek{x}, \vek{s} &\geq 0 \label{nonnegativity}
   \end{align}
 \end{subequations}
+We denote the set of feasible points with \(\mathcal{F}\), the set of strictly feasible points as \(\mathcal{F}^o\) and the set of solutions as \(\mathcal{F}^*\):
+\begin{align}
+  \mathcal{F} &\coloneqq \Set{ (\vek{x}, \vek{y}, \vek{s}) | \mat{A}\vek{x} = \vek{b}, \mat{A}^T \vek{y} + \vek{s} = \vek{c}, \vek{x} \geq \vek{0}, \vek{s} \geq \vek{0}} \\
+  \mathcal{F}^o &\coloneqq \Set{ (\vek{x}, \vek{y}, \vek{s}) | \mat{A}\vek{x} = \vek{b}, \mat{A}^T \vek{y} + \vek{s} = \vek{c}, \vek{x} > \vek{0}, \vek{s} > \vek{0}} \\
+  \mathcal{F}^* &\coloneqq \Set{ (\vek{x}, \vek{y}, \vek{s}) | \mat{A}\vek{x} = \vek{b}, \mat{A}^T \vek{y} + \vek{s} = \vek{c}, \vek{x} \geq \vek{0}, \vek{s} \geq \vek{0}, \vek{x} \circ \vek{s} = \vek{0}}
+\end{align}
 
 How close a given triple \((\vek{x}, \vek{y}, \vek{s})\) with \(\vek{x}, \vek{s} \geq 0\) is to satisfying these conditions is measured by
 \begin{subequations}
