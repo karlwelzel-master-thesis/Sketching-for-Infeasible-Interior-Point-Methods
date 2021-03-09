@@ -158,7 +158,7 @@ instead of \cref{eqn:normal-equation}. In this case
 because calculating \(\Delta\tilde{\vek{x}}, \Delta\tilde{\vek{y}}, \Delta\tilde{\vek{s}}\) in this way is equivalent to using \cref{eqn:normal-equation-system} with \(\vek{b} + \mat{P}^T \vek{f}\) instead of \(\vek{b}\).
 
 For our convergence proofs to work we need that the error in calculating the Newton direction only affects the last line of \cref{eqn:newton-system}.
-This can be achieved by adding a perturbation vector \(\mat{S}^{-1}\vek{v} \in \R^n\) to \(\Delta\tilde{\vek{x}}\) which satisfies \(\mat{A}\mat{S}^{-1}\vek{v} = \mat{P}^T \vek{f}\). %TODO Check why S^{-1} v instead of just v. Probably convergence proof
+This can be achieved by adding a perturbation vector \(\mat{S}^{-1}\vek{v} \in \R^n\) to \(\Delta\tilde{\vek{x}}\) which satisfies \(\mat{A}\mat{S}^{-1}\vek{v} = \mat{P}^T \vek{f}\).
 The new instructions to get an approximate solution to the Newton system are now given by
 \begin{subequations}
   \begin{align}
@@ -177,7 +177,7 @@ This approximate solution solves the following system
   \begin{pmatrix} \Delta\hat{\vek{x}} \\ \Delta\hat{\vek{y}} \\ \Delta\hat{\vek{s}} \end{pmatrix}
   =
   \begin{pmatrix} -\vek{r}_p \\ -\vek{r}_d \\ -\vek{x} \circ \vek{s} + \sigma \mu \vek{1} \end{pmatrix}
-  +
+  -
   \begin{pmatrix} 0 \\ 0 \\ \vek{v} \end{pmatrix}
 \end{equation}
 so we successfully shifted the error term from the first to the third component.
