@@ -11,6 +11,13 @@
 ]{hyperref}
 \pdfstringdefDisableCommands{\let\boldmath\relax} % allow \boldmath in section titles
 
+% Named references with the \cref command
+\usepackage[
+ capitalise,  % "Theorem 3.1" instead of "theorem 3.1"
+ nameinlink,  % Makes _Theorem 3.1_ a hyperref link instead of Theorem _3.1_
+ noabbrev,  % "Theorem 3.1" instead of "Thm. 3.1"
+]{cleveref}
+
 % Named colors
 \usepackage[dvipsnames]{xcolor}
 
