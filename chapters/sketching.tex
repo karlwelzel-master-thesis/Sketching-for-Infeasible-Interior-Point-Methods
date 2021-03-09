@@ -1,4 +1,4 @@
-\chapter{Sketching}
+\chapter{Sketching} \label{chap:sketching}
 
 Important concepts to cover
 \begin{enumerate}
@@ -89,7 +89,7 @@ such that the sparse embedding matrices form an oblivious \(\ell_2\)-subspace em
 
 For our purposes we will from now on fix some \(B > 2\) and \(\e = 1/3 < 1/2\) and furthermore assume that \(\mat{W} \in \R^{w \times n}\) is a sparse embedding matrix and a \((1\pm\e)\) \(\ell_2\)-subspace embedding of the column space of \(\mat{D}\mat{A}^T \in \R^{n \times m}\).
 From the previous result we get that choosing
-\begin{equation}
+\begin{equation} \label{eqn:sparse-ose-params}
   w = O \Paren{m \log(m/\delta)} \quad \text{and} \quad s = O \Paren{\log(m/\delta)}
 \end{equation}
 suffices to guarantee that the last assumption holds with probability at least \(1 - \delta\).
@@ -152,7 +152,7 @@ We use the method of \textcite{Avron-FasterRandomizedInfeasibleIPMs} which utili
 This also allows us to bound the size of the perturbation vector by the size of \(\vek{f}\).
 
 \begin{theorem}
-Suppose \(\mat{Q}\) and \(\mat{R}\) are defined as in \cref{thm:condition-number-bound}. Given a vector \(\vek{f} \in \R^m\) the vector
+Given a vector \(\vek{f} \in \R^m\) the vector
 \[ \vek{v} = (\mat{S}\mat{X})^{1/2} \mat{W}^T \mat{Q} \vek{f} \]
 satisfies \( \mat{A}\mat{S}^{-1}\vek{v} = \mat{R}^T \vek{f} \) and \(\norm{\vek{v}}_2 \leq n \sqrt{\mu} \norm{\vek{f}}_2\).
 \end{theorem}
