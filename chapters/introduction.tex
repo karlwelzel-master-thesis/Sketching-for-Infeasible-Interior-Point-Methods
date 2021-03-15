@@ -1,4 +1,51 @@
 \chapter{Introduction}
 
-This dissertation is based on the work of Chowdhury \etal{} \cite{Avron-FasterRandomizedInfeasibleIPMs} who propose to use sketching techniques to speed up the solution of the Newton system in an infeasible interior-point method (IPM).
-In this thesis their algorithm is analysed in detail to obtain global convergence guarantees and polynomial time-complexity estimates. Furthermore, experiments are conducted to compare this approach to standard ones.
+%This dissertation is based on the work of Chowdhury \etal{} \cite{Avron-FasterRandomizedInfeasibleIPMs} who propose to use sketching techniques to speed up the solution of the Newton system in an infeasible interior-point method (IPM).
+%In this thesis their algorithm is analysed in detail to obtain global convergence guarantees and polynomial time-complexity estimates. Furthermore, experiments are conducted to compare this approach to standard ones.
+
+Optimization problems are ubiquitous in science and industry.
+An important subclass of optimization problems are linear programs (LPs), where the objective function as well as the constraints on the variables are linear.
+They take a primary role because of the extensive research on them and the existence of efficient codes to solve them optimally.
+Many problems can be modelled in this way, for example Machine Learning models such as \(\ell_1\)-regularized SVMs [Citation], basis pursuit [Citation], sparse inverse covariance matrix estimation (SICE) [Citation], the nonnegative matrix factorization (NMF) [Citation], MAP inference [Citation], etc. %TODO Improve. Directly stolen from Chowdhury, could lead to problems
+As the problems grow more complex the number of variables increases and we need more efficient algorithms for solving ever larger linear programs.
+One of the first methods that came about for solving LPs was the simplex method \cite{Dantzig-Simplex}, which is still in use today.
+For LPs the set of feasible points is a polytope and the simplex method can be thought of as walking through the vertices of this polygon while reducing the objective function at every step until the minimum is reached.
+It was later shown that LPs in \(n\) dimensions exist whose polytope has \(2^n\) vertices and which are all visited by the simplex method so that the worst case complexity of the simplex method is exponential.
+After a theoretical breakthrough by Kachiyan's ellipsoid method [Citation], a polynomial time algorithm for LPs, which unfortunately is not competitive in practice, the Interior-Point Method (IPM) invented by ... [Citation] was shown to converge in polynomial time while also being competitive in practice.
+Since then many variants of IPMs have been developed some with better theoretical guarantees others better in practice.
+The main bottleneck of IPMs is the solution of a Newton-type linear system which determines the search direction in every step.
+Carefully reformulating this system, solving it can be broken down to solving \(\mat{A} \mat{D}^2 \mat{A}^T \Delta \vek{y} = \vek{p}\) for some vector \(\vek{p}\).
+Here, \(\mat{A}\) is the matrix of constraints, \(\mat{D}\) is a diagonal matrix depending on the current iterates and the equation is called the normal equation.
+Typically, this normal equation is solved via direct methods using a decomposition of \(\mat{A} \mat{D}^2 \mat{A}^T\) [Citation] but this is exceedingly expensive if \(\mat{A} \mat{D}^2 \mat{A}^T\) is large and dense.
+If the matrix is sparse one can speed up the process [Citation] but \(\mat{A} \mat{D}^2 \mat{A}^T\) can be dense even if \(\mat{A}\) is sparse.
+Iterative methods that only rely on matrix-vector products can use the sparsity of \(\mat{A}\) but converge only very slowly because \(\mat{D}\) becomes more and more ill-conditioned as the algorithm progresses.
+Based on [Avron] we will develop a preconditioner for this linear system in the special case when \(\mat{A}\) is sparse and \(m \ll n\), i.e. when the number of constraints is much smaller than the number of variables, using tools from Randomized Linear Algebra (RLA).
+
+In the last decade many advances in numerical linear algebra are due to the incorporation of randomness.
+We will focus on a RLA tool called sketching which is relevant for our work.
+[Woodruff] gives an overview on how sketching matrices lead to dimensionality reductions that can be applied to least squares problems (see also [Blendenpik]), low-rank approximation and graph-sparsification.
+They were also successfully applied to fast matrix multiplication (Cohen [Citation]).
+The key idea is that a matrix \(\mat{B} \in \R^{n \times m}\) with \(m \ll n\) has an \(m\)-dimensional column space that forms a subspace of \(\R^n\).
+This ambient dimension of n is unnecessarily large.
+There are random \(w \times n\) matrices describing linear maps which approximately preserve the norms of any fixed \(m\)-dimensional subspace of \(\R^n\) with high probability.
+These are called oblivious subspace embeddings.
+The size of \(w\) depends on \(m\), the approximation tolerance and on the failure probability but not on \(n\), so we can significantly reduce dimensions at the cost of some approximation error and a failure probability.
+While matrices with properly normalized Gaussian entries form oblivious subspace embeddings [Citation], computing the product \(\mat{W}\mat{B}\) is expensive because they are dense.
+[AilonChazelle] developed so-called Fast-Johnson-Lindenstrauss-Transforms which enable a fast computation if \(\mat{B}\) is dense and for sparse matrices \(\mat{B}\) there exist sparse embedding matrices [Achlioptas; Cohen (Nearly Tight...)].
+
+Assume that \(\mat{A}\) is a sparse \(m \times n\) matrix with \(m \ll n\). Then \(\mat{D} \mat{A}^T\) exactly fits our description above and we can use a sparse embedding matrix \(\mat{W}\) such that \(\mat{W}\mat{D}\mat{A}^T\) only has dimensions \(w \times m\) and stays sparse.
+As in [Avron] we compute a decomposition of \(\mat{W}\mat{D}\mat{A}^T\) to design a preconditioner for the linear system involving \(\mat{A}\mat{D}^2\mat{A}^T\).
+Using a perturbation vector as introduced in [Monteiro] we are able to use their convergence result that guarantees \(O(n^2 \log(1/\e))\) IPM iterations if the Newton direction is sufficiently accurate.
+This allows us to bound the total number of operations by bounding the runtime of each iteration given that we want a high success probability over all iterations.
+
+This special case of sparse matrices \(\mat{A}\) with \(m \ll n\) is not just convenient because of the RLA results but also comes up in pratice.
+In particular, in the machine learning literature \(\ell_1\) SVMs and Basis Pursuit produces LP instances with these properties.
+There already exists research on this topic.
+Not only the paper of [Avron] on which thesis is based but also the work of [Sidford].
+They employ RLA ideas and inverse maintenance in a very sophisticated way to achieve a theoretical running time of \(\tilde{O}(nm + m^2)\).
+While the analysis of the algorithm presented here is also theoretical in nature as it assumes exact arithmetic the algorithm itself is intended for practical use and is tested on real datasets in the last section.
+
+In this paper we will present the notation we use for IPMs and the most important concepts in section 1.
+Section 2 will be concerned with the concepts of sketching that are useful for us and how its approximation guarantees leads to good preconditioners.
+Afterwards, Section 3 will contain all of the proofs to show that under suitable conditions the Newton direction determined by the preconditioned system is good enough to ensure convergence in O(???) operations.
+To round it off, we will compare the use of this preconditioned system with the use of direct solvers for \(\mat{A}\mat{D}^2\mat{A}^T \Delta \vek{y} = \vek{p}\) in the last section.
