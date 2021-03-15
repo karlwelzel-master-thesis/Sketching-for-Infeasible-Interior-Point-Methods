@@ -19,11 +19,11 @@ For naming primal, dual and slack variables as well as the choice of the neighbo
 
 The standard form linear programming (LP) problem is given by
 \begin{equation}
- \min \vek{c}^T \vek{x} \quad \text{subject to} \quad \mat{A}\vek{x} = \vek{b}, \ \vek{x} \geq 0
+ \min \vek{c}^T \vek{x} \quad \text{subject to} \quad \mat{A}\vek{x} = \vek{b}, \ \vek{x} \geq \vek{0}
 \end{equation}
 and its dual is
 \begin{equation}
-  \max \vek{b}^T \vek{y} \quad \text{subject to} \quad \mat{A}^T \vek{y} + \vek{s} = \vek{c}, \ \vek{s} \geq 0
+  \max \vek{b}^T \vek{y} \quad \text{subject to} \quad \mat{A}^T \vek{y} + \vek{s} = \vek{c}, \ \vek{s} \geq \vek{0}
 \end{equation}
 where \(\mat{A} \in \R^{m \times n}\), \(\vek{b} \in \R^m\) and \(\vek{c} \in \R^n\) are given and \(\vek{x}, \vek{s} \in \R^n\) and \(\vek{y} \in \R^m\) are the variables.
 For feasible \(\vek{x}, \vek{y}, \vek{s}\) we always have \(\vek{c}^T \vek{x} \geq \vek{b}^T \vek{y}\) and the optimal solutions satisfy \(\vek{c}^T \vek{x} = \vek{b}^T \vek{y}\), so \(\vek{x}^T \vek{s} = \vek{c}^T \vek{x} - \vek{b}^T \vek{y}\) can be considered an optimality measure.
@@ -33,8 +33,8 @@ Necessary and sufficient optimality conditions for both problems are given by
   \begin{align}
     \mat{A} \vek{x} &= \vek{b} \label{primal-feasibility} \\
     \mat{A}^T \vek{y} + \vek{s} &= \vek{c} \label{dual-feasibility} \\
-    \vek{x} \circ \vek{s} &= 0 \label{complementarity} \\
-    \vek{x}, \vek{s} &\geq 0 \label{nonnegativity}
+    \vek{x} \circ \vek{s} &= \vek{0} \label{complementarity} \\
+    \vek{x}, \vek{s} &\geq \vek{0} \label{nonnegativity}
   \end{align}
 \end{subequations}
 We denote the set of feasible points with \(\mathcal{F}\), the set of strictly feasible points as \(\mathcal{F}^o\) and the set of solutions as \(\mathcal{F}^*\):
@@ -44,7 +44,7 @@ We denote the set of feasible points with \(\mathcal{F}\), the set of strictly f
   \mathcal{F}^* &\coloneqq \Set{ (\vek{x}, \vek{y}, \vek{s}) | \mat{A}\vek{x} = \vek{b}, \mat{A}^T \vek{y} + \vek{s} = \vek{c}, \vek{x} \geq \vek{0}, \vek{s} \geq \vek{0}, \vek{x} \circ \vek{s} = \vek{0}}
 \end{align}
 
-How close a given triple \((\vek{x}, \vek{y}, \vek{s})\) with \(\vek{x}, \vek{s} \geq 0\) is to satisfying these conditions is measured by
+How close a given triple \((\vek{x}, \vek{y}, \vek{s})\) with \(\vek{x}, \vek{s} \geq \vek{0}\) is to satisfying these conditions is measured by
 \begin{subequations}
   \begin{align}
     \vek{r}_p &= \vek{r}_p(\vek{x}) = \mat{A}\vek{x} - \vek{b} \\
@@ -54,7 +54,7 @@ How close a given triple \((\vek{x}, \vek{y}, \vek{s})\) with \(\vek{x}, \vek{s}
   \end{align}
 \end{subequations}
 
-In primal-dual interior-point methods one maintains iterates \((\vek{x}^k, \vek{y}^k, \vek{s}^k)\) that satisfy \(\vek{x}^k, \vek{s}^k > 0\).
+In primal-dual interior-point methods one maintains iterates \((\vek{x}^k, \vek{y}^k, \vek{s}^k)\) that satisfy \(\vek{x}^k, \vek{s}^k > \vek{0}\).
 Feasible IPMs require the iterates to always be feasible (satisfying \cref{primal-feasibility} and \cref{dual-feasibility}) while infeasible IPMs allow some non-zero residuals \(\vek{r}^k\) as long as their size goes to zero at approximately the same rate as \(\mu\).
 
 The \emph{central path} is given by \(\Set{(\vek{x}_\tau, \vek{y}_\tau, \vek{s}_\tau) | \tau > 0}\) where \(\vek{x}_\tau, \vek{y}_\tau, \vek{s}_\tau\) are uniquely determined by
@@ -63,14 +63,14 @@ The \emph{central path} is given by \(\Set{(\vek{x}_\tau, \vek{y}_\tau, \vek{s}_
     \mat{A}\vek{x}_\tau - \vek{b} &= \tau \vek{r}_p^0 \\
     \mat{A}^T \vek{y}_\tau + \vek{s}_\tau - \vek{c} &= \tau \vek{r}_d^0 \\
     \vek{x}_\tau \circ \vek{s}_\tau &= \tau \mu_0 \vek{1} \\
-    \vek{x}_\tau, \vek{s}_\tau &> 0
+    \vek{x}_\tau, \vek{s}_\tau &> \vek{0}
   \end{align}
 \end{subequations}
 if a solution satisfying \cref{optimality-conditions} exists (Wright says strict feasibility is required, ?), see \cite{Mizuno-PolynomialTimeConvergenceInexactIPM}.
 In this case, the elements of the central path converge towards a solution as \(\tau \to 0\).
 In a \emph{long-step} infeasible IPM all iterates are required to belong to a neighbourhoood of this central path given by
 \begin{equation}
-  \mathcal{N}_{-\infty}(\gamma) = \Set{ (\vek{x}, \vek{y}, \vek{s}) | \vek{x}, \vek{s} > 0, \ \vek{x} \circ \vek{s} \geq (1 - \gamma) \mu \vek{1}, \ \frac{\norm{\vek{r}}}{\norm{\vek{r}^0}} \leq \frac{\mu}{\mu^0} }
+  \mathcal{N}_{-\infty}(\gamma) = \Set{ (\vek{x}, \vek{y}, \vek{s}) | \vek{x}, \vek{s} > \vek{0}, \ \vek{x} \circ \vek{s} \geq (1 - \gamma) \mu \vek{1}, \ \frac{\norm{\vek{r}}}{\norm{\vek{r}^0}} \leq \frac{\mu}{\mu^0} }
 \end{equation}
 where \(\gamma \in (0, 1)\) is a parameter controlling the size of the neighbourhood.
 If it can be shown that \(\mu \to 0\) during the algorithm then by the choice of the neighbourhood the residuals must also converge to \(0\).
@@ -82,9 +82,9 @@ The search direction in every iteration is determined by a Newton system, simila
 The total derivative of \(F\) is given by
 \begin{equation}
   F'(\vek{x}, \vek{y}, \vek{s}) = \begin{pmatrix}
-    \mat{A} & 0         & 0       \\
-    0       & \mat{A}^T & \mat{I} \\
-    \mat{S} & 0         & \mat{X} \\
+    \mat{A} & \mat{0}   & \mat{0} \\
+    \mat{0} & \mat{A}^T & \mat{I} \\
+    \mat{S} & \mat{0}   & \mat{X} \\
   \end{pmatrix}
 \end{equation}
 where \(\mat{X} = \diag(\vek{x})\) and \(\mat{S} = \diag(\vek{s})\).
@@ -92,9 +92,9 @@ The actual Newton system determining \((\Delta\vek{x}, \Delta\vek{y}, \Delta\vek
 \begin{equation} \label{eqn:newton-system}
   \underbrace{
   \begin{pmatrix}
-    \mat{A} & 0         & 0       \\
-    0       & \mat{A}^T & \mat{I} \\
-    \mat{S} & 0         & \mat{X} \\
+    \mat{A} & \mat{0}   & \mat{0} \\
+    \mat{0} & \mat{A}^T & \mat{I} \\
+    \mat{S} & \mat{0}   & \mat{X} \\
   \end{pmatrix}
   }_{F'(\vek{x}, \vek{y}, \vek{s})}
   \begin{pmatrix} \Delta\vek{x} \\ \Delta\vek{y} \\ \Delta\vek{s} \end{pmatrix}
@@ -102,14 +102,14 @@ The actual Newton system determining \((\Delta\vek{x}, \Delta\vek{y}, \Delta\vek
   \underbrace{
   \begin{pmatrix} \vek{r}_p \\ \vek{r}_d \\ \vek{x} \circ \vek{s} \end{pmatrix}
   }_{F(\vek{x}, \vek{y}, \vek{s})}
-  + \begin{pmatrix} 0 \\ 0 \\ \sigma \mu \vek{1} \end{pmatrix}
+  + \begin{pmatrix} \vek{0} \\ \vek{0} \\ \sigma \mu \vek{1} \end{pmatrix}
 \end{equation}
 
 This linear system of equations can be rewritten as
 \begin{subequations} \label{eqn:augmented-system}
   \begin{align}
     \begin{pmatrix}
-      \mat{A}              & 0 \\
+      \mat{A}              & \mat{0} \\
       \mat{X}^{-1} \mat{S} & \mat{A}^T \\
     \end{pmatrix}
     \begin{pmatrix}
@@ -130,7 +130,7 @@ Eliminating \(\Delta\vek{x}\) from the first equation and using \(\mat{D} = \mat
   \begin{align}
     \mat{A} \mat{D}^2 \mat{A}^T \Delta\vek{y} &= -\vek{r}_p + \mat{A} ( -\mat{S}^{-1} \mat{X} \vek{r}_d + \vek{x} - \sigma \mu \mat{S}^{-1} \vek{1} ) \eqqcolon \vek{p} \label{eqn:normal-equation} \\
     \Delta\vek{s} &= -\vek{r}_d - \mat{A}^T \Delta\vek{y} \label{eqn:s-from-normal} \\
-    \Delta\vek{x} &= -x + \sigma \mu \mat{S}^{-1} \vek{1} - \mat{S}^{-1} \mat{X} \Delta\vek{s} \label{eqn:x-from-normal}
+    \Delta\vek{x} &= -\vek{x} + \sigma \mu \mat{S}^{-1} \vek{1} - \mat{S}^{-1} \mat{X} \Delta\vek{s} \label{eqn:x-from-normal}
   \end{align}
 \end{subequations}
 The first component is called the \emph{normal equation} because it can be written as the normal equation of a least squares system if \(\vek{r}_p = \vek{0}\).
@@ -151,15 +151,15 @@ Using an iterative method to solve \cref{eqn:preconditioned-system} introduces a
 instead of \cref{eqn:normal-equation}. In this case
 \begin{equation}
   \begin{pmatrix}
-    \mat{A} & 0         & 0       \\
-    0       & \mat{A}^T & \mat{I} \\
-    \mat{S} & 0         & \mat{X} \\
+    \mat{A} & \mat{0}   & \mat{0} \\
+    \mat{0} & \mat{A}^T & \mat{I} \\
+    \mat{S} & \mat{0}   & \mat{X} \\
   \end{pmatrix}
   \begin{pmatrix} \Delta\tilde{\vek{x}} \\ \Delta\tilde{\vek{y}} \\ \Delta\tilde{\vek{s}} \end{pmatrix}
   =
   \begin{pmatrix} -\vek{r}_p \\ -\vek{r}_d \\ -\vek{x} \circ \vek{s} + \sigma \mu \vek{1} \end{pmatrix}
   +
-  \begin{pmatrix} \mat{P}^T \vek{f} \\ 0 \\ 0 \end{pmatrix}
+  \begin{pmatrix} \mat{P}^T \vek{f} \\ \vek{0} \\ \vek{0} \end{pmatrix}
 \end{equation}
 because calculating \(\Delta\tilde{\vek{x}}, \Delta\tilde{\vek{y}}, \Delta\tilde{\vek{s}}\) in this way is equivalent to using \cref{eqn:normal-equation-system} with \(\vek{b} + \mat{P}^T \vek{f}\) instead of \(\vek{b}\).
 
@@ -170,21 +170,21 @@ The new instructions to get an approximate solution to the Newton system are now
   \begin{align}
     \mat{A} \mat{D}^2 \mat{A}^T \Delta\hat{\vek{y}} &= \vek{p} + \mat{P}^{T} \vek{f} \\
     \Delta\hat{\vek{s}} &= -\vek{r}_d - \mat{A}^T \Delta\hat{\vek{y}} \\
-    \Delta\hat{\vek{x}} &= -x + \sigma \mu \mat{S}^{-1} \vek{1} - \mat{S}^{-1} \mat{X} \Delta\hat{\vek{s}} - \mat{S}^{-1} \vek{v}
+    \Delta\hat{\vek{x}} &= -\vek{x} + \sigma \mu \mat{S}^{-1} \vek{1} - \mat{S}^{-1} \mat{X} \Delta\hat{\vek{s}} - \mat{S}^{-1} \vek{v}
   \end{align}
 \end{subequations}
 This approximate solution solves the following system
 \begin{equation}
   \begin{pmatrix}
-    \mat{A} & 0         & 0       \\
-    0       & \mat{A}^T & \mat{I} \\
-    \mat{S} & 0         & \mat{X} \\
+    \mat{A} & \mat{0}   & \mat{0} \\
+    \mat{0} & \mat{A}^T & \mat{I} \\
+    \mat{S} & \mat{0}   & \mat{X} \\
   \end{pmatrix}
   \begin{pmatrix} \Delta\hat{\vek{x}} \\ \Delta\hat{\vek{y}} \\ \Delta\hat{\vek{s}} \end{pmatrix}
   =
   \begin{pmatrix} -\vek{r}_p \\ -\vek{r}_d \\ -\vek{x} \circ \vek{s} + \sigma \mu \vek{1} \end{pmatrix}
   -
-  \begin{pmatrix} 0 \\ 0 \\ \vek{v} \end{pmatrix}
+  \begin{pmatrix} \vek{0} \\ \vek{0} \\ \vek{v} \end{pmatrix}
 \end{equation}
 so we successfully shifted the error term from the first to the third component.
 
