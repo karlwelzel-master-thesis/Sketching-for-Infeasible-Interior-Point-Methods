@@ -17,7 +17,7 @@ Since then many variants of IPMs have been developed some with better theoretica
 
 The main bottleneck of IPMs is the solution of a linear system which determines the search direction in every step.
 Carefully reformulating this system, solving it can be broken down to solving \(\mat{A} \mat{D}^2 \mat{A}^T \Delta \vek{y} = \vek{p}\) for some vector \(\vek{p}\).
-Here, \(\mat{A}\) is the matrix of constraints, \(\mat{D}\) is a diagonal matrix depending on the current iterates and the equation is called the \emph{normal equation}.
+Here, \(\mat{A} \in \R^{m times n}\) is the matrix of constraints, \(\mat{D} \in \R^{n \times n}\) is a diagonal matrix depending on the current iterates and the equation is called the \emph{normal equation}.
 Typically, this normal equation is solved via direct methods using a Cholesky decomposition of \(\mat{A} \mat{D}^2 \mat{A}^T\) \cite[p. 17]{Wright-PrimalDualInteriorPointMethods} but this is exceedingly expensive if \(\mat{A} \mat{D}^2 \mat{A}^T\) is large and dense.
 If the matrix is sparse one can speed up the process \cite{NgPeyton-SparseCholesky} but \(\mat{A} \mat{D}^2 \mat{A}^T\) can be dense even if \(\mat{A}\) is sparse.
 Iterative methods that only rely on matrix-vector products can use the sparsity of \(\mat{A}\) but converge only very slowly because \(\mat{D}^2\) becomes more and more ill-conditioned as the algorithm progresses.
@@ -35,13 +35,15 @@ The size of \(w\) depends on \(m\), the approximation tolerance and on the failu
 While matrices with properly normalized Gaussian entries form oblivious subspace embeddings \cite[Theorem 6]{Woodruff-Sketching}, applying them to a vector in \(\R^n\) is expensive as these matrices are dense.
 \textcite{AilonChazelle-FastJohnsonLindenstraussTransform} developed so-called Fast-Johnson-Lindenstrauss-Transforms which enable fast matrix-vector multiplications. For sparse matrices \(\mat{B}\) there exist sparse embedding matrices \cite{Achlioptas-SparseSketching,Cohen-NearlyTightObliviousSubspaceEmbeddings} to speed up forming the product.
 
-Assume that \(\mat{A}\) is a sparse \(m \times n\) matrix with \(m \ll n\). Then \(\mat{D} \mat{A}^T\) exactly fits our description above and we can use a sparse embedding matrix \(\mat{W}\) such that \(\mat{W}\mat{D}\mat{A}^T\) only has dimensions \(w \times m\) and stays sparse.
-As in [Avron] we compute a decomposition of \(\mat{W}\mat{D}\mat{A}^T\) to design a preconditioner for the linear system involving \(\mat{A}\mat{D}^2\mat{A}^T\).
-Using a perturbation vector as introduced in [Monteiro] we are able to use their convergence result that guarantees \(O(n^2 \log(1/\e))\) IPM iterations if the Newton direction is sufficiently accurate.
+Assume that \(\mat{A}\) is a sparse \(m \times n\) matrix with \(m \ll n\).
+Then \(\mat{D} \mat{A}^T\) exactly fits our description above and we can use a sparse embedding matrix \(\mat{W}\) such that \(\mat{W}\mat{D}\mat{A}^T\) only has dimensions \(w \times m\) and stays sparse.
+At the same time \(\mat{A}\mat{D}\mat{W}^T \mat{W} \mat{D}\mat{A}^T\) is close to \(\mat{A}\mat{D}^2 \mat{A}^T\) so that a decomposition of the former system can serve as a preconditioner for the latter.
+The idea of \textcite{Avron-FasterRandomizedInfeasibleIPMs} was to combine this idea for preconditioning with an iterative method to solve the normal equation and the convergence proof of \textcite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs}.
+\textcite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs} showed that a long-step infeasible primal-dual IPM converges in \(O(n^2 \log(1/\e))\) iterations if the Newton direction is determined sufficiently accurate in every iteration.
 This allows us to bound the total number of operations by bounding the runtime of each iteration given that we want a high success probability over all iterations.
 
 This special case of sparse matrices \(\mat{A}\) with \(m \ll n\) is not just convenient because of the RLA results but also comes up in pratice.
-In particular, in the machine learning literature \(\ell_1\) SVMs and Basis Pursuit produces LP instances with these properties.
+In particular, in the machine learning literature \(\ell_1\) SVMs and Basis Pursuit produce LP instances with these properties.
 There already exists research on this topic.
 Not only the paper of [Avron] on which thesis is based but also the work of [Sidford].
 They employ RLA ideas and inverse maintenance in a very sophisticated way to achieve a theoretical running time of \(\tilde{O}(nm + m^2)\).
