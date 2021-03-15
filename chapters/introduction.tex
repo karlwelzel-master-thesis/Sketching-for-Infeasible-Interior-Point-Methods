@@ -47,11 +47,11 @@ This is achieved by sampling a fraction of the variables randomly, solving the r
 The data structures, algorithms and proofs are all very technical and complicated, as such it is not established if efficient implementations of their ideas exist.
 Lastly, as already mentioned \cite{Avron-FasterRandomizedInfeasibleIPMs} is the basis of this thesis.
 Their main results are already described above and will be presented in detail in the following chapters.
-In their paper they opted for a practical long-step IPM but focused mainly on the theoretical analysis of this algorithm assuming exact arithmetic.
+In their paper they opted for a practical long-step infeasible IPM but focused mainly on the theoretical analysis of this algorithm assuming exact arithmetic.
 Their experiments were done using Gaussian sketching and they only recorded the number of outer (IPM) and inner (CG) iterations but did not report whether this leads to a reduction in running time.
 This thesis improves the practicability of their algorithm by showing that a QR decomposition of \(\mat{W} \mat{D} \mat{A}^T\) produces a preconditioner of the same quality as an SVD, tries to simplify the proofs by establishing the convergence result of the IPM from \cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs} and effectiveness of the preconditioner separately and extends the experiments to evaluate this algorithm in practice.
 
-In this paper we will present the notation we use for IPMs and the most important concepts in section 1.
-Section 2 will be concerned with the concepts of sketching that are useful for us and how its approximation guarantees leads to good preconditioners.
-Afterwards, Section 3 will contain all of the proofs to show that under suitable conditions the Newton direction determined by the preconditioned system is good enough to ensure convergence in O(???) operations.
-To round it off, we will compare the use of this preconditioned system with the use of direct solvers for \(\mat{A}\mat{D}^2\mat{A}^T \Delta \vek{y} = \vek{p}\) in the last section.
+The notation for Interior Point Methods and the specific long-step infeasible used in \cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs} along with their convergence result will be presented \cref{chap:ipm}.
+\cref{chap:sketching} will be concerned with the concepts of sketching that are useful for us and how its approximation guarantees leads to good preconditioners.
+Afterwards, \cref{chap:convergence} will lay out how to combine the two results and contains all of the proofs to show that under suitable conditions the Newton direction determined by the preconditioned system is good enough to ensure convergence in \(O(n^2 \log(n) (m^3 + \nnz(\mat{A})))\) operations.
+To round it off, we will compare the use of this preconditioned system with the use of direct solvers for \(\mat{A}\mat{D}^2\mat{A}^T \Delta \vek{y} = \vek{p}\) and showcase the algorithms behaviour on synthetic and real data in \cref{chap:experiments}.
