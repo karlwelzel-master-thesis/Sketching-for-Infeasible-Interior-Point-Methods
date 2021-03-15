@@ -8,26 +8,29 @@ An important subclass of optimization problems are linear programs (LPs), where 
 They take a primary role because of the extensive research on them and the existence of efficient codes to solve them optimally.
 Many problems can be modelled in this way, for example Machine Learning models such as \(\ell_1\)-regularized SVMs [Citation], basis pursuit [Citation], sparse inverse covariance matrix estimation (SICE) [Citation], the nonnegative matrix factorization (NMF) [Citation], MAP inference [Citation], etc. %TODO Improve. Directly stolen from Chowdhury, could lead to problems
 As the problems grow more complex the number of variables increases and we need more efficient algorithms for solving ever larger linear programs.
+
 One of the first methods that came about for solving LPs was the simplex method \cite{Dantzig-Simplex}, which is still in use today.
 For LPs the set of feasible points is a polytope and the simplex method can be thought of as walking through the vertices of this polygon while reducing the objective function at every step until the minimum is reached.
 It was later shown that LPs in \(n\) dimensions exist whose polytope has \(2^n\) vertices and which are all visited by the simplex method so that the worst case complexity of the simplex method is exponential.
-After a theoretical breakthrough by Kachiyan's ellipsoid method [Citation], a polynomial time algorithm for LPs, which unfortunately is not competitive in practice, the Interior-Point Method (IPM) invented by ... [Citation] was shown to converge in polynomial time while also being competitive in practice.
+After a theoretical breakthrough by Khachiyan's ellipsoid method \cite{Khachiyan-Ellipsoid1,Khachiyan-Ellipsoid2}, a polynomial time algorithm for LPs, which unfortunately is not competitive in practice, the Interior-Point Method (IPM) developed by \textcite{Karmarkar-IPM} was shown to converge in polynomial time while also being competitive in practice.
 Since then many variants of IPMs have been developed some with better theoretical guarantees others better in practice.
-The main bottleneck of IPMs is the solution of a Newton-type linear system which determines the search direction in every step.
-Carefully reformulating this system, solving it can be broken down to solving \(\mat{A} \mat{D}^2 \mat{A}^T \Delta \vek{y} = \vek{p}\) for some vector \(\vek{p}\).
-Here, \(\mat{A}\) is the matrix of constraints, \(\mat{D}\) is a diagonal matrix depending on the current iterates and the equation is called the normal equation.
-Typically, this normal equation is solved via direct methods using a decomposition of \(\mat{A} \mat{D}^2 \mat{A}^T\) [Citation] but this is exceedingly expensive if \(\mat{A} \mat{D}^2 \mat{A}^T\) is large and dense.
-If the matrix is sparse one can speed up the process [Citation] but \(\mat{A} \mat{D}^2 \mat{A}^T\) can be dense even if \(\mat{A}\) is sparse.
-Iterative methods that only rely on matrix-vector products can use the sparsity of \(\mat{A}\) but converge only very slowly because \(\mat{D}\) becomes more and more ill-conditioned as the algorithm progresses.
-Based on [Avron] we will develop a preconditioner for this linear system in the special case when \(\mat{A}\) is sparse and \(m \ll n\), i.e. when the number of constraints is much smaller than the number of variables, using tools from Randomized Linear Algebra (RLA).
 
-In the last decade many advances in numerical linear algebra are due to the incorporation of randomness.
+The main bottleneck of IPMs is the solution of a linear system which determines the search direction in every step.
+Carefully reformulating this system, solving it can be broken down to solving \(\mat{A} \mat{D}^2 \mat{A}^T \Delta \vek{y} = \vek{p}\) for some vector \(\vek{p}\).
+Here, \(\mat{A}\) is the matrix of constraints, \(\mat{D}\) is a diagonal matrix depending on the current iterates and the equation is called the \emph{normal equation}.
+Typically, this normal equation is solved via direct methods using a Cholesky decomposition of \(\mat{A} \mat{D}^2 \mat{A}^T\) \cite[p. 17]{Wright-PrimalDualInteriorPointMethods} but this is exceedingly expensive if \(\mat{A} \mat{D}^2 \mat{A}^T\) is large and dense.
+If the matrix is sparse one can speed up the process \cite{NgPeyton-SparseCholesky} but \(\mat{A} \mat{D}^2 \mat{A}^T\) can be dense even if \(\mat{A}\) is sparse.
+Iterative methods that only rely on matrix-vector products can use the sparsity of \(\mat{A}\) but converge only very slowly because \(\mat{D}^2\) becomes more and more ill-conditioned as the algorithm progresses.
+Therefore good preconditioners are crucial for employing iterative methods.
+Based on the work by \textcite{Avron-FasterRandomizedInfeasibleIPMs} we will show a way to effectively precondition this linear system in the special case when \(\mat{A}\) is sparse and the number of constraints is much smaller than the number of variables, using tools from Randomized Linear Algebra (RLA).
+
+In the last decade many advances in numerical linear algebra where achieved by incorporating randomness.
 We will focus on a RLA tool called sketching which is relevant for our work.
-[Woodruff] gives an overview on how sketching matrices lead to dimensionality reductions that can be applied to least squares problems (see also [Blendenpik]), low-rank approximation and graph-sparsification.
-They were also successfully applied to fast matrix multiplication (Cohen [Citation]).
+\textcite{Woodruff-Sketching} gives an overview on how sketching matrices lead to dimensionality reductions that can be applied to least squares problems (see also \cite{Avron-Blendenpik}), low-rank approximation and graph-sparsification.
+They were also successfully applied to fast matrix multiplication by \textcite{Cohen-OptimalApproximateMatrixProduct}.
 The key idea is that a matrix \(\mat{B} \in \R^{n \times m}\) with \(m \ll n\) has an \(m\)-dimensional column space that forms a subspace of \(\R^n\).
 This ambient dimension of n is unnecessarily large.
-There are random \(w \times n\) matrices describing linear maps which approximately preserve the norms of any fixed \(m\)-dimensional subspace of \(\R^n\) with high probability.
+There are random \(w \times n\) matrices describing linear maps which approximately preserve the geometry of any fixed \(m\)-dimensional subspace of \(\R^n\) with high probability.
 These are called oblivious subspace embeddings.
 The size of \(w\) depends on \(m\), the approximation tolerance and on the failure probability but not on \(n\), so we can significantly reduce dimensions at the cost of some approximation error and a failure probability.
 While matrices with properly normalized Gaussian entries form oblivious subspace embeddings [Citation], computing the product \(\mat{W}\mat{B}\) is expensive because they are dense.
