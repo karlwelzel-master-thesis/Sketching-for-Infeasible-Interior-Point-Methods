@@ -27,14 +27,13 @@ Based on the work by \textcite{Avron-FasterRandomizedInfeasibleIPMs} we will sho
 In the last decade many advances in numerical linear algebra where achieved by incorporating randomness.
 We will focus on a RLA tool called sketching which is relevant for our work.
 \textcite{Woodruff-Sketching} gives an overview on how sketching matrices lead to dimensionality reductions that can be applied to least squares problems (see also \cite{Avron-Blendenpik}), low-rank approximation and graph-sparsification.
-They were also successfully applied to fast matrix multiplication by \textcite{Cohen-OptimalApproximateMatrixProduct}.
 The key idea is that a matrix \(\mat{B} \in \R^{n \times m}\) with \(m \ll n\) has an \(m\)-dimensional column space that forms a subspace of \(\R^n\).
-This ambient dimension of n is unnecessarily large.
+This ambient dimension of \(n\) is unnecessarily large.
 There are random \(w \times n\) matrices describing linear maps which approximately preserve the geometry of any fixed \(m\)-dimensional subspace of \(\R^n\) with high probability.
-These are called oblivious subspace embeddings.
+These are called \emph{oblivious subspace embeddings}.
 The size of \(w\) depends on \(m\), the approximation tolerance and on the failure probability but not on \(n\), so we can significantly reduce dimensions at the cost of some approximation error and a failure probability.
-While matrices with properly normalized Gaussian entries form oblivious subspace embeddings [Citation], computing the product \(\mat{W}\mat{B}\) is expensive because they are dense.
-[AilonChazelle] developed so-called Fast-Johnson-Lindenstrauss-Transforms which enable a fast computation if \(\mat{B}\) is dense and for sparse matrices \(\mat{B}\) there exist sparse embedding matrices [Achlioptas; Cohen (Nearly Tight...)].
+While matrices with properly normalized Gaussian entries form oblivious subspace embeddings \cite[Theorem 6]{Woodruff-Sketching}, applying them to a vector in \(\R^n\) is expensive as these matrices are dense.
+\textcite{AilonChazelle-FastJohnsonLindenstraussTransform} developed so-called Fast-Johnson-Lindenstrauss-Transforms which enable fast matrix-vector multiplications. For sparse matrices \(\mat{B}\) there exist sparse embedding matrices \cite{Achlioptas-SparseSketching,Cohen-NearlyTightObliviousSubspaceEmbeddings} to speed up forming the product.
 
 Assume that \(\mat{A}\) is a sparse \(m \times n\) matrix with \(m \ll n\). Then \(\mat{D} \mat{A}^T\) exactly fits our description above and we can use a sparse embedding matrix \(\mat{W}\) such that \(\mat{W}\mat{D}\mat{A}^T\) only has dimensions \(w \times m\) and stays sparse.
 As in [Avron] we compute a decomposition of \(\mat{W}\mat{D}\mat{A}^T\) to design a preconditioner for the linear system involving \(\mat{A}\mat{D}^2\mat{A}^T\).
