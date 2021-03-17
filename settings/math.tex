@@ -10,7 +10,7 @@
 \usepackage{stmaryrd}
 \SetSymbolFont{stmry}{bold}{U}{stmry}{m}{n}  % See https://tex.stackexchange.com/questions/106714/stmaryrd-and-boldsymbol-avoid-warnings
 \usepackage{bm}  % provides \bm for bold math. Better than \boldsymbol
-\usepackage{mleftright} \mleftright  % improves spacing for \left and \right
+\usepackage{mleftright} \mleftright{}  % improves spacing for \left and \right
 \usepackage{braket}  % provides \Set with scaled middle |
 \usepackage{siunitx}  % units (SI)
 
@@ -102,7 +102,7 @@ stereo-iso-mer Round-table homol-ogous homol-ogy}
 \newcommand{\Toth}{T\'{o}th}		% Geza
 \newcommand{\Turan}{Tur\'an}
 \newcommand{\Ungor}{\"Ung\"or}		% Alper
-\newcommand{\Voronoi}{Vorono\"i}		% ... diagram [for francophile pedants only]
+\newcommand{\Voronoi}{Vorono\"\i}		% ... diagram [for francophile pedants only]
 
 % Other
 \newcommand{\Cplusplus}{C\raisebox{0.5ex}{\tiny\textbf{++}}}
@@ -112,7 +112,7 @@ stereo-iso-mer Round-table homol-ogous homol-ogy}
 % ----------------------------------------------------------------------
 
 % ---- SYMBOLS ----
-\let\e\varepsilon               % a ``real'' epsilon
+\let\e\varepsilon{}               % a ``real'' epsilon
 \newcommand{\Probability}{\mathbb{P}}
 
 \newcommand{\Real}{\mathbb{R}}
@@ -123,10 +123,10 @@ stereo-iso-mer Round-table homol-ogous homol-ogy}
 \newcommand{\Complex}{\mathbb{C}}
 \newcommand{\Rational}{\mathbb{Q}}
 
-\let\N\Natural
-\let\Q\Rational
-\let\R\Real
-\let\Z\Integer
+\let\N\Natural{}
+\let\Q\Rational{}
+\let\R\Real{}
+\let\Z\Integer{}
 \newcommand{\Rd}{\Real^d}
 \newcommand{\RP}{\Real\Proj}
 \newcommand{\CP}{\Complex\Proj}
@@ -186,23 +186,23 @@ stereo-iso-mer Round-table homol-ogous homol-ogy}
 \newcommand{\tofrom}{\leftrightarrow}
 
 % ---- DELIMITER PAIRS ----
-\newcommand{\floor}[1]{\lfloor #1 \rfloor}
-\newcommand{\ceil}[1]{\lceil #1 \rceil}
-\newcommand{\seq}[1]{\langle #1 \rangle}
-\newcommand{\abs}[1]{\lvert #1 \rvert}		% use instead of $|x|$ 
-\newcommand{\norm}[1]{\lVert #1 \rVert}		% use instead of $\|x\|$ 
+\newcommand{\floor}[1]{\lfloor#1\rfloor}
+\newcommand{\ceil}[1]{\lceil#1\rceil}
+\newcommand{\seq}[1]{\langle#1\rangle}
+\newcommand{\abs}[1]{\lvert#1\rvert}		% use instead of $|x|$ 
+\newcommand{\norm}[1]{\lVert#1\rVert}		% use instead of $\|x\|$ 
 \newcommand{\indic}[1]{\big[#1\big]}		% indicator variable; Iverson notation
 								% e.g., Kronecker delta = [x=0]
 
 % --- Self-scaling delmiter pairs ---
-\newcommand{\Floor}[1]{\left\lfloor #1 \right\rfloor}
-\newcommand{\Ceil}[1]{\left\lceil #1 \right\rceil}
-\newcommand{\Seq}[1]{\left\langle #1 \right\rangle}
-\newcommand{\Abs}[1]{\left\lvert #1 \right\rvert}
-\newcommand{\Norm}[1]{\left\lVert #1 \right\rVert}
-\newcommand{\Paren}[1]{\left( #1 \right)}		% need better macro name!
-\newcommand{\Brack}[1]{\left[ #1 \right]}		% need better macro name!
-\newcommand{\Indic}[1]{\left[ #1 \right]}		% indicator variable; Iverson notation
+\newcommand{\Floor}[1]{\left\lfloor#1\right\rfloor}
+\newcommand{\Ceil}[1]{\left\lceil#1\right\rceil}
+\newcommand{\Seq}[1]{\left\langle#1\right\rangle}
+\newcommand{\Abs}[1]{\left\lvert#1\right\rvert}
+\newcommand{\Norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\Paren}[1]{\left(#1\right)}		% need better macro name!
+\newcommand{\Brack}[1]{\left[#1\right]}		% need better macro name!
+\newcommand{\Indic}[1]{\left[#1\right]}		% indicator variable; Iverson notation
 
 % ----------------------------------------------------------------------
 %  Maths environments (using amsthm)
