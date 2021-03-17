@@ -1,4 +1,4 @@
-\chapter{Sketching} \label{chap:sketching}
+\chapter{Sketching}\label{chap:sketching}
 
 Important concepts to cover
 \begin{enumerate}
@@ -7,16 +7,16 @@ Important concepts to cover
   \item Definition of an oblivious subspace embedding
   \item Equivalent statements for subspace embeddings
   \item State sparse sketching result
-  \item Apply sparse sketching result to \((\mat{A}\mat{D})^T\) and show that \(\mat{R}^{-1}\) is a good two-sided preconditioner
+  \item Apply sparse sketching result to \({(\mat{A}\mat{D})}^T\) and show that \(\mat{R}^{-1}\) is a good two-sided preconditioner
 \end{enumerate}
 
 \hrule
 
-Based on \cite{Avron-FasterRandomizedInfeasibleIPMs} we will use sketching to determine a preconditioner for \(\mat{A} \mat{D}^2 \mat{A}^T\) and iterative methods solve the normal equation. Furthermore, the solution gained by directly evaluating \cref{eqn:s-from-normal,eqn:x-from-normal} is perturbed to ensure any inaccuracies in \(\Delta\vek{y}\) only affect the last line of \cref{eqn:newton-system}.
+Based on~\cite{Avron-FasterRandomizedInfeasibleIPMs} we will use sketching to determine a preconditioner for \(\mat{A} \mat{D}^2 \mat{A}^T\) and iterative methods solve the normal equation. Furthermore, the solution gained by directly evaluating \cref{eqn:s-from-normal,eqn:x-from-normal} is perturbed to ensure any inaccuracies in \(\Delta\vek{y}\) only affect the last line of \cref{eqn:newton-system}.
 
-The following introduction to sketching is based on \cite{Woodruff-Sketching}.
+The following introduction to sketching is based on~\cite{Woodruff-Sketching}.
 
-\begin{definition} \label{def:subspace-embedding}
+\begin{definition}\label{def:subspace-embedding}
 Let \(\e \in (0, 1)\). A \uline{\((1 \pm \e)\) \(\ell_2\)-subspace embedding} for the column space of a matrix \(\mat{B} \in \R^{n \times d}\) is a matrix \(\mat{W} \in \R^{w \times n}\) such that
 \[ (1-\e) \norm{\mat{B}\vek{z}}_2^2 \leq \norm{\mat{W}\mat{B}\vek{z}}_2^2 \leq (1+\e)\norm{\mat{B}\vek{z}}_2^2 \]
 for all \(\vek{z} \in \R^d\).
@@ -48,14 +48,14 @@ The range of eigenvalues of a symmetric matrix \(\mat{A}\) is given by \(\set{ \
   \norm{\mat{U}^T \mat{W}^T \mat{W} \mat{U} - \mat{I}_d}_2
   &= \sigma_1(\mat{U}^T \mat{W}^T \mat{W} \mat{U} - \mat{I}_d) \\
   &= \max_{\vek{e} \in \R^d, \norm{\vek{e}}_2 = 1} \Abs{\vek{e}^T \Paren{\mat{U}^T \mat{W}^T \mat{W} \mat{U} - \mat{I}_d} \vek{e} } \\
-  &= \max_{\vek{e} \in \R^d, \norm{\vek{e}}_2 = 1} \Abs{(\mat{U}\vek{e})^T \mat{W}^T \mat{W} (\mat{U}\vek{e}) - \vek{e}^T \vek{e}} \\
+  &= \max_{\vek{e} \in \R^d, \norm{\vek{e}}_2 = 1} \Abs{{(\mat{U}\vek{e})}^T \mat{W}^T \mat{W} (\mat{U}\vek{e}) - \vek{e}^T \vek{e}} \\
   &= \max_{\vek{s} \in \mathcal{S}, \norm{\vek{s}}_2 = 1} \Abs{\vek{s}^T \mat{W}^T \mat{W} \vek{s} - 1} \\
   &= \max_{\vek{s} \in \mathcal{S}, \norm{\vek{s}}_2 = 1} \Abs{\norm{\mat{W}\vek{s}}_2^2 - 1}.
 \end{align*}
 Using \(\norm{\mat{U}\vek{e}}_2 = \norm{\vek{e}}_2\), this proves the equivalence of statements 3 and 4.
 \end{proof}
 
-\begin{definition} \label{def:oblivious-subspace-embedding}
+\begin{definition}\label{def:oblivious-subspace-embedding}
 Let \(w, n, d \in \N\) and \(\e, \delta \in (0, 1)\) be given.
 A probability distribution \(\Pi\) over matrices \(\mat{W} \in \R^{w \times n}\) is an \uline{oblivious \(\ell_2\)-subspace embedding} (OSE) if, for any matrix \(\mat{B} \in \R^{n \times d}\) a matrix \(\mat{W}\) drawn from \(\Pi\) is a \((1\pm\e)\) \(\ell_2\)-subspace embedding with probability at least \(1 - \delta\).
 \end{definition}
@@ -71,8 +71,8 @@ A classic result in sketching is that matrices with Gaussian entries form an OSE
 
 A matrix \(\mat{W}\) with Gaussian entries is dense so computing the matrix product \(\mat{W}\mat{B}\) takes \(O(w n d)\) operations in general.
 If the matrix \(\mat{B}\) is sparse we need an OSE where all sampled matrices are sparse to take advantage of that.
-The following sparse OSE result is taken from \cite{Cohen-NearlyTightObliviousSubspaceEmbeddings}.
-\Textcite{Avron-FasterRandomizedInfeasibleIPMs} use the sketching result from \cite{Cohen-OptimalApproximateMatrixProduct} but for simplicity we replaced it by a simpler one giving the same complexity guarantees in the end(?).
+The following sparse OSE result is taken from~\cite{Cohen-NearlyTightObliviousSubspaceEmbeddings}.
+\Textcite{Avron-FasterRandomizedInfeasibleIPMs} use the sketching result from~\cite{Cohen-OptimalApproximateMatrixProduct} but for simplicity we replaced it by a simpler one giving the same complexity guarantees in the end (?).
 
 \begin{definition}
 A \uline{sparse embedding matrix} \(\mat{W} \in \R^{w \times n}\) is constructed in the following way:
@@ -81,7 +81,7 @@ All other entries of \(\mat{W}\) are set to zero.
 This defines a probability distribution over \(\R^{w \times n}\) where each sampled matrix has exactly \(s \cdot n\) nonzero entries.
 \end{definition}
 
-\begin{theorem}[Theorem 4.2 in \cite{Cohen-NearlyTightObliviousSubspaceEmbeddings}]  \label{thm:sparse-ose}
+\begin{theorem}[Theorem 4.2 in~\cite{Cohen-NearlyTightObliviousSubspaceEmbeddings}]\label{thm:sparse-ose}
 For any \(B > 2, \ \delta < 1/2, \ \e < 1/2\) there are
 \[ w = O \Paren{\frac{B d \log(d/\delta)}{\e^2}} \quad \text{and} \quad s = O \Paren{\frac{\log_B(d/\delta)}{\e}}\]
 such that the sparse embedding matrices form an oblivious \(\ell_2\)-subspace embedding.
@@ -105,7 +105,7 @@ The preconditioned system has the form
 \end{equation}
 The following theorem shows that this preconditioner leads to bounds on the condition number of \(\mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{R}^{-1}\) which can be used to bound the number of CG iterations needed to reach a certain error estimate.
 
-\begin{theorem} \label{thm:condition-number-bound}
+\begin{theorem}\label{thm:condition-number-bound}
 The singular values of \(\mat{R}^{-T}\mat{A}\mat{D}\) and \(\mat{D}\mat{A}^T \mat{R}^{-1}\) are bounded by
 \[ \frac{3}{4} = \frac{1}{1 + \e} \leq \sigma_i^2(\mat{R}^{-T}\mat{A}\mat{D}) = \sigma_i^2(\mat{D}\mat{A}^T \mat{R}^{-1}) \leq \frac{1}{1 - \e} = \frac{3}{2} \quad \text{for } i = 1, \ldots, m \]
 which implies that the condition number of their product \(\mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{R}^{-1}\) is bounded by \((1+\e) / (1-\e) = 2\).
@@ -126,20 +126,20 @@ Therefore
 \[ \frac{1}{1 + \e} \leq \frac{\norm{\mat{D}\mat{A}^T \mat{R}^{-1} \tilde{\vek{z}}}_2^2}{\norm{\tilde{\vek{z}}}_2^2} \leq \frac{1}{1 - \e} \]
 which proves the bounds on the singular values.
 The condition number of a matrix is defined as the largest singular value divided by the smallest singular value.
-Because \(\mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{R}^{-1} = (\mat{D} \mat{A}^T \mat{R}^{-1})^T (\mat{D} \mat{A}^T \mat{R}^{-1})\) the singular values of this matrix are just the squares of the singular values of \(\mat{D} \mat{A}^T \mat{R}^{-1}\), so
+Because \(\mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{R}^{-1} = {(\mat{D} \mat{A}^T \mat{R}^{-1})}^T (\mat{D} \mat{A}^T \mat{R}^{-1})\) the singular values of this matrix are just the squares of the singular values of \(\mat{D} \mat{A}^T \mat{R}^{-1}\), so
 \[ \kappa_2(\mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{R}^{-1})
    = \frac{\sigma_{\max}^2(\mat{D} \mat{A}^T \mat{R}^{-1})}{\sigma_{\min}^2(\mat{D} \mat{A}^T \mat{R}^{-1})} \leq \frac{1+\e}{1-\e} \]
 and we are done.
 \end{proof}
 
-\begin{theorem} \label{thm:cg-residual-bound}
+\begin{theorem}\label{thm:cg-residual-bound}
 Let \(\vek{q}^j\) be the iterates when solving \( \mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{R}^{-1} \vek{q} = \mat{R}^{-T} \vek{p} \) with the CG algorithm and let \(\vek{f}^j\) be the residuals defined by
 \( \vek{f}^j = \mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{R}^{-1} \vek{q}^j - \mat{R}^{-T} \vek{p} \).
 Then the \(\ell_2\)-norm of the residuals converges at least linearly to zero
 \[ \norm{\vek{f}^{j+1}}_2 \leq \frac{1}{2} \norm{ \vek{f}^j }_2 \quad \forall j = 1, 2, \ldots \]
 \end{theorem}
 \begin{proof}
-Theorem 8 of \cite{Bouyouli-ConjugateGradientConvergence} showed that
+Theorem 8 of~\cite{Bouyouli-ConjugateGradientConvergence} showed that
 \[ \norm{\vek{f}^{j+1}}_2 \leq \frac{\kappa_2(\mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{R}^{-1}) - 1}{2} \norm{\vek{f}^j}_2 .\]
 Using the bound on the condition number from \cref{thm:condition-number-bound} we obtain
 \[ \frac{\kappa_2(\mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{R}^{-1}) - 1}{2}
@@ -153,16 +153,16 @@ This also allows us to bound the size of the perturbation vector by the size of 
 
 \begin{theorem}
 Given a vector \(\vek{f} \in \R^m\) the vector
-\[ \vek{v} = (\mat{S}\mat{X})^{1/2} \mat{W}^T \mat{Q} \vek{f} \]
+\[ \vek{v} = {(\mat{S}\mat{X})}^{1/2} \mat{W}^T \mat{Q} \vek{f} \]
 satisfies \( \mat{A}\mat{S}^{-1}\vek{v} = \mat{R}^T \vek{f} \) and \(\norm{\vek{v}}_2 \leq n \sqrt{\mu} \norm{\vek{f}}_2\).
 \end{theorem}
 \begin{proof}
 Using the definition of \(\mat{Q}\) and \(\mat{R}\) we obtain
 \begin{align*}
   \mat{A} \mat{S}^{-1} \vek{v}
-  &= \mat{A} \mat{S}^{-1} (\mat{S}\mat{X})^{1/2} \mat{W}^T \mat{Q} \vek{f}
+  &= \mat{A} \mat{S}^{-1} {(\mat{S}\mat{X})}^{1/2} \mat{W}^T \mat{Q} \vek{f}
    = \mat{A} \mat{D} \mat{W}^T \mat{Q} \vek{f} \\
-  &= (\mat{Q} \mat{R})^T \mat{Q} \vek{f}
+  &= {(\mat{Q} \mat{R})}^T \mat{Q} \vek{f}
    = \mat{R}^T \mat{Q}^T \mat{Q} \vek{f}
    = \mat{R}^T \vek{f}
 \end{align*}
@@ -170,10 +170,10 @@ which proves the first part.
 To bound the norm consider
 \[ 
   \norm{\vek{v}}_2
-  = \norm{(\mat{S}\mat{X})^{1/2} \mat{W}^T \mat{Q} \vek{f}}_2
-  \leq \norm{(\mat{S}\mat{X})^{1/2}}_2 \norm{\mat{W}^T}_2 \norm{\mat{Q} \vek{f}}_2.
+  = \norm{{(\mat{S}\mat{X})}^{1/2} \mat{W}^T \mat{Q} \vek{f}}_2
+  \leq \norm{{(\mat{S}\mat{X})}^{1/2}}_2 \norm{\mat{W}^T}_2 \norm{\mat{Q} \vek{f}}_2.
 \]
-Now, \(\norm{(\mat{S}\mat{X})^{1/2}}_2 \leq \norm{(\mat{S}\mat{X})^{1/2}}_F = \sqrt{n \mu}\) by definition of \(\mu\) and \(\norm{\mat{Q}\vek{f}}_2 = \norm{\vek{f}}_2\) because \(\mat{Q}\) has orthonormal columns.
+Now, \(\norm{{(\mat{S}\mat{X})}^{1/2}}_2 \leq \norm{{(\mat{S}\mat{X})}^{1/2}}_F = \sqrt{n \mu}\) by definition of \(\mu\) and \(\norm{\mat{Q}\vek{f}}_2 = \norm{\vek{f}}_2\) because \(\mat{Q}\) has orthonormal columns.
 Lastly, we need to bound \(\norm{\mat{W}^T}_2\).
 Remember that \(\mat{W}\) is constructed by choosing exactly \(s\) nonzero entries per column and each of these entries is drawn from \(\{-\frac{1}{\sqrt{s}}, \frac{1}{\sqrt{s}}\}\).
 Let \(\mathcal{J}_i\) denote the set of indices of the nonzero entries of column \(i\) in \(\mat{W}\) and let \(\vek{z}_{\mathcal{J}_i} \in \R^s\) denote the restriction of \(\vek{z} \in \R^w\) to these indices.
@@ -188,7 +188,7 @@ which implies \(\norm{\mat{W}^T}_2 \leq \sqrt{n}\).
 Combining these results,
 \[ 
   \norm{\vek{v}}_2
-  \leq \norm{(\mat{S}\mat{X})^{1/2}}_2 \norm{\mat{W}^T}_2 \norm{\mat{Q} \vek{f}}_2
+  \leq \norm{{(\mat{S}\mat{X})}^{1/2}}_2 \norm{\mat{W}^T}_2 \norm{\mat{Q} \vek{f}}_2
   \leq \sqrt{n \mu} \sqrt{n} \norm{\vek{f}}_2 = n \sqrt{\mu} \norm{\vek{f}}_2
 \]
 as claimed.

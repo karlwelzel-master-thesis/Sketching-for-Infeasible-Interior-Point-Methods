@@ -1,4 +1,4 @@
-\chapter{Introduction} \label{chap:introduction}
+\chapter{Introduction}\label{chap:introduction}
 
 Optimization problems are ubiquitous in science and industry.
 An important subclass of optimization problems are linear programs (LPs), where the objective function as well as the constraints on the variables are linear.
@@ -6,31 +6,31 @@ They take a primary role because of the extensive research on them and the exist
 Many problems can be modelled in this way, for example Machine Learning models such as \(\ell_1\)-regularized SVMs [Citation], basis pursuit [Citation], sparse inverse covariance matrix estimation (SICE) [Citation], the nonnegative matrix factorization (NMF) [Citation], MAP inference [Citation], etc. %TODO Improve. Directly stolen from Chowdhury, could lead to problems
 As the problems grow more complex the number of variables increases and we need more efficient algorithms for solving ever larger linear programs.
 
-One of the first methods that came about for solving LPs was the simplex method \cite{Dantzig-Simplex}, which is still in use today.
+One of the first methods that came about for solving LPs was the simplex method~\cite{Dantzig-Simplex}, which is still in use today.
 For LPs the set of feasible points is a polytope and the simplex method can be thought of as walking through the vertices of this polygon while reducing the objective function at every step until the minimum is reached.
 It was later shown that LPs in \(n\) dimensions exist whose polytope has \(2^n\) vertices and which are all visited by the simplex method so that the worst case complexity of the simplex method is exponential.
-After a theoretical breakthrough by Khachiyan's ellipsoid method \cite{Khachiyan-Ellipsoid1,Khachiyan-Ellipsoid2}, a polynomial time algorithm for LPs, which unfortunately is not competitive in practice, the Interior-Point Method (IPM) developed by \textcite{Karmarkar-IPM} was shown to converge in polynomial time while also being competitive in practice.
+After a theoretical breakthrough by Khachiyan's ellipsoid method~\cite{Khachiyan-Ellipsoid1,Khachiyan-Ellipsoid2}, a polynomial time algorithm for LPs, which unfortunately is not competitive in practice, the Interior-Point Method (IPM) developed by \textcite{Karmarkar-IPM} was shown to converge in polynomial time while also being competitive in practice.
 Since then many variants of IPMs have been developed some with better theoretical guarantees others better in practice.
 
 The main bottleneck of IPMs is the solution of a linear system which determines the search direction in every step.
 Carefully reformulating this system, solving it can be broken down to solving \(\mat{A} \mat{D}^2 \mat{A}^T \Delta \vek{y} = \vek{p}\) for some vector \(\vek{p}\).
 Here, \(\mat{A} \in \R^{m \times n}\) is the matrix of constraints, \(\mat{D} \in \R^{n \times n}\) is a diagonal matrix depending on the current iterates and the equation is called the \emph{normal equation}.
-Typically, this normal equation is solved via direct methods using a Cholesky decomposition of \(\mat{A} \mat{D}^2 \mat{A}^T\) \cite[p. 17]{Wright-PrimalDualInteriorPointMethods} but this is exceedingly expensive if \(\mat{A} \mat{D}^2 \mat{A}^T\) is large and dense.
-If the matrix is sparse one can speed up the process \cite{NgPeyton-SparseCholesky} but \(\mat{A} \mat{D}^2 \mat{A}^T\) can be dense even if \(\mat{A}\) is sparse.
+Typically, this normal equation is solved via direct methods using a Cholesky decomposition of \(\mat{A} \mat{D}^2 \mat{A}^T\)~\cite[p. 17]{Wright-PrimalDualInteriorPointMethods} but this is exceedingly expensive if \(\mat{A} \mat{D}^2 \mat{A}^T\) is large and dense.
+If the matrix is sparse one can speed up the process~\cite{NgPeyton-SparseCholesky} but \(\mat{A} \mat{D}^2 \mat{A}^T\) can be dense even if \(\mat{A}\) is sparse.
 Iterative methods that only rely on matrix-vector products can use the sparsity of \(\mat{A}\) but converge only very slowly because \(\mat{D}^2\) becomes more and more ill-conditioned as the algorithm progresses.
 Therefore good preconditioners are crucial for employing iterative methods.
 Based on the work by \textcite{Avron-FasterRandomizedInfeasibleIPMs} we will show a way to effectively precondition this linear system in the special case when \(\mat{A}\) is sparse and the number of constraints is much smaller than the number of variables, using tools from Randomized Linear Algebra (RLA).
 
 In the last decade many advances in numerical linear algebra where achieved by incorporating randomness.
 We will focus on a RLA tool called sketching which is relevant for our work.
-\textcite{Woodruff-Sketching} gives an overview on how sketching matrices lead to dimensionality reductions that can be applied to least squares problems (see also \cite{Avron-Blendenpik}), low-rank approximation and graph-sparsification.
+\textcite{Woodruff-Sketching} gives an overview on how sketching matrices lead to dimensionality reductions that can be applied to least squares problems (see also~\cite{Avron-Blendenpik}), low-rank approximation and graph-sparsification.
 The key idea is that a matrix \(\mat{B} \in \R^{n \times m}\) with \(m \ll n\) has an \(m\)-dimensional column space that forms a subspace of \(\R^n\).
 This ambient dimension of \(n\) is unnecessarily large.
 There are random \(w \times n\) matrices describing linear maps which approximately preserve the geometry of any fixed \(m\)-dimensional subspace of \(\R^n\) with high probability.
 These are called \emph{oblivious subspace embeddings}.
 The size of \(w\) depends on \(m\), the approximation tolerance and on the failure probability but not on \(n\), so we can significantly reduce dimensions at the cost of some approximation error and a failure probability.
-While matrices with properly normalized Gaussian entries form oblivious subspace embeddings \cite[Theorem 6]{Woodruff-Sketching}, applying them to a vector in \(\R^n\) is expensive as these matrices are dense.
-\textcite{AilonChazelle-FastJohnsonLindenstraussTransform} developed so-called Fast-Johnson-Lindenstrauss-Transforms which enable fast matrix-vector multiplications. For sparse matrices \(\mat{B}\) there exist sparse embedding matrices \cite{Achlioptas-SparseSketching,Cohen-NearlyTightObliviousSubspaceEmbeddings} to speed up forming the product.
+While matrices with properly normalized Gaussian entries form oblivious subspace embeddings~\cite[Theorem 6]{Woodruff-Sketching}, applying them to a vector in \(\R^n\) is expensive as these matrices are dense.
+\textcite{AilonChazelle-FastJohnsonLindenstraussTransform} developed so-called Fast-Johnson-Lindenstrauss-Transforms which enable fast matrix-vector multiplications. For sparse matrices \(\mat{B}\) there exist sparse embedding matrices~\cite{Achlioptas-SparseSketching,Cohen-NearlyTightObliviousSubspaceEmbeddings} to speed up forming the product.
 
 Assume that \(\mat{A}\) is a sparse \(m \times n\) matrix with \(m \ll n\).
 Then \(\mat{D} \mat{A}^T\) exactly fits our description above and we can use a sparse embedding matrix \(\mat{W}\) such that \(\mat{W}\mat{D}\mat{A}^T\) only has dimensions \(w \times m\) and stays sparse.
@@ -40,18 +40,18 @@ The idea of \textcite{Avron-FasterRandomizedInfeasibleIPMs} was to combine this 
 This allows us to bound the total number of operations by bounding the runtime of each iteration given that we want a high success probability over all iterations.
 
 The special case of LPs with sparse constraint matrices \(\mat{A}\) and \(m \ll n\) is not just convenient because of the RLA results but also comes up in pratice.
-In particular, optimizing \(\ell_1\)-regularized SVMs \cite{ZhuRossetTibshiraniHastie-1normSupportVectorMachines} with more features than data points and recovering sparse vectors in compressed sensing \cite{YangZhang-l1ProblemsInCompressiveSensing} produce LP instances with these properties.
+In particular, optimizing \(\ell_1\)-regularized SVMs~\cite{ZhuRossetTibshiraniHastie-1normSupportVectorMachines} with more features than data points and recovering sparse vectors in compressed sensing~\cite{YangZhang-l1ProblemsInCompressiveSensing} produce LP instances with these properties.
 We want to highlight a few previous papers on LPs in this setting. \textcite{LondonVardiWiermanYi-PackingLinearPrograms} devised a black box algorithm that speeds up any given algorithm for solving packing LPs (where each variable is restricted to lie between 0 and 1) if the number of variables is much larger than the number of constraints.
 This is achieved by sampling a fraction of the variables randomly, solving the restricted problem optimally and setting each variable to 0 or 1 depending on the outcome.
 \textcite{Sidford-TallDenseLinearPrograms} employed RLA ideas and inverse maintenance in a very sophisticated way to achieve a theoretical running time of \(\tilde{O}(nm + m^2)\) without assuming that \(\mat{A}\) is sparse.
 The data structures, algorithms and proofs are all very technical and complicated, as such it is not established if efficient implementations of their ideas exist.
-Lastly, as already mentioned \cite{Avron-FasterRandomizedInfeasibleIPMs} is the basis of this thesis.
+Lastly, as already mentioned in~\cite{Avron-FasterRandomizedInfeasibleIPMs} is the basis of this thesis.
 Their main results are already described above and will be presented in detail in the following chapters.
 In their paper they opted for a practical long-step infeasible IPM but focused mainly on the theoretical analysis of this algorithm assuming exact arithmetic.
 Their experiments were done using Gaussian sketching and they only recorded the number of outer (IPM) and inner (CG) iterations but did not report whether this leads to a reduction in running time.
-This thesis improves the practicability of their algorithm by showing that a QR decomposition of \(\mat{W} \mat{D} \mat{A}^T\) produces a preconditioner of the same quality as an SVD, tries to simplify the proofs by establishing the convergence result of the IPM from \cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs} and effectiveness of the preconditioner separately and extends the experiments to evaluate this algorithm in practice.
+This thesis improves the practicability of their algorithm by showing that a QR decomposition of \(\mat{W} \mat{D} \mat{A}^T\) produces a preconditioner of the same quality as an SVD, tries to simplify the proofs by establishing the convergence result of the IPM from~\cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs} and effectiveness of the preconditioner separately and extends the experiments to evaluate this algorithm in practice.
 
-The notation for Interior Point Methods and the specific long-step infeasible used in \cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs} along with their convergence result will be presented \cref{chap:ipm}.
+The notation for Interior Point Methods and the specific long-step infeasible used in~\cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs} along with their convergence result will be presented \cref{chap:ipm}.
 \cref{chap:sketching} will be concerned with the concepts of sketching that are useful for us and how its approximation guarantees leads to good preconditioners.
 Afterwards, \cref{chap:convergence} will lay out how to combine the two results and contains all of the proofs to show that under suitable conditions the Newton direction determined by the preconditioned system is good enough to ensure convergence in \(O(n^2 \log(n) (m^3 + \nnz(\mat{A})))\) operations.
 To round it off, we will compare the use of this preconditioned system with the use of direct solvers for \(\mat{A}\mat{D}^2\mat{A}^T \Delta \vek{y} = \vek{p}\) and showcase the algorithms behaviour on synthetic and real data in \cref{chap:experiments}.

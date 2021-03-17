@@ -1,10 +1,10 @@
-\chapter{Convergence Proofs} \label{chap:convergence}
+\chapter{Convergence Proofs}\label{chap:convergence}
 
 \begin{algorithm}[p]
   \SetKwInOut{Input}{Input}
   \Input{\(\mat{A} \in \R^{m \times n}\), \(\vek{b} \in \R^m\), \(\vek{c} \in \R^n\), \(\gamma \in (0, 1)\), \(\sigma \in (0, \frac{4}{5})\), tolerance \(\e_\mu > 0\) and an intial point \((\vek{x}^0, \vek{y}^0, \vek{s}^0)\)}
-  Initialize \(k = 0\) and \(\mu^0 = (\vek{x}^0)^T \vek{s}^0 /n\)\;
-  \While{\(\mu^k = (\vek{x}^k)^T \vek{s}^k /n > \e_\mu \mu^0\)}{
+  Initialize \(k = 0\) and \(\mu^0 = {(\vek{x}^0)}^T \vek{s}^0 /n\)\;
+  \While{\(\mu^k = {(\vek{x}^k)}^T \vek{s}^k /n > \e_\mu \mu^0\)}{
     Compute \(\vek{r}_p^k = \mat{A}\vek{x}^k - \vek{b}\), \(\vek{r}_d^k = \mat{A}^T \vek{y}^k + \vek{s}^k - \vek{c}\), \(\mat{X} = \diag(\vek{x}^k)\), \(\mat{S} = \diag(\vek{s}^k)\)\;
     Solve the following linear system such that \(\norm{\vek{v}}_\infty \leq  \gamma \sigma \mu^k/4\)
     \begin{equation} \label{eqn:approx-newton}
@@ -18,14 +18,14 @@
       \begin{pmatrix} -\vek{r}_p^k \\ -\vek{r}_d^k \\ -\vek{x}^k \circ \vek{s}^k + \sigma \mu^k \vek{1} \end{pmatrix}
       -
       \begin{pmatrix} 0 \\ 0 \\ \vek{v} \end{pmatrix} \text{\;}
-    \end{equation} \\ \label{line:compute-approx-newton}
+    \end{equation} \\\label{line:compute-approx-newton}
     Determine the maximum \(\tilde{\alpha} \in [0, 1]\) such that for all \(\alpha \in [0, \tilde{\alpha}]\) we have \((\vek{x}^k, \vek{y}^k, \vek{s}^k) + \alpha (\Delta\hat{\vek{x}}, \Delta\hat{\vek{y}}, \Delta{\hat{\vek{s}}}) \in \mathcal{N}(\gamma)\)\;
-    Compute \(\bar{\alpha} = \argmin \set{ (\vek{x}^k + \alpha \Delta\hat{\vek{x}})^T (\vek{s}^k + \alpha \Delta{\hat{\vek{s}}}) | \alpha \in [0, \tilde{\alpha}]}\)\;
+    Compute \(\bar{\alpha} = \argmin \set{ {(\vek{x}^k + \alpha \Delta\hat{\vek{x}})}^T (\vek{s}^k + \alpha \Delta{\hat{\vek{s}}}) | \alpha \in [0, \tilde{\alpha}]}\)\;
     Set \((\vek{x}^{k+1}, \vek{y}^{k+1}, \vek{s}^{k+1}) = (\vek{x}^k, \vek{y}^k, \vek{s}^k) + \bar{\alpha} (\Delta\hat{\vek{x}}, \Delta\hat{\vek{y}}, \Delta{\hat{\vek{s}}}) \)\;
     Increment \(k \leftarrow k+1\)\;
   }
   \Return{\((\vek{x}^k, \vek{y}^k, \vek{s}^k)\)}\;
-  \caption{Infeasible IPM} \label{alg:ipm}
+  \caption{Infeasible IPM}\label{alg:ipm}
 \end{algorithm}
 
 \begin{algorithm}[p]
@@ -35,17 +35,17 @@
   Compute \(\vek{p} = -\vek{r}_p + \mat{A}(-\mat{S}^{-1}\mat{X}\vek{r}_d + \vek{x} - \sigma \mu \mat{S}^{-1} \vek{1})\)\;
   Construct a random sparse embedding matrix \(\mat{W} \in \R^{w \times m}\) as in \cref{eqn:sparse-ose-params} for the given \(\delta\)\;
   Compute the QR decomposition \(\mat{Q} \mat{R} = \mat{W} \mat{D} \mat{A}^T\)\;
-  Run the CG algorithm with \(\vek{q}^0 = \vek{0}\) until \(\mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{R}^{-1} \vek{q} = \mat{R}^{-T} \vek{p} + \vek{f}\) for some error \(\vek{f}\) satisfying \(\norm{\vek{f}}_2 \leq \e_{\vek{v}}/(n \sqrt{\mu})\)\; \label{line:cg}
-  Compute \(\vek{v} = (\mat{S} \mat{X})^{1/2} \mat{W}^T \mat{Q} \vek{f}\)\; \label{line:compute-v}
+  Run the CG algorithm with \(\vek{q}^0 = \vek{0}\) until \(\mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{R}^{-1} \vek{q} = \mat{R}^{-T} \vek{p} + \vek{f}\) for some error \(\vek{f}\) satisfying \(\norm{\vek{f}}_2 \leq \e_{\vek{v}}/(n \sqrt{\mu})\)\;\label{line:cg}
+  Compute \(\vek{v} = {(\mat{S} \mat{X})}^{1/2} \mat{W}^T \mat{Q} \vek{f}\)\;\label{line:compute-v}
   Compute \(\Delta\vek{y} = \mat{R}^{-1}\vek{q}\)\;
   Compute \(\Delta\vek{s} = -\vek{r}_d - \mat{A}^T \Delta\vek{y}\)\;
-  Compute \(\Delta\vek{x} = -\vek{x} + \sigma \mu \vek{1} - \mat{S}^{-1}\mat{X} \Delta\vek{s} - \mat{S}^{-1} \vek{v}\)\; \label{line:compute-delta-x}
+  Compute \(\Delta\vek{x} = -\vek{x} + \sigma \mu \vek{1} - \mat{S}^{-1}\mat{X} \Delta\vek{s} - \mat{S}^{-1} \vek{v}\)\;\label{line:compute-delta-x}
   \Return{\((\Delta\vek{x}, \Delta\vek{y}, \Delta\vek{s})\)}\;
-  \caption{Approximate Newton direction} \label{alg:newton-direction}
+  \caption{Approximate Newton direction}\label{alg:newton-direction}
 \end{algorithm}
 
 To give any convergence proofs it is necessary to exactly state the algorithm.
-\Cref{alg:ipm} is the same infeasible inexact long-step interior-point method as in \cite{Avron-FasterRandomizedInfeasibleIPMs,Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs} but with a different preconditioner.
+\Cref{alg:ipm} is the same infeasible inexact long-step interior-point method as in~\cite{Avron-FasterRandomizedInfeasibleIPMs,Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs} but with a different preconditioner.
 To keep the convergence proof of the IPM seperate from the considerations on how to solve for an approximate Newton direction we will consider the computation of the Newton direction in \cref{alg:newton-direction}.
 
 The first part of this chapter will be concerned with the convergence of \cref{alg:ipm} and its runtime.

@@ -1,4 +1,4 @@
-\chapter{Experiments} \label{chap:experiments}
+\chapter{Experiments}\label{chap:experiments}
 
 Some practical remarks:
 \begin{enumerate}
@@ -6,13 +6,13 @@ Some practical remarks:
   \item We can use a sparse QR solver in \cref{alg:newton-direction} (SPQR by Tim Davis)
   \item How to choose \(\alpha\)?
   \begin{itemize}
-    \item The function \((\vek{x}^k + \alpha \Delta\vek{x}^k)^T (\vek{s}^k + \Delta\vek{s}^k)\) is a quadratic function in \(\alpha\) so it is easy to minimise.
+    \item The function \({(\vek{x}^k + \alpha \Delta\vek{x}^k)}^T (\vek{s}^k + \Delta\vek{s}^k)\) is a quadratic function in \(\alpha\) so it is easy to minimise.
     \item We do not need to minimise \(\mu(\alpha)\). Just choose \(\alpha = 0.9\).
   \end{itemize}
   \item We do not need to care about \(\vek{v}\) in practice. (Experiment with this: How do \(\norm{\vek{v}}\) and \(\norm{\vek{f}}\) behave?)
   \item To avoid nearly rank-deficient matrices we need to construct our synthetic data in a clever way
   \item Real data can be obtained from netlib or the datasets used by Avron
-  \item How to terminate CG? Fixed number of iterations, fixed accuracy?
+  \item How to terminate CG\@? Fixed number of iterations, fixed accuracy?
   \item We do not need to scrap our results if the subspace embedding fails
   \item How to choose \(\sigma\)? \(\sigma = 0.1\) should be good, cite Zhen
   \item How to choose \(w, s\)? \(m < w < 2m\) and \(s = 2, 3\) works, cite Zhen

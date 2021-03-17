@@ -1,4 +1,4 @@
-\chapter{Interior-Point Methods for Linear Programming} \label{chap:ipm}
+\chapter{Interior-Point Methods for Linear Programming}\label{chap:ipm}
 
 Important concepts to cover
 \begin{enumerate}
@@ -15,7 +15,7 @@ Important concepts to cover
 
 \hrule
 
-For naming primal, dual and slack variables as well as the choice of the neighbourhood we follow \cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs}.
+For naming primal, dual and slack variables as well as the choice of the neighbourhood we follow~\cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs}.
 
 The standard form linear programming (LP) problem is given by
 \begin{equation}
@@ -29,7 +29,7 @@ where \(\mat{A} \in \R^{m \times n}\), \(\vek{b} \in \R^m\) and \(\vek{c} \in \R
 For feasible \(\vek{x}, \vek{y}, \vek{s}\) we always have \(\vek{c}^T \vek{x} \geq \vek{b}^T \vek{y}\) and the optimal solutions satisfy \(\vek{c}^T \vek{x} = \vek{b}^T \vek{y}\), so \(\vek{x}^T \vek{s} = \vek{c}^T \vek{x} - \vek{b}^T \vek{y}\) can be considered an optimality measure.
 
 Necessary and sufficient optimality conditions for both problems are given by
-\begin{subequations} \label{optimality-conditions}
+\begin{subequations}\label{optimality-conditions}
   \begin{align}
     \mat{A} \vek{x} &= \vek{b} \label{primal-feasibility} \\
     \mat{A}^T \vek{y} + \vek{s} &= \vek{c} \label{dual-feasibility} \\
@@ -66,7 +66,7 @@ The \emph{central path} is given by \(\Set{(\vek{x}_\tau, \vek{y}_\tau, \vek{s}_
     \vek{x}_\tau, \vek{s}_\tau &> \vek{0}
   \end{align}
 \end{subequations}
-if a solution satisfying \cref{optimality-conditions} exists (Wright says strict feasibility is required, ?), see \cite{Mizuno-PolynomialTimeConvergenceInexactIPM}.
+if a solution satisfying \cref{optimality-conditions} exists (Wright says strict feasibility is required?), see~\cite{Mizuno-PolynomialTimeConvergenceInexactIPM}.
 In this case, the elements of the central path converge towards a solution as \(\tau \to 0\).
 In a \emph{long-step} infeasible IPM all iterates are required to belong to a neighbourhoood of this central path given by
 \begin{equation}
@@ -106,7 +106,7 @@ The actual Newton system determining \((\Delta\vek{x}, \Delta\vek{y}, \Delta\vek
 \end{equation}
 
 This linear system of equations can be rewritten as
-\begin{subequations} \label{eqn:augmented-system}
+\begin{subequations}\label{eqn:augmented-system}
   \begin{align}
     \begin{pmatrix}
       \mat{A}              & \mat{0} \\
@@ -126,7 +126,7 @@ This linear system of equations can be rewritten as
 \end{subequations}
 which is called the \emph{augmented system}.
 Eliminating \(\Delta\vek{x}\) from the first equation and using \(\mat{D} = \mat{S}^{-1/2} \mat{X}^{1/2}\) we get
-\begin{subequations} \label{eqn:normal-equation-system}
+\begin{subequations}\label{eqn:normal-equation-system}
   \begin{align}
     \mat{A} \mat{D}^2 \mat{A}^T \Delta\vek{y} &= -\vek{r}_p + \mat{A} ( -\mat{S}^{-1} \mat{X} \vek{r}_d + \vek{x} - \sigma \mu \mat{S}^{-1} \vek{1} ) \eqqcolon \vek{p} \label{eqn:normal-equation} \\
     \Delta\vek{s} &= -\vek{r}_d - \mat{A}^T \Delta\vek{y} \label{eqn:s-from-normal} \\
