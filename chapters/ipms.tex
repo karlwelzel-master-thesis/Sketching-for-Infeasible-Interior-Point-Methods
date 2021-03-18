@@ -76,21 +76,14 @@ Neighbourhoods involving those bounds are known as \emph{short-step} IPMs and gi
 Lastly, the bound on the residuals (where \(\vek{r}^0\) and \(\mu^0\) are defined by the starting point \((\vek{x}^0, \vek{y}^0, \vek{s}^0)\)) implies that we will allow infeasible iterates as long as their residuals decrease to zero at least as fast as \(\mu\) does.
 Any algorithm that maintains iterates inside \(\mathcal{N}_{-\infty}(\gamma)\) and is able to decrease the corresponding \(\mu\) values to zero produces iterates which become arbitrarily close to optimality because \(\norm{\vek{r}}_2\) and \(x_i s_i\) converge to zero.
 
-The search direction in every iteration is determined by a Newton system, similar to the one used when trying to find a root of 
+The search direction in IPMs is determined by a Newton system that aims to find the root of 
 \begin{equation}
-  F(\vek{x}, \vek{y}, \vek{s}) \deq \begin{pmatrix} \mat{A}\vek{x} - \vek{b} \\ \mat{A}^T \vek{y} + \vek{s} - \vek{c} \\ \vek{x} \circ \vek{s} \end{pmatrix}
+  F(\vek{x}, \vek{y}, \vek{s}) \deq \begin{pmatrix} \mat{A}\vek{x} - \vek{b} \\ \mat{A}^T \vek{y} + \vek{s} - \vek{c} \\ \vek{x} \circ \vek{s} - \sigma \mu \vek{1} \end{pmatrix}
 \end{equation}
-The total derivative of \(F\) is given by
-\begin{equation}
-  F'(\vek{x}, \vek{y}, \vek{s}) = \begin{pmatrix}
-    \mat{A} & \mat{0}   & \mat{0} \\
-    \mat{0} & \mat{A}^T & \mat{I} \\
-    \mat{S} & \mat{0}   & \mat{X} \\
-  \end{pmatrix}
-\end{equation}
-where \(\mat{X} = \diag(\vek{x})\) and \(\mat{S} = \diag(\vek{s})\).
-The actual Newton system determining \((\Delta\vek{x}, \Delta\vek{y}, \Delta\vek{s})\) is slightly modified by adding a centering term \(\sigma \mu \vek{1}\) where \(\sigma \in [0,1]\) which allows for larger steps inside the neighbourhood:
-\begin{equation} \label{eqn:newton-system}
+where \(\sigma \in (0, 1)\) is a parameter.
+In other words, we aim at an element further along the central path by choosing \(\tau = \sigma \mu\).
+The search direction \((\Delta\vek{x}, \Delta\vek{y}, \Delta\vek{s})\) is therefore determined by 
+\begin{equation}\label{eqn:newton-system}
   \underbrace{
   \begin{pmatrix}
     \mat{A} & \mat{0}   & \mat{0} \\
@@ -101,12 +94,12 @@ The actual Newton system determining \((\Delta\vek{x}, \Delta\vek{y}, \Delta\vek
   \begin{pmatrix} \Delta\vek{x} \\ \Delta\vek{y} \\ \Delta\vek{s} \end{pmatrix}
   = -
   \underbrace{
-  \begin{pmatrix} \vek{r}_p \\ \vek{r}_d \\ \vek{x} \circ \vek{s} \end{pmatrix}
+  \begin{pmatrix} \vek{r}_p \\ \vek{r}_d \\ \vek{x} \circ \vek{s} - \sigma \mu \vek{1} \end{pmatrix}
   }_{F(\vek{x}, \vek{y}, \vek{s})}
-  + \begin{pmatrix} \vek{0} \\ \vek{0} \\ \sigma \mu \vek{1} \end{pmatrix}
 \end{equation}
-
-This linear system of equations can be rewritten as
+where \(\mat{X} = \diag(\vek{x})\) and \(\mat{S} = \diag(\vek{s})\).
+Because \(\mat{X}\) and \(\mat{S}\) are diagonal they can be easily inverted and we can simplify the linear system into smaller ones and a series of matrix-vector products.
+\Cref{eqn:newton-system} is equivalent to 
 \begin{subequations}\label{eqn:augmented-system}
   \begin{align}
     \begin{pmatrix}
@@ -125,8 +118,7 @@ This linear system of equations can be rewritten as
     \Delta\vek{s} &= -\vek{s} + \sigma \mu \mat{X}^{-1} \vek{1} - \mat{X}^{-1} \mat{S} \Delta\vek{x}
   \end{align}
 \end{subequations}
-which is called the \emph{augmented system}.
-Eliminating \(\Delta\vek{x}\) from the first equation and using \(\mat{D} = \mat{S}^{-1/2} \mat{X}^{1/2}\) we get
+in which the first equation is called the \emph{augmented system} and 
 \begin{subequations}\label{eqn:normal-equation-system}
   \begin{align}
     \mat{A} \mat{D}^2 \mat{A}^T \Delta\vek{y} &= -\vek{r}_p + \mat{A} ( -\mat{S}^{-1} \mat{X} \vek{r}_d + \vek{x} - \sigma \mu \mat{S}^{-1} \vek{1} ) \eqqcolon \vek{p} \label{eqn:normal-equation} \\
@@ -134,7 +126,9 @@ Eliminating \(\Delta\vek{x}\) from the first equation and using \(\mat{D} = \mat
     \Delta\vek{x} &= -\vek{x} + \sigma \mu \mat{S}^{-1} \vek{1} - \mat{S}^{-1} \mat{X} \Delta\vek{s} \label{eqn:x-from-normal}
   \end{align}
 \end{subequations}
-The first component is called the \emph{normal equation} because it can be written as the normal equation of a least squares system if \(\vek{r}_p = \vek{0}\).
+in which the first equation is called the \emph{normal equation}, see~\cite[p. 16]{Wright-PrimalDualInteriorPointMethods}.
+Here, \(\mat{D}\) is defined as the diagonal matrix \(\mat{S}^{-1/2} \mat{X}^{1/2}\) to simplify the notation.
+\Cref{eqn:normal-equation} is called normal equation because it can be written as the normal equation of a least squares system with coefficient matrix \(\mat{D}\mat{A}^T\) if \(\vek{r}_p = \vek{0}\).
 
 We will construct a preconditioner for \(\mat{A} \mat{D}^2 \mat{A}^T\) in the form of a nonsingular matrix \(\mat{P} \in \R^{m \times m}\) such that
 \( \mat{P}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{P}^{-1} \approx \mat{I}_m \).
