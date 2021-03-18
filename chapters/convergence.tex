@@ -2,34 +2,6 @@
 
 \begin{algorithm}[p]
   \SetKwInOut{Input}{Input}
-  \Input{\(\mat{A} \in \R^{m \times n}\), \(\vek{b} \in \R^m\), \(\vek{c} \in \R^n\), \(\gamma \in (0, 1)\), \(\sigma \in (0, \frac{4}{5})\), tolerance \(\e_\mu > 0\) and an intial point \((\vek{x}^0, \vek{y}^0, \vek{s}^0)\)}
-  Initialize \(k = 0\) and \(\mu^0 = {(\vek{x}^0)}^T \vek{s}^0 /n\)\;
-  \While{\(\mu^k = {(\vek{x}^k)}^T \vek{s}^k /n > \e_\mu \mu^0\)}{
-    Compute \(\vek{r}_p^k = \mat{A}\vek{x}^k - \vek{b}\), \(\vek{r}_d^k = \mat{A}^T \vek{y}^k + \vek{s}^k - \vek{c}\), \(\mat{X} = \diag(\vek{x}^k)\), \(\mat{S} = \diag(\vek{s}^k)\)\;
-    Solve the following linear system such that \(\norm{\vek{v}}_\infty \leq  \gamma \sigma \mu^k/4\)
-    \begin{equation} \label{eqn:approx-newton}
-      \begin{pmatrix}
-        \mat{A} & 0         & 0       \\
-        0       & \mat{A}^T & \mat{I} \\
-        \mat{S} & 0         & \mat{X} \\
-      \end{pmatrix}
-      \begin{pmatrix} \Delta\hat{\vek{x}} \\ \Delta\hat{\vek{y}} \\ \Delta\hat{\vek{s}} \end{pmatrix}
-      =
-      \begin{pmatrix} -\vek{r}_p^k \\ -\vek{r}_d^k \\ -\vek{x}^k \circ \vek{s}^k + \sigma \mu^k \vek{1} \end{pmatrix}
-      -
-      \begin{pmatrix} 0 \\ 0 \\ \vek{v} \end{pmatrix} \text{\;}
-    \end{equation} \\\label{line:compute-approx-newton}
-    Determine the maximum \(\tilde{\alpha} \in [0, 1]\) such that for all \(\alpha \in [0, \tilde{\alpha}]\) we have \((\vek{x}^k, \vek{y}^k, \vek{s}^k) + \alpha (\Delta\hat{\vek{x}}, \Delta\hat{\vek{y}}, \Delta{\hat{\vek{s}}}) \in \mathcal{N}(\gamma)\)\;
-    Compute \(\bar{\alpha} = \argmin \set{ {(\vek{x}^k + \alpha \Delta\hat{\vek{x}})}^T (\vek{s}^k + \alpha \Delta{\hat{\vek{s}}}) | \alpha \in [0, \tilde{\alpha}]}\)\;
-    Set \((\vek{x}^{k+1}, \vek{y}^{k+1}, \vek{s}^{k+1}) = (\vek{x}^k, \vek{y}^k, \vek{s}^k) + \bar{\alpha} (\Delta\hat{\vek{x}}, \Delta\hat{\vek{y}}, \Delta{\hat{\vek{s}}}) \)\;
-    Increment \(k \leftarrow k+1\)\;
-  }
-  \Return{\((\vek{x}^k, \vek{y}^k, \vek{s}^k)\)}\;
-  \caption{Infeasible IPM}\label{alg:ipm}
-\end{algorithm}
-
-\begin{algorithm}[p]
-  \SetKwInOut{Input}{Input}
   \Input{\(\mat{A} \in \R^{m \times n}\), \(\vek{b} \in \R^m\), \(\vek{c} \in \R^n\), \(\vek{x}, \vek{s} \in \R^n_{>0}\), \(\vek{y} \in \R^m\), tolerance \(\e_{\vek{v}} > 0\), failure probability \(\delta > 0\)}
   Compute \(\vek{r}_p = \mat{A}\vek{x} - \vek{b}\), \(\vek{r}_d = \mat{A}^T \vek{y} + \vek{s} - \vek{c}\), \(\mat{X} = \diag(\vek{x})\), \(\mat{S} = \diag(\vek{s})\)\;
   Compute \(\vek{p} = -\vek{r}_p + \mat{A}(-\mat{S}^{-1}\mat{X}\vek{r}_d + \vek{x} - \sigma \mu \mat{S}^{-1} \vek{1})\)\;
@@ -54,7 +26,7 @@ The main result is
 Assume that \(\gamma \in (0, 1)\) and \(\sigma \in (0, \frac{4}{5})\) are constant and that the initial point \((\vek{x}^0, \vek{y}^0, \vek{s}^0)\) satisfies \((\vek{x}^0, \vek{s}^0) > (\vek{x}^*, \vek{s}^*)\) for some \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\).
 Then \cref{alg:ipm} generates an iterate \((\vek{x}^k, \vek{y}^k, \vek{s}^k)\) satisfying \(\mu^k \leq \e_\mu \mu^0\) and \(\norm{\vek{r}^k} \leq \e_\mu \norm{\vek{r}^0}\) within \(O(n^2 \log(1/\e_\mu))\) iterations.
 \end{theorem}
-%TODO Change notation: \bar -> * and S to F*?
+%TODO Reference the result in the IPM chapter
 
 \Cref{line:compute-approx-newton} of \cref{alg:ipm} is written as a black box generating a sufficiently good estimate of the Newton direction at every step.
 To complete the algorithm we need to show that this gap can be filled using \cref{alg:newton-direction} which uses the previously designed preconditioner and perturbation vector to compute such an approximation:

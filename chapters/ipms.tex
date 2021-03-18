@@ -152,7 +152,7 @@ the error propagates from the normal equation to the primal feasibility componen
   \begin{pmatrix} \vek{f} \\ \vek{0} \\ \vek{0} \end{pmatrix}
 \end{equation}
 
-For the convergence proofs of~\cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs} to work we need that the error in calculating the Newton direction only affects the complementarity component of the Newton system.
+For the convergence proofs of \textcite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs} to work we need that the error in calculating the Newton direction only affects the complementarity component of the Newton system.
 This can be achieved by constructing a perturbation vector \(\vek{v} \in \R^n\) satisfying \(\mat{A}\mat{S}^{-1}\vek{v} = \vek{f}\) and subtracting \(\mat{S}^{-1}\vek{v}\) from \(\Delta\vek{x}\).
 The perturbed Newton direction \((\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}})\) is determined using
 \begin{subequations}
@@ -163,7 +163,7 @@ The perturbed Newton direction \((\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat
   \end{align}
 \end{subequations}
 and solves
-\begin{equation}
+\begin{equation}\label{eqn:perturbed-search-direction}
   \begin{pmatrix}
     \mat{A} & \mat{0}   & \mat{0} \\
     \mat{0} & \mat{A}^T & \mat{I} \\
@@ -178,3 +178,39 @@ and solves
 as shown by \textcite[p. 10]{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs}.
 Hence, we successfully shifted the error term in the Newton system.
 We will see that we can construct \(\vek{v}\) from \(\vek{f}\) in such a way that the size of the error \(\norm{\vek{v}}_2\) is bounded in terms of the error \(\norm{\vek{f}}_2\) in the next chapter.
+To see why this is important consider the proposed IPM algorithm and the corresponding convergence result
+and note that apart from conditions for the initial point it only requires the search direction to satisfy \cref{eqn:perturbed-search-direction} and \(\norm{\vek{v}}_2\) to be sufficiently small.
+The proof for \cref{thm:ipm-convergence} will be given in \cref{chap:convergence}.
+
+\begin{algorithm}[h]
+  \SetKwInOut{Input}{Input}
+  \Input{\(\mat{A} \in \R^{m \times n}\), \(\vek{b} \in \R^m\), \(\vek{c} \in \R^n\), \(\gamma \in (0, 1)\), \(\sigma \in (0, 1)\), tolerance \(\e_\mu > 0\) and an intial point \((\vek{x}^0, \vek{y}^0, \vek{s}^0)\)}
+  Initialize \(k = 0\) and \(\mu^0 = {(\vek{x}^0)}^T \vek{s}^0 /n\)\;
+  \While{\(\mu^k = {(\vek{x}^k)}^T \vek{s}^k /n > \e_\mu \mu^0\)}{
+    Compute \(\vek{r}_p^k = \mat{A}\vek{x}^k - \vek{b}\), \(\vek{r}_d^k = \mat{A}^T \vek{y}^k + \vek{s}^k - \vek{c}\), \(\mat{X} = \diag(\vek{x}^k)\), \(\mat{S} = \diag(\vek{s}^k)\)\;
+    Solve the following linear system such that \(\norm{\vek{v}}_\infty \leq  \gamma \sigma \mu^k/4\)
+    \begin{equation} \label{eqn:approx-newton}
+      \begin{pmatrix}
+        \mat{A} & 0         & 0       \\
+        0       & \mat{A}^T & \mat{I} \\
+        \mat{S} & 0         & \mat{X} \\
+      \end{pmatrix}
+      \begin{pmatrix} \hat{\Delta\vek{x}} \\ \hat{\Delta\vek{y}} \\ \hat{\Delta\vek{s}} \end{pmatrix}
+      =
+      \begin{pmatrix} -\vek{r}_p^k \\ -\vek{r}_d^k \\ -\vek{x}^k \circ \vek{s}^k + \sigma \mu^k \vek{1} \end{pmatrix}
+      -
+      \begin{pmatrix} 0 \\ 0 \\ \vek{v} \end{pmatrix} \text{\;}
+    \end{equation} \\\label{line:compute-approx-newton}
+    Determine the maximum \(\tilde{\alpha} \in [0, 1]\) such that for all \(\alpha \in [0, \tilde{\alpha}]\) we have \((\vek{x}^k, \vek{y}^k, \vek{s}^k) + \alpha (\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}}) \in \mathcal{N}_{-\infty}(\gamma)\)\;
+    Compute \(\bar{\alpha} = \argmin \set{ {(\vek{x}^k + \alpha \hat{\Delta\vek{x}})}^T (\vek{s}^k + \alpha \hat{\Delta\vek{s}}) | \alpha \in [0, \tilde{\alpha}]}\)\;
+    Set \((\vek{x}^{k+1}, \vek{y}^{k+1}, \vek{s}^{k+1}) = (\vek{x}^k, \vek{y}^k, \vek{s}^k) + \bar{\alpha} (\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}}) \)\;
+    Increment \(k \leftarrow k+1\)\;
+  }
+  \Return{\((\vek{x}^k, \vek{y}^k, \vek{s}^k)\)}\;
+  \caption{Infeasible IPM}\label{alg:ipm}
+\end{algorithm}
+
+\begin{theorem}\label{thm:ipm-convergence}
+  Assume that \(\gamma \in (0, 1)\) and \(\sigma \in (0, \frac{4}{5})\) are constant and that the initial point \((\vek{x}^0, \vek{y}^0, \vek{s}^0)\) satisfies \((\vek{x}^0, \vek{s}^0) > (\vek{x}^*, \vek{s}^*)\) for some \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\).
+  Then \cref{alg:ipm} generates an iterate \((\vek{x}^k, \vek{y}^k, \vek{s}^k)\) satisfying \(\mu^k \leq \e_\mu \mu^0\) and \(\norm{\vek{r}^k} \leq \e_\mu \norm{\vek{r}^0}\) within \(O(n^2 \log(1/\e_\mu))\) iterations.
+\end{theorem}
