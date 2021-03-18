@@ -25,7 +25,7 @@ for all \(\vek{z} \in \R^m\).
 Note that this definition does not depend on a particular basis for the representation of the column space of \(\mat{B}\).
 Nonetheless, we will often refer to \(\mat{W}\) as a \((1\pm\e)\) \(\ell_2\)-subspace embedding of \(\mat{B}\).
 Intuitively, a subspace embedding of some \(m\)-dimensional subspace of \(\R^n\) is a linear map from the (large) space \(\R^n\) to a (smaller) space \(\R^w\) that approximately preserves all of the distances of the subspace.
-There are multiple equivalent characterizations of subspace embeddings which are sometimes used in the literature.
+There are multiple equivalent characterizations of subspace embeddings used in the literature.
 
 \begin{theorem}
 Assume that \(\mat{B} \in \R^{n \times m}\) has full column rank and let
@@ -48,7 +48,6 @@ Note that the matrix \(\mat{U}^T \mat{W}^T \mat{W} \mat{U} - \mat{I}_d\) is real
 Using \(\norm{\mat{U}\vek{e}}_2 = \norm{\vek{e}}_2\), this implies
 \begin{align*}
   \norm{\mat{U}^T \mat{W}^T \mat{W} \mat{U} - \mat{I}_d}_2
-  &= \sigma_1(\mat{U}^T \mat{W}^T \mat{W} \mat{U} - \mat{I}_d) \\
   &= \max_{\vek{e} \in \R^d, \norm{\vek{e}}_2 = 1} \Abs{\vek{e}^T \Paren{\mat{U}^T \mat{W}^T \mat{W} \mat{U} - \mat{I}_d} \vek{e} } \\
   &= \max_{\vek{e} \in \R^d, \norm{\vek{e}}_2 = 1} \Abs{{(\mat{U}\vek{e})}^T \mat{W}^T \mat{W} (\mat{U}\vek{e}) - \vek{e}^T \vek{e}} \\
   &= \max_{\vek{s} \in \mathcal{S}, \norm{\vek{s}}_2 = 1} \Abs{\vek{s}^T \mat{W}^T \mat{W} \vek{s} - 1} \\
@@ -57,10 +56,16 @@ Using \(\norm{\mat{U}\vek{e}}_2 = \norm{\vek{e}}_2\), this implies
 and proves the equivalence of statements 3 and 4.
 \end{proof}
 
+Using the QR decomposition of \(\mat{B}\) it is always possible to design a \enquote{perfect} subspace embedding with \(\e = 0\) and \(w = m\)
+but computing this QR decomposition is expensive.
+Instead, we can use random matrices \(\mat{W}\) which have a high chance of being a subspace embedding.
+
 \begin{definition}\label{def:oblivious-subspace-embedding}
-Let \(w, n, d \in \N\) and \(\e, \delta \in (0, 1)\) be given.
-A probability distribution \(\Pi\) over matrices \(\mat{W} \in \R^{w \times n}\) is an \uline{oblivious \(\ell_2\)-subspace embedding} (OSE) if, for any matrix \(\mat{B} \in \R^{n \times d}\) a matrix \(\mat{W}\) drawn from \(\Pi\) is a \((1\pm\e)\) \(\ell_2\)-subspace embedding with probability at least \(1 - \delta\).
+Let \(m, n, w \in \N\) and \(\delta, \e \in (0, 1)\) be given.
+A probability distribution \(\Pi\) over matrices \(\mat{W} \in \R^{w \times n}\) is an \emph{oblivious \(\ell_2\)-subspace embedding} (OSE) if, for any matrix \(\mat{B} \in \R^{n \times m}\) a matrix \(\mat{W}\) drawn from \(\Pi\) is a \((1\pm\e)\) \(\ell_2\)-subspace embedding with probability at least \(1 - \delta\).
 \end{definition}
+
+%TODO Change d to m, improve
 
 Of course, these OSEs do not exist for all values of \(w\), \(n\) and \(d\).
 In particular, we need \(w \geq d\) because otherwise some elements in the \(d\)-dimensional column space of \(\mat{B}\) will be in the nullspace of \(\mat{W}\).
