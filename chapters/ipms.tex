@@ -1,79 +1,80 @@
 \chapter{Interior-Point Methods for Linear Programming}\label{chap:ipm}
 
-Important concepts to cover
-\begin{enumerate}
- \item Notation (A, b, c, x, y, s, residuals, mu)
- \item Optimality conditions
- \item Newton system: Complete system (?), augmented system, normal equation
- \item Focus on infeasible, inexact, long-step IPMs
- \begin{enumerate}
-   \item Central path
-   \item \(\mathcal{N}_{-\infty}\) neighbourhood
-   \item Error in the normal equation translates to error in \(\mat{A}\Delta\vek{x} = \vek{r}_p\)
- \end{enumerate}
-\end{enumerate}
+% Important concepts to cover
+% \begin{enumerate}
+%  \item Notation (A, b, c, x, y, s, residuals, mu)
+%  \item Optimality conditions
+%  \item Newton system: Complete system (?), augmented system, normal equation
+%  \item Focus on infeasible, inexact, long-step IPMs
+%  \begin{enumerate}
+%    \item Central path
+%    \item \(\mathcal{N}_{-\infty}\) neighbourhood
+%    \item Error in the normal equation translates to error in \(\mat{A}\Delta\vek{x} = \vek{r}_p\)
+%  \end{enumerate}
+% \end{enumerate}
 
-\hrule
-
-For naming primal, dual and slack variables as well as the choice of the neighbourhood we follow~\cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs}.
+% \hrule
 
 The standard form linear programming (LP) problem is given by
-\begin{equation}
- \min \vek{c}^T \vek{x} \quad \text{subject to} \quad \mat{A}\vek{x} = \vek{b}, \ \vek{x} \geq \vek{0}
+\begin{equation}\label{eqn:primal-lp}
+ \min \vek{c}^T \vek{x} \quad \text{subject to} \quad \mat{A}\vek{x} = \vek{b}, \ \vek{x} \geq \vek{0} \tag{P}
 \end{equation}
 and its dual is
-\begin{equation}
-  \max \vek{b}^T \vek{y} \quad \text{subject to} \quad \mat{A}^T \vek{y} + \vek{s} = \vek{c}, \ \vek{s} \geq \vek{0}
+\begin{equation}\label{eqn:dual-lp}
+  \max \vek{b}^T \vek{y} \quad \text{subject to} \quad \mat{A}^T \vek{y} + \vek{s} = \vek{c}, \ \vek{s} \geq \vek{0} \tag{D}
 \end{equation}
 where \(\mat{A} \in \R^{m \times n}\), \(\vek{b} \in \R^m\) and \(\vek{c} \in \R^n\) are given and \(\vek{x}, \vek{s} \in \R^n\) and \(\vek{y} \in \R^m\) are the variables.
-For feasible \(\vek{x}, \vek{y}, \vek{s}\) we always have \(\vek{c}^T \vek{x} \geq \vek{b}^T \vek{y}\) and the optimal solutions satisfy \(\vek{c}^T \vek{x} = \vek{b}^T \vek{y}\), so \(\vek{x}^T \vek{s} = \vek{c}^T \vek{x} - \vek{b}^T \vek{y}\) can be considered an optimality measure.
+A triple \((\vek{x}, \vek{y}, \vek{s})\) is called \emph{feasible} if it satisifies the constraints \(\mat{A}\vek{x} = \vek{b}\), \(\mat{A}^T \vek{y} + \vek{s} = \vek{c}\) and \(\vek{x}, \vek{s} \geq \vek{0}\).
+The two linear programs \labelcref{eqn:primal-lp} and \labelcref{eqn:dual-lp} are closely connected.
+For feasible \((\vek{x}, \vek{y}, \vek{s})\) we always have \(\vek{c}^T \vek{x} \geq \vek{b}^T \vek{y}\) and the joint solutions satisfy \(\vek{c}^T \vek{x} = \vek{b}^T \vek{y}\).
+Therefore, if there are feasible points both linear programs are feasible and bounded and solutions exist.
+Furthermore, as the optimal value of the objective function for both LPs is the same, it is upper bounded by \(\vek{c}^T \vek{x}\) and lower bounded by \(\vek{b}^T \vek{y}\) at any feasible point.
+\(\vek{x}^T \vek{s} = \vek{c}^T \vek{x} - \vek{b}^T \vek{y}\) can thus be interpreted as a measure of how close to optimality a given feasible point is.
 
-Necessary and sufficient optimality conditions for both problems are given by
-\begin{subequations}\label{optimality-conditions}
+As already seen, necessary and sufficient optimality conditions are given by the feasibility conditions and \(\vek{x}^T \vek{s} = \vek{c}^T \vek{x} - \vek{b}^T \vek{y} = 0\).
+Because the entries of \(\vek{x}\) and \(\vek{s}\) are both nonnegative this is equivalent to the complementarity condition \(\vek{x} \circ \vek{s} = \vek{0}\) requiring that for each \(1 \leq i \leq n\) at least one of \(x_i\) and \(s_i\) is zero.
+Necessary and sufficient optimality conditions for both problems are therefore given by
+\begin{subequations}\label{eqn:optimality-conditions}
   \begin{align}
-    \mat{A} \vek{x} &= \vek{b} \label{primal-feasibility} \\
-    \mat{A}^T \vek{y} + \vek{s} &= \vek{c} \label{dual-feasibility} \\
-    \vek{x} \circ \vek{s} &= \vek{0} \label{complementarity} \\
-    \vek{x}, \vek{s} &\geq \vek{0} \label{nonnegativity}
+    \label{eqn:primal-feasibility}
+    \vek{r}_p = \mat{A}\vek{x} - \vek{b} &= \vek{0} \\
+    \label{eqn:dual-feasibility}
+    \vek{r}_d = \mat{A}^T \vek{y} + \vek{s} - \vek{c} &= \vek{0} \\
+    \label{eqn:nonnegativity}
+    \vek{x}, \vek{s} &\geq \vek{0} \\
+    \label{eqn:complementarity}
+    \vek{x} \circ \vek{s} &= \vek{0}
   \end{align}
 \end{subequations}
-We denote the set of feasible points with \(\mathcal{F}\), the set of strictly feasible points as \(\mathcal{F}^o\) and the set of solutions as \(\mathcal{F}^*\):
-\begin{align}
-  \mathcal{F} &\coloneqq \Set{ (\vek{x}, \vek{y}, \vek{s}) | \mat{A}\vek{x} = \vek{b}, \mat{A}^T \vek{y} + \vek{s} = \vek{c}, \vek{x} \geq \vek{0}, \vek{s} \geq \vek{0}} \\
-  \mathcal{F}^o &\coloneqq \Set{ (\vek{x}, \vek{y}, \vek{s}) | \mat{A}\vek{x} = \vek{b}, \mat{A}^T \vek{y} + \vek{s} = \vek{c}, \vek{x} > \vek{0}, \vek{s} > \vek{0}} \\
-  \mathcal{F}^* &\coloneqq \Set{ (\vek{x}, \vek{y}, \vek{s}) | \mat{A}\vek{x} = \vek{b}, \mat{A}^T \vek{y} + \vek{s} = \vek{c}, \vek{x} \geq \vek{0}, \vek{s} \geq \vek{0}, \vek{x} \circ \vek{s} = \vek{0}}
-\end{align}
+Here, \(\vek{r}_p\) and \(\vek{r}_d\) denote the primal and dual residuals and \(\vek{r} = (\vek{r}_p, \vek{r}_d)\) denotes their concatenation as a vector in \(\R^{m+n}\).
+We denote the set of feasible points with \(\mathcal{F}\) and the set of solutions as \(\mathcal{F}^*\).
+The feasible points which satisfy \cref{eqn:nonnegativity} strictly (all entries need to be positive) are called \emph{strictly feasible} and the set of strictly feasible points is denoted by \(\mathcal{F}^o\).
 
-How close a given triple \((\vek{x}, \vek{y}, \vek{s})\) with \(\vek{x}, \vek{s} \geq \vek{0}\) is to satisfying these conditions is measured by
+Assume strictly feasible points exist, then the unique solutions \((\vek{x}_\tau, \vek{y}_\tau, \vek{s}_\tau)\) of
 \begin{subequations}
   \begin{align}
-    \vek{r}_p &= \vek{r}_p(\vek{x}) = \mat{A}\vek{x} - \vek{b} \\
-    \vek{r}_d &= \vek{r}_d(\vek{y}, \vek{s}) = \mat{A}^T \vek{y} + \vek{s} - \vek{c} \\
-    \vek{r}   &= \vek{r}(\vek{x}, \vek{y}, \vek{s}) = (\vek{r}_p, \vek{r}_d) \\
-    \mu       &= \mu(\vek{x}, \vek{s}) = \vek{x}^T \vek{s} / n
+    \mat{A}\vek{x}_\tau - \vek{b} &= \vek{0} \\
+    \mat{A}^T \vek{y}_\tau + \vek{s}_\tau - \vek{c} &= \vek{0} \\
+    \vek{x}_\tau, \vek{s}_\tau &> \vek{0} \label{eqn:strict-nonnegativity} \\
+    \vek{x}_\tau \circ \vek{s}_\tau &= \tau \vek{1}.
   \end{align}
 \end{subequations}
+for \(\tau > 0\) form a continous path of strictly feasible points which is called the \emph{central path}, see~\cite[Theorem 2.8]{Wright-PrimalDualInteriorPointMethods}.
+Moreover, the elements of the central path converge towards a solution as \(\tau \to 0\).
 
-In primal-dual interior-point methods one maintains iterates \((\vek{x}^k, \vek{y}^k, \vek{s}^k)\) that satisfy \(\vek{x}^k, \vek{s}^k > \vek{0}\).
-Feasible IPMs require the iterates to always be feasible (satisfying \cref{primal-feasibility} and \cref{dual-feasibility}) while infeasible IPMs allow some non-zero residuals \(\vek{r}^k\) as long as their size goes to zero at approximately the same rate as \(\mu\).
-
-The \emph{central path} is given by \(\Set{(\vek{x}_\tau, \vek{y}_\tau, \vek{s}_\tau) | \tau > 0}\) where \(\vek{x}_\tau, \vek{y}_\tau, \vek{s}_\tau\) are uniquely determined by
-\begin{subequations}
-  \begin{align}
-    \mat{A}\vek{x}_\tau - \vek{b} &= \tau \vek{r}_p^0 \\
-    \mat{A}^T \vek{y}_\tau + \vek{s}_\tau - \vek{c} &= \tau \vek{r}_d^0 \\
-    \vek{x}_\tau \circ \vek{s}_\tau &= \tau \mu_0 \vek{1} \\
-    \vek{x}_\tau, \vek{s}_\tau &> \vek{0}
-  \end{align}
-\end{subequations}
-if a solution satisfying \cref{optimality-conditions} exists (Wright says strict feasibility is required?), see~\cite{Mizuno-PolynomialTimeConvergenceInexactIPM}.
-In this case, the elements of the central path converge towards a solution as \(\tau \to 0\).
-In a \emph{long-step} infeasible IPM all iterates are required to belong to a neighbourhoood of this central path given by
+Primal-dual IPMs now try to follow this path towards a solution by maintaining iterates in some neighbourhood of the central path and computing the search direction in each step as a Newton direction towards an element of the central path.
+In this thesis we focus on an IPM variant with good practical properties.
+Its neighbourhood is defined by
 \begin{equation}
-  \mathcal{N}_{-\infty}(\gamma) = \Set{ (\vek{x}, \vek{y}, \vek{s}) | \vek{x}, \vek{s} > \vek{0}, \ \vek{x} \circ \vek{s} \geq (1 - \gamma) \mu \vek{1}, \ \frac{\norm{\vek{r}}}{\norm{\vek{r}^0}} \leq \frac{\mu}{\mu^0} }
+  \mathcal{N}_{-\infty}(\gamma) = \Set{ (\vek{x}, \vek{y}, \vek{s}) | \vek{x}, \vek{s} > \vek{0}, \ \vek{x} \circ \vek{s} \geq (1 - \gamma) \mu \vek{1}, \ \frac{\norm{\vek{r}}_2}{\norm{\vek{r}^0}_2} \leq \frac{\mu}{\mu^0} }. \label{eqn:neighbourhood}
 \end{equation}
-where \(\gamma \in (0, 1)\) is a parameter controlling the size of the neighbourhood.
-If it can be shown that \(\mu \to 0\) during the algorithm then by the choice of the neighbourhood the residuals must also converge to \(0\).
+where \(\mu = \vek{x}^T \vek{s}/n\), i.e.\ the average value of \(x_i s_i\), and the parameter \(\gamma \in (0, 1)\) controls the size of the neighbourhood.
+The first condition is one that all IPMs share.
+It keeps the \(\vek{x}\) and \(\vek{s}\) components of the iterates in the interior of the nonnegative orthant.
+The second one qualifies this IPM as a \emph{long-step} IPM as this one-sided \(\infty\)-norm bound allows for longer steps inside the neighbourhood compared to a two-sided 2-norm bound such as \(\norm{\vek{x} \circ \vek{s} - \mu \vek{1}}_2 \leq \gamma\).
+Neighbourhoods involving those bounds are known as \emph{short-step} IPMs and give better theoretical guarantees while having worse pratical performance.
+Lastly, the bound on the residuals (where \(\vek{r}^0\) and \(\mu^0\) are defined by the starting point \((\vek{x}^0, \vek{y}^0, \vek{s}^0)\)) implies that we will allow infeasible iterates as long as their residuals decrease to zero at least as fast as \(\mu\) does.
+Any algorithm that maintains iterates inside \(\mathcal{N}_{-\infty}(\gamma)\) and is able to decrease the corresponding \(\mu\) values to zero produces iterates which become arbitrarily close to optimality because \(\norm{\vek{r}}_2\) and \(x_i s_i\) converge to zero.
 
 The search direction in every iteration is determined by a Newton system, similar to the one used when trying to find a root of 
 \begin{equation}
