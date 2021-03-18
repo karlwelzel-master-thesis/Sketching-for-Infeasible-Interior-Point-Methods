@@ -92,10 +92,10 @@ The search direction \((\Delta\vek{x}, \Delta\vek{y}, \Delta\vek{s})\) is theref
   \end{pmatrix}
   }_{F'(\vek{x}, \vek{y}, \vek{s})}
   \begin{pmatrix} \Delta\vek{x} \\ \Delta\vek{y} \\ \Delta\vek{s} \end{pmatrix}
-  = -
+  =
   \underbrace{
-  \begin{pmatrix} \vek{r}_p \\ \vek{r}_d \\ \vek{x} \circ \vek{s} - \sigma \mu \vek{1} \end{pmatrix}
-  }_{F(\vek{x}, \vek{y}, \vek{s})}
+  \begin{pmatrix} -\vek{r}_p \\ -\vek{r}_d \\ - \vek{x} \circ \vek{s} + \sigma \mu \vek{1} \end{pmatrix}
+  }_{-F(\vek{x}, \vek{y}, \vek{s})}
 \end{equation}
 where \(\mat{X} = \diag(\vek{x})\) and \(\mat{S} = \diag(\vek{s})\).
 Because \(\mat{X}\) and \(\mat{S}\) are diagonal they can be easily inverted and we can simplify the linear system into smaller ones and a series of matrix-vector products.
@@ -128,59 +128,53 @@ in which the first equation is called the \emph{augmented system} and
 \end{subequations}
 in which the first equation is called the \emph{normal equation}, see~\cite[p. 16]{Wright-PrimalDualInteriorPointMethods}.
 Here, \(\mat{D}\) is defined as the diagonal matrix \(\mat{S}^{-1/2} \mat{X}^{1/2}\) to simplify the notation.
-\Cref{eqn:normal-equation} is called normal equation because it can be written as the normal equation of a least squares system with coefficient matrix \(\mat{D}\mat{A}^T\) if \(\vek{r}_p = \vek{0}\).
+\Cref{eqn:normal-equation} is called the normal equation because it can be written as the normal equation of a least squares system with coefficient matrix \(\mat{D}\mat{A}^T\) if \(\vek{r}_p = \vek{0}\).
 
-We will construct a preconditioner for \(\mat{A} \mat{D}^2 \mat{A}^T\) in the form of a nonsingular matrix \(\mat{P} \in \R^{m \times m}\) such that
-\( \mat{P}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{P}^{-1} \approx \mat{I}_m \).
-Instead of solving the normal equation we then solve
-\begin{equation} \label{eqn:preconditioned-system}
- \mat{P}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{P}^{-1} \vek{q} = \mat{P}^{-T} \vek{p}
-\end{equation}
-using an efficient iterative solver and \(\Delta\vek{y} = \mat{P}^{-1} \vek{q}\).
-Note that applying the preconditioner from the left and from the right in this form ensures that the matrix stays symmetric positive definite and we can apply the CG algorithm to this linear system.
-
-Using an iterative method to solve \cref{eqn:preconditioned-system} introduces an error term \(\vek{f}\). Let \(\Delta\tilde{\vek{x}}, \Delta\tilde{\vek{y}}, \Delta\tilde{\vek{s}}\) be calculated using \cref{eqn:s-from-normal,eqn:x-from-normal} given that \(\Delta\tilde{\vek{y}}\) solves
+Our goal is to solve the normal equation using a preconditioner and an iterative solver.
+To figure out how many iterations of this solver are needed to obtain a sufficiently accurate solution, assume that some error term \(\vek{f}\) is introduced.
+This means \(\Delta\vek{y}\) solves
 \begin{equation}
- \mat{P}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \Delta\tilde{\vek{y}} = \mat{P}^{-T} \vek{p} + \vek{f} \iff \mat{A} \mat{D}^2 \mat{A}^T \Delta\tilde{\vek{y}} = \vek{p} + \mat{P}^{T} \vek{f}
+ \mat{A} \mat{D}^2 \mat{A}^T \Delta\vek{y} = \vek{p} + \vek{f}
 \end{equation}
-instead of \cref{eqn:normal-equation}. In this case
+instead of \cref{eqn:normal-equation} and \(\Delta\vek{x}\) and \(\Delta\vek{s}\) are obtained from \cref{eqn:s-from-normal,eqn:x-from-normal} as before.
+Because calculating the search direction in this way is equivalent to using \cref{eqn:normal-equation-system} with \(\vek{b} + \vek{f}\) instead of \(\vek{b}\),
+the error propagates from the normal equation to the primal feasibility component in \cref{eqn:newton-system}:
 \begin{equation}
   \begin{pmatrix}
     \mat{A} & \mat{0}   & \mat{0} \\
     \mat{0} & \mat{A}^T & \mat{I} \\
     \mat{S} & \mat{0}   & \mat{X} \\
   \end{pmatrix}
-  \begin{pmatrix} \Delta\tilde{\vek{x}} \\ \Delta\tilde{\vek{y}} \\ \Delta\tilde{\vek{s}} \end{pmatrix}
+  \begin{pmatrix} \Delta\vek{x} \\ \Delta\vek{y} \\ \Delta\vek{s} \end{pmatrix}
   =
   \begin{pmatrix} -\vek{r}_p \\ -\vek{r}_d \\ -\vek{x} \circ \vek{s} + \sigma \mu \vek{1} \end{pmatrix}
   +
-  \begin{pmatrix} \mat{P}^T \vek{f} \\ \vek{0} \\ \vek{0} \end{pmatrix}
+  \begin{pmatrix} \vek{f} \\ \vek{0} \\ \vek{0} \end{pmatrix}
 \end{equation}
-because calculating \(\Delta\tilde{\vek{x}}, \Delta\tilde{\vek{y}}, \Delta\tilde{\vek{s}}\) in this way is equivalent to using \cref{eqn:normal-equation-system} with \(\vek{b} + \mat{P}^T \vek{f}\) instead of \(\vek{b}\).
 
-For our convergence proofs to work we need that the error in calculating the Newton direction only affects the last line of \cref{eqn:newton-system}.
-This can be achieved by adding a perturbation vector \(\mat{S}^{-1}\vek{v} \in \R^n\) to \(\Delta\tilde{\vek{x}}\) which satisfies \(\mat{A}\mat{S}^{-1}\vek{v} = \mat{P}^T \vek{f}\).
-The new instructions to get an approximate solution to the Newton system are now given by
+For the convergence proofs of~\cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs} to work we need that the error in calculating the Newton direction only affects the complementarity component of the Newton system.
+This can be achieved by constructing a perturbation vector \(\vek{v} \in \R^n\) satisfying \(\mat{A}\mat{S}^{-1}\vek{v} = \vek{f}\) and subtracting \(\mat{S}^{-1}\vek{v}\) from \(\Delta\vek{x}\).
+The perturbed Newton direction \((\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}})\) is determined using
 \begin{subequations}
   \begin{align}
-    \mat{A} \mat{D}^2 \mat{A}^T \Delta\hat{\vek{y}} &= \vek{p} + \mat{P}^{T} \vek{f} \\
-    \Delta\hat{\vek{s}} &= -\vek{r}_d - \mat{A}^T \Delta\hat{\vek{y}} \\
-    \Delta\hat{\vek{x}} &= -\vek{x} + \sigma \mu \mat{S}^{-1} \vek{1} - \mat{S}^{-1} \mat{X} \Delta\hat{\vek{s}} - \mat{S}^{-1} \vek{v}
+    \mat{A} \mat{D}^2 \mat{A}^T \hat{\Delta\vek{y}} &= \vek{p} + \vek{f} \\
+    \hat{\Delta\vek{s}} &= -\vek{r}_d - \mat{A}^T \hat{\Delta\vek{y}} \\
+    \hat{\Delta\vek{x}} &= -\vek{x} + \sigma \mu \mat{S}^{-1} \vek{1} - \mat{S}^{-1} \mat{X} \hat{\Delta\vek{s}} - \mat{S}^{-1} \vek{v}
   \end{align}
 \end{subequations}
-This approximate solution solves the following system
+and solves
 \begin{equation}
   \begin{pmatrix}
     \mat{A} & \mat{0}   & \mat{0} \\
     \mat{0} & \mat{A}^T & \mat{I} \\
     \mat{S} & \mat{0}   & \mat{X} \\
   \end{pmatrix}
-  \begin{pmatrix} \Delta\hat{\vek{x}} \\ \Delta\hat{\vek{y}} \\ \Delta\hat{\vek{s}} \end{pmatrix}
+  \begin{pmatrix} \hat{\Delta\vek{x}} \\ \hat{\Delta\vek{y}} \\ \hat{\Delta\vek{s}} \end{pmatrix}
   =
   \begin{pmatrix} -\vek{r}_p \\ -\vek{r}_d \\ -\vek{x} \circ \vek{s} + \sigma \mu \vek{1} \end{pmatrix}
   -
   \begin{pmatrix} \vek{0} \\ \vek{0} \\ \vek{v} \end{pmatrix}
 \end{equation}
-so we successfully shifted the error term from the first to the third component.
-
-To control the size of the error \(\norm{\vek{v}}_2\) in terms of the error \(\norm{\vek{f}}_2\) we need to design a clever way of choosing \(\vek{v}\) which will be done in the next chapter.
+as shown by \textcite[p. 10]{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs}.
+Hence, we successfully shifted the error term in the Newton system.
+We will see that we can construct \(\vek{v}\) from \(\vek{f}\) in such a way that the size of the error \(\norm{\vek{v}}_2\) is bounded in terms of the error \(\norm{\vek{f}}_2\) in the next chapter.
