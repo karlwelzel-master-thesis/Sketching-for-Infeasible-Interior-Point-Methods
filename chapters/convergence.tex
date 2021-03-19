@@ -1,21 +1,5 @@
 \chapter{Convergence Proofs}\label{chap:convergence}
 
-\begin{algorithm}[p]
-  \SetKwInOut{Input}{Input}
-  \Input{\(\mat{A} \in \R^{m \times n}\), \(\vek{b} \in \R^m\), \(\vek{c} \in \R^n\), \(\vek{x}, \vek{s} \in \R^n_{>0}\), \(\vek{y} \in \R^m\), tolerance \(\e_{\vek{v}} > 0\), failure probability \(\delta > 0\)}
-  Compute \(\vek{r}_p = \mat{A}\vek{x} - \vek{b}\), \(\vek{r}_d = \mat{A}^T \vek{y} + \vek{s} - \vek{c}\), \(\mat{X} = \diag(\vek{x})\), \(\mat{S} = \diag(\vek{s})\)\;
-  Compute \(\vek{p} = -\vek{r}_p + \mat{A}(-\mat{S}^{-1}\mat{X}\vek{r}_d + \vek{x} - \sigma \mu \mat{S}^{-1} \vek{1})\)\;
-  Construct a random sparse embedding matrix \(\mat{W} \in \R^{w \times m}\) as in \cref{eqn:sparse-ose-params} for the given \(\delta\)\;
-  Compute the QR decomposition \(\mat{Q} \mat{R} = \mat{W} \mat{D} \mat{A}^T\)\;
-  Run the CG algorithm with \(\vek{q}^0 = \vek{0}\) until \(\mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{R}^{-1} \vek{q} = \mat{R}^{-T} \vek{p} + \vek{f}\) for some error \(\vek{f}\) satisfying \(\norm{\vek{f}}_2 \leq \e_{\vek{v}}/(n \sqrt{\mu})\)\;\label{line:cg}
-  Compute \(\vek{v} = {(\mat{S} \mat{X})}^{1/2} \mat{W}^T \mat{Q} \vek{f}\)\;\label{line:compute-v}
-  Compute \(\Delta\vek{y} = \mat{R}^{-1}\vek{q}\)\;
-  Compute \(\Delta\vek{s} = -\vek{r}_d - \mat{A}^T \Delta\vek{y}\)\;
-  Compute \(\Delta\vek{x} = -\vek{x} + \sigma \mu \vek{1} - \mat{S}^{-1}\mat{X} \Delta\vek{s} - \mat{S}^{-1} \vek{v}\)\;\label{line:compute-delta-x}
-  \Return{\((\Delta\vek{x}, \Delta\vek{y}, \Delta\vek{s})\)}\;
-  \caption{Approximate Newton direction}\label{alg:newton-direction}
-\end{algorithm}
-
 To give any convergence proofs it is necessary to exactly state the algorithm.
 \Cref{alg:ipm} is the same infeasible inexact long-step interior-point method as in~\cite{Avron-FasterRandomizedInfeasibleIPMs,Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs} but with a different preconditioner.
 To keep the convergence proof of the IPM seperate from the considerations on how to solve for an approximate Newton direction we will consider the computation of the Newton direction in \cref{alg:newton-direction}.
@@ -31,7 +15,7 @@ Then \cref{alg:ipm} generates an iterate \((\vek{x}^k, \vek{y}^k, \vek{s}^k)\) s
 \Cref{line:compute-approx-newton} of \cref{alg:ipm} is written as a black box generating a sufficiently good estimate of the Newton direction at every step.
 To complete the algorithm we need to show that this gap can be filled using \cref{alg:newton-direction} which uses the previously designed preconditioner and perturbation vector to compute such an approximation:
 \begin{theorem}
-Assume that \(\gamma \in (0, 1)\) and \(\sigma \in (0, 1)\) are constant. \cref{alg:newton-direction} computes an approximation of the Newton direction that satisfies \cref{eqn:approx-newton} with \(\norm{v}_2 \leq \e_{\vek{v}}\) with probability at least \(1 - \delta\).
+Assume that \(\gamma \in (0, 1)\) and \(\sigma \in (0, 1)\) are constant and that \(\mat{A}\) has full row-rank. \cref{alg:newton-direction} computes an approximation of the Newton direction that satisfies \cref{eqn:approx-newton} with \(\norm{v}_2 \leq \e_{\vek{v}}\) with probability at least \(1 - \delta\).
 Moreover, for \(\e_{\vek{v}} = \gamma \sigma \mu / 4\) the CG algorithm only needs \(O(\log(n))\) inner iterations and the whole algorithm needs \(O(???)\) flops.
 \end{theorem}
 
