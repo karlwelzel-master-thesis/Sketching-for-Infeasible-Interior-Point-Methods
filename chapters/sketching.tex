@@ -29,7 +29,7 @@ There are multiple equivalent characterizations of subspace embeddings used in t
 
 \begin{theorem}
 Assume that \(\mat{B} \in \R^{n \times m}\) has full column rank and let
-\[\mathcal{S} = \set{ \mat{B}\vek{z} | \vek{z} \in \R^d } = \set{ \mat{U}\vek{z} | \vek{z} \in \R^d } \subset \R^n\]
+\[\mathcal{S} = \set{ \mat{B}\vek{z} | \vek{z} \in \R^m } = \set{ \mat{U}\vek{z} | \vek{z} \in \R^m } \subset \R^n\]
 for some matrix \(\mat{U} \in \R^{n \times m}\) with orthonormal columns.
 Then the following statements are equivalent
 \begin{enumerate}
@@ -65,43 +65,35 @@ Let \(m, n, w \in \N\) and \(\delta, \e \in (0, 1)\) be given.
 A probability distribution \(\Pi\) over matrices \(\mat{W} \in \R^{w \times n}\) is an \emph{oblivious \(\ell_2\)-subspace embedding} (OSE) if, for any matrix \(\mat{B} \in \R^{n \times m}\) a matrix \(\mat{W}\) drawn from \(\Pi\) is a \((1\pm\e)\) \(\ell_2\)-subspace embedding with probability at least \(1 - \delta\).
 \end{definition}
 
-%TODO Change d to m, improve
-
-Of course, these OSEs do not exist for all values of \(w\), \(n\) and \(d\).
-In particular, we need \(w \geq d\) because otherwise some elements in the \(d\)-dimensional column space of \(\mat{B}\) will be in the nullspace of \(\mat{W}\).
-If \(w \geq n\) we can trivially choose \(\mat{W}\) to have ones on the diagonal and zeros everywhere else, so we are interested in OSEs such that \(d \leq w \leq n\).
-These reduce the size of our matrix \(\mat{B}\) while retaining most of the information in some sense.
-We expect best results for \(d \ll n\) where we can hope for a large reduction in the matrix size.
-
-A classic result in sketching is that matrices with Gaussian entries form an OSE if \(w\) is chosen appropriately depending on \(n\), \(d\), \(\e\) and \(\delta\), namely \(w = O((d + 1/\delta) \e^{-2})\) works.
-%TODO Provide appropriate citation here and extend to distribution Johnson-Lindenstrauss
-
-A matrix \(\mat{W}\) with Gaussian entries is dense so computing the matrix product \(\mat{W}\mat{B}\) takes \(O(w n d)\) operations in general.
+Because we will later compute a decomposition of the sketched matrix \(\mat{W}\mat{B}\) we want \(w\) to be as small as possible.
+A classic result in sketching is that there are OSEs with \(w = O((m + \log(1/\delta))\e^{-2})\) without any dependence on \(n\).
+\Textcite[Theorem 6]{Woodruff-Sketching} shows how this follows from the so-called Johnson-Lindenstrauss Lemma and that it can be achieved by choosing the matrix entries to be properly normalized independent Gaussian random variables.
+Unfortunately, a matrix \(\mat{W}\) with Gaussian entries is dense so computing the matrix product \(\mat{W}\mat{B}\) takes \(O(w n m)\) operations in general.
 If the matrix \(\mat{B}\) is sparse we need an OSE where all sampled matrices are sparse to take advantage of that.
 The following sparse OSE result is taken from~\cite{Cohen-NearlyTightObliviousSubspaceEmbeddings}.
-\Textcite{Avron-FasterRandomizedInfeasibleIPMs} use the sketching result from~\cite{Cohen-OptimalApproximateMatrixProduct} but for simplicity we replaced it by a simpler one giving the same complexity guarantees in the end (?).
+\Textcite{Avron-FasterRandomizedInfeasibleIPMs} use the sketching result from~\cite{Cohen-OptimalApproximateMatrixProduct} but for simplicity we replaced it by a simpler one giving the same complexity guarantees in the end.
 
 \begin{definition}
-A \uline{sparse embedding matrix} \(\mat{W} \in \R^{w \times n}\) is constructed in the following way:
+An \emph{\((s, w)\)-sparse embedding matrix} \(\mat{W} \in \R^{w \times n}\) is constructed in the following way:
 For each column \(s\) entries are sampled randomly without replacement and for each such entry its value is randomly drawn from \(\{ - \frac{1}{\sqrt{s}}, \frac{1}{\sqrt{s}} \}\).
 All other entries of \(\mat{W}\) are set to zero.
 This defines a probability distribution over \(\R^{w \times n}\) where each sampled matrix has exactly \(s \cdot n\) nonzero entries.
 \end{definition}
 
 \begin{theorem}[Theorem 4.2 in~\cite{Cohen-NearlyTightObliviousSubspaceEmbeddings}]\label{thm:sparse-ose}
-For any \(B > 2, \ \delta < 1/2, \ \e < 1/2\) there are
-\[ w = O \Paren{\frac{B d \log(d/\delta)}{\e^2}} \quad \text{and} \quad s = O \Paren{\frac{\log_B(d/\delta)}{\e}}\]
-such that the sparse embedding matrices form an oblivious \(\ell_2\)-subspace embedding.
+For any \(\delta < 1/2, \ \e < 1/2\) and \(m, n \in \N\) the \((s, w)\)-sparse embedding matrices form an oblivious \(\ell_2\)-subspace embedding for
+\[ w = O \Paren{\frac{m \log(m/\delta)}{\e^2}} \quad \text{and} \quad s = O \Paren{\frac{\log(m/\delta)}{\e}}. \]
 \end{theorem}
 
-For our purposes we will from now on fix some \(B > 2\) and \(\e = 1/3 < 1/2\) and furthermore assume that \(\mat{W} \in \R^{w \times n}\) is a sparse embedding matrix and a \((1\pm\e)\) \(\ell_2\)-subspace embedding of the column space of \(\mat{D}\mat{A}^T \in \R^{n \times m}\).
+% Simplicity for the runtime, avoid confusion: \e = 1/3
+To simplify the runtime bounds and the following discussion we will from now on fix \(\e = 1/3 < 1/2\) and furthermore assume that \(\mat{W} \in \R^{w \times n}\) is a sparse embedding matrix and a \((1\pm\e)\) \(\ell_2\)-subspace embedding of the column space of \(\mat{B} \in \R^{n \times m}\).
 From the previous result we get that choosing
 \begin{equation} \label{eqn:sparse-ose-params}
   w = O \Paren{m \log(m/\delta)} \quad \text{and} \quad s = O \Paren{\log(m/\delta)}
 \end{equation}
-suffices to guarantee that the last assumption holds with probability at least \(1 - \delta\).
+suffices to guarantee that the latter assumption holds with probability at least \(1 - \delta\).
 After we obtain a bound on the number of IPM iterations we will choose \(\delta\) in such a way that the failure probability over all iterations is low.
-Note that because \(\e < 1\) none of the elements in the column space of \(\mat{D}\mat{A}^T\) can be in the nullspace of \(\mat{W}\) so \(\rank(\mat{W}\mat{D}\mat{A}^T) = m\).
+Note that because \(\e < 1\) none of the elements in the column space of \(\mat{B}\) can be in the nullspace of \(\mat{W}\) so \(\rank(\mat{W}\mat{B}) = m\).
 
 Inspired by \textcite{Avron-FasterRandomizedInfeasibleIPMs} we use a decomposition of the sketched matrix \(\mat{D}\mat{A}^T\) to find a preconditioner for the normal equation.
 They constructed the preconditioner from the SVD of \(\mat{W}\mat{D}\mat{A}^T\) but we decided to go with the more practical choice of constructing it using the QR decomposition \(\mat{Q}\mat{R} = \mat{W}\mat{D}\mat{A}^T\).
