@@ -107,12 +107,12 @@ Note that applying the preconditioner from the left and from the right in this w
 Additionally, because \(\mat{R}\) is upper triangular multiplying \(\mat{R}^{-1}\) or \(\mat{R}^{-T}\) with a vector can be done efficiently using a triangular solve.
 The following theorem shows that this preconditioner leads to bounds on the condition number of the matrix which can be used to bound the number of CG iterations needed to reach a certain error estimate.
 
-\begin{theorem}\label{thm:condition-number-bound}
+\begin{lemma}\label{thm:condition-number-bound}
 Suppose \(\mat{W}\) is a \((1\pm\e)\) \(\ell_2\)-subspace embedding for \(\mat{B}\) for \(\e = 1/3\) and \(\mat{Q}\mat{R}\) is the QR decomposition of \(\mat{W}\mat{B}\).
 The singular values of \(\mat{R}^{-T}\mat{B}^T\) and \(\mat{B}\mat{R}^{-1}\) are bounded by
 \[ \frac{3}{4} = \frac{1}{1 + \e} \leq \sigma_i^2(\mat{R}^{-T}\mat{B}^T) = \sigma_i^2(\mat{B}\mat{R}^{-1}) \leq \frac{1}{1 - \e} = \frac{3}{2} \quad \text{for } i = 1, \ldots, m \]
 which implies that the condition number of their product \(\mat{R}^{-T} \mat{B}^T \mat{B} \mat{R}^{-1}\) is bounded by \((1+\e) / (1-\e) = 2\).
-\end{theorem}
+\end{lemma}
 \begin{proof}
 The matrices \(\mat{R}^{-T}\mat{B}^T\) and \(\mat{B}\mat{R}^{-1}\) are transposes of each other and hence have the same singular values.
 By the Courant-Fisher minmax theorem (e.g.~\cite[Theorem 3.1.2]{HornJohnson-TopicsInMatrixAnalysis})
@@ -136,13 +136,13 @@ Because \(\mat{R}^{-T} \mat{B}^T \mat{B} \mat{R}^{-1} = {(\mat{B}\mat{R}^{-1})}^
 and we are done.
 \end{proof}
 
-\begin{theorem}\label{thm:cg-residual-bound}
+\begin{lemma}\label{thm:cg-residual-bound}
 Suppose \(\mat{W}\) is a \((1\pm\e)\) \(\ell_2\)-subspace embedding for \(\mat{B}\) for \(\e = 1/3\) and \(\mat{Q}\mat{R}\) is the QR decomposition of \(\mat{W}\mat{B}\).
 Let \(\vek{q}^j\) be the iterates when solving \[ \mat{R}^{-T} \mat{B}^T \mat{B} \mat{R}^{-1} \vek{q} = \mat{R}^{-T} \vek{p} \] with the CG algorithm and let \(\vek{f}^j\) be the residuals defined by
 \( \vek{f}^j = \mat{R}^{-T} \mat{B}^T \mat{B} \mat{R}^{-1} \vek{q}^j - \mat{R}^{-T} \vek{p} \).
 Then the \(\ell_2\)-norm of the residuals converges at least linearly to zero:
 \[ \norm{\vek{f}^{j+1}}_2 \leq \frac{1}{2} \norm{ \vek{f}^j }_2 \text{ for all } j \in \N \]
-\end{theorem}
+\end{lemma}
 \begin{proof}
 Theorem 8 of~\cite{Bouyouli-ConjugateGradientConvergence} showed that
 \[ \norm{\vek{f}^{j+1}}_2 \leq \frac{\kappa_2(\mat{R}^{-T} \mat{B}^T \mat{B} \mat{R}^{-1}) - 1}{2} \norm{\vek{f}^j}_2 .\]
@@ -173,12 +173,12 @@ and the perturbation vector has to satisfy \(\mat{A}\mat{S}^{-1}\vek{v} = \mat{R
 We use the method of \textcite{Avron-FasterRandomizedInfeasibleIPMs} to choose this vector by utilising the decomposition of the sketched matrix \(\mat{W}\mat{D}\mat{A}^T\) we have already determined.
 This also allows us to bound the size of the perturbation vector by the size of \(\vek{f}\).
 
-\begin{theorem}
+\begin{lemma}\label{thM:perturbation-vector}
 Suppose \(\mat{W}\) is a \((s, w)\)-sparse embedding matrix and \(\mat{Q}\mat{R}\) is the QR decomposition of \(\mat{W}\mat{D}\mat{A}^T\).
 Given a vector \(\vek{f} \in \R^m\) the vector
 \[ \vek{v} = {(\mat{S}\mat{X})}^{1/2} \mat{W}^T \mat{Q} \vek{f} \]
 satisfies \( \mat{A}\mat{S}^{-1}\vek{v} = \mat{R}^T \vek{f} \) and \(\norm{\vek{v}}_2 \leq n \sqrt{\mu} \norm{\vek{f}}_2\).
-\end{theorem}
+\end{lemma}
 \begin{proof}
 Using the definition of \(\mat{Q}\) and \(\mat{R}\) we obtain
 \begin{align*}
