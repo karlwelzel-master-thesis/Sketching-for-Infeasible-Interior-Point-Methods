@@ -71,7 +71,7 @@ A classic result in sketching is that there are OSEs with \(w = O((m + \log(1/\d
 Unfortunately, a matrix \(\mat{W}\) with Gaussian entries is dense so computing the matrix product \(\mat{W}\mat{B}\) takes \(O(w n m)\) operations in general.
 If the matrix \(\mat{B}\) is sparse we need an OSE where all sampled matrices are sparse to take advantage of that.
 The following sparse OSE result is taken from~\cite{Cohen-NearlyTightObliviousSubspaceEmbeddings}.
-\Textcite{Avron-FasterRandomizedInfeasibleIPMs} use the sketching result from~\cite{Cohen-OptimalApproximateMatrixProduct} but for simplicity we replaced it by a simpler one giving the same complexity guarantees in the end.
+\Textcite{Avron-FasterRandomizedInfeasibleIPMs} use the sketching result from~\cite{Cohen-OptimalApproximateMatrixProduct} but we replaced it by a simpler one giving the same complexity guarantees in the end.
 
 \begin{definition}
 An \emph{\((s, w)\)-sparse embedding matrix} \(\mat{W} \in \R^{w \times n}\) is constructed in the following way:
@@ -170,7 +170,7 @@ Because we apply the CG method to \cref{eqn:preconditioned-normal-equation} an e
   \mat{A} \mat{D}^2 \mat{A}^T \hat{\Delta\vek{y}} = \vek{p} + \mat{R}^T\vek{f}
 \end{equation}
 and the perturbation vector has to satisfy \(\mat{A}\mat{S}^{-1}\vek{v} = \mat{R}^T \vek{f}\) for a given \(\vek{f}\).
-We use the method of \textcite{Avron-FasterRandomizedInfeasibleIPMs} to choose this vector by utilising the sketched matrix \(\mat{W}\mat{D}\mat{A}^T\) for which we have already determined a decomposition.
+We use the method of \textcite{Avron-FasterRandomizedInfeasibleIPMs} to choose this vector by utilising the decomposition of the sketched matrix \(\mat{W}\mat{D}\mat{A}^T\) we have already determined.
 This also allows us to bound the size of the perturbation vector by the size of \(\vek{f}\).
 
 \begin{theorem}
@@ -226,10 +226,17 @@ We will just assume that the algorithm fails if this is the case and discuss the
 
 \begin{algorithm}
   \SetKwInOut{Input}{Input}
-  \Input{\(\mat{A} \in \R^{m \times n}\) with rank \(m\), \(\vek{b} \in \R^m\), \(\vek{c} \in \R^n\), \(\vek{x}, \vek{s} \in \R^n_{>0}\), \(\vek{y} \in \R^m\), tolerance \(\e_{\vek{v}} > 0\), failure probability \(\delta > 0\)}
+  \Input{
+    \(\mat{A} \in \R^{m \times n}\) with rank \(m\),
+    \(\vek{b} \in \R^m\), \(\vek{c} \in \R^n\),
+    \(\vek{x}, \vek{s} \in \R^n_{>0}\),
+    \(\vek{y} \in \R^m\),
+    \(\sigma \in (0, 1)\),
+    tolerance \(\e_{\vek{v}} > 0\),
+    failure probability \(\delta \in (0, \frac{1}{2})\)}
   Compute \(\vek{r}_p = \mat{A}\vek{x} - \vek{b}\), \(\vek{r}_d = \mat{A}^T \vek{y} + \vek{s} - \vek{c}\), \(\mat{X} = \diag(\vek{x})\), \(\mat{S} = \diag(\vek{s})\)\;
   Compute \(\vek{p} = -\vek{r}_p + \mat{A}(-\mat{S}^{-1}\mat{X}\vek{r}_d + \vek{x} - \sigma \mu \mat{S}^{-1} \vek{1})\)\;
-  Construct a random sparse embedding matrix \(\mat{W} \in \R^{w \times m}\) as in \cref{eqn:sparse-ose-params} for the given \(\delta\) and \(\e = 1/3\)\;
+  Construct a random sparse embedding matrix \(\mat{W} \in \R^{w \times m}\) as in \cref{thm:sparse-ose} for the given \(\delta\) and \(\e = 1/3\)\;
   Compute the QR decomposition \(\mat{Q} \mat{R} = \mat{W} \mat{D} \mat{A}^T\)\;
   Run the CG algorithm with \(\vek{q}^0 = \vek{0}\) until \(\mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{R}^{-1} \vek{q} = \mat{R}^{-T} \vek{p} + \vek{f}\) for some error \(\vek{f}\) satisfying \(\norm{\vek{f}}_2 \leq \e_{\vek{v}}/(n \sqrt{\mu})\)\;\label{line:cg}
   Compute \(\vek{v} = {(\mat{S} \mat{X})}^{1/2} \mat{W}^T \mat{Q} \vek{f}\)\;\label{line:compute-v}
@@ -239,3 +246,8 @@ We will just assume that the algorithm fails if this is the case and discuss the
   \Return{\((\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}})\)}\;
   \caption{Approximate Newton direction}\label{alg:newton-direction}
 \end{algorithm}
+
+\begin{theorem}\label{thm:approximate-newton-convergence}
+  Assume that \(\gamma \in (0, 1)\) and \(\sigma \in (0, 1)\) are constant, that the initial point \((\vek{x}^0, \vek{y}^0, \vek{s}^0)\) satisfies \(\vek{x}^0 \geq \vek{x}^*\) and \(\vek{s}^0 \geq \max \{\vek{s}^*, \abs{\mat{A}^T \vek{y}^0 - \vek{c}}\}\) for some \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\) and that \(\mat{A}\) has full row rank. \cref{alg:newton-direction} computes an approximation of the Newton direction that satisfies \cref{eqn:approx-newton} with \(\norm{v}_2 \leq \e_{\vek{v}}\) with probability at least \(1 - \delta\).
+  Moreover, the CG algorithm only needs \(O(\log(n))\) CG iterations and the whole algorithm needs \(O(???)\) flops.
+\end{theorem}

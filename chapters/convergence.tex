@@ -1,25 +1,13 @@
-\chapter{Convergence Proofs}\label{chap:convergence}
+\chapter{Theoretical Convergence}\label{chap:convergence}
 
-To give any convergence proofs it is necessary to exactly state the algorithm.
-\Cref{alg:ipm} is the same infeasible inexact long-step interior-point method as in~\cite{Avron-FasterRandomizedInfeasibleIPMs,Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs} but with a different preconditioner.
-To keep the convergence proof of the IPM seperate from the considerations on how to solve for an approximate Newton direction we will consider the computation of the Newton direction in \cref{alg:newton-direction}.
+The ideas and algorithms were detailed in the previous two chapters and now we want to combine them and show that their combination is an algorithm that converges to an optimal solution.
+Note that \cref{alg:ipm} is the same infeasible inexact long-step IPM as in~\cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs,Avron-FasterRandomizedInfeasibleIPMs} but with a different preconditioner.
+Thus, the following proofs are very similar to those in their works with only slight changes.
+The essential assumptions in the following proofs are that the algorithms work with exact arithmetic, that solutions of \labelcref{eqn:primal-lp,eqn:dual-lp} exist and that \(\mat{A}\) has full row rank.
 
-The first part of this chapter will be concerned with the convergence of \cref{alg:ipm} and its runtime.
-The main result is
-\begin{theorem}
-Assume that \(\gamma \in (0, 1)\) and \(\sigma \in (0, \frac{4}{5})\) are constant and that the initial point \((\vek{x}^0, \vek{y}^0, \vek{s}^0)\) satisfies \((\vek{x}^0, \vek{s}^0) > (\vek{x}^*, \vek{s}^*)\) for some \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\).
-Then \cref{alg:ipm} generates an iterate \((\vek{x}^k, \vek{y}^k, \vek{s}^k)\) satisfying \(\mu^k \leq \e_\mu \mu^0\) and \(\norm{\vek{r}^k} \leq \e_\mu \norm{\vek{r}^0}\) within \(O(n^2 \log(1/\e_\mu))\) iterations.
-\end{theorem}
-%TODO Reference the result in the IPM chapter
+\Cref{thm:ipm-convergence} is concerned with the convergence and runtime of \cref{alg:ipm} while \cref{thm:approximate-newton-convergence} shows the correctness and runtime of \cref{alg:newton-direction}.
+The two algorithms and theorems can be combined by using \cref{alg:newton-direction} in \cref{line:compute-approx-newton} of \cref{alg:ipm} which yields the following theorem.
 
-\Cref{line:compute-approx-newton} of \cref{alg:ipm} is written as a black box generating a sufficiently good estimate of the Newton direction at every step.
-To complete the algorithm we need to show that this gap can be filled using \cref{alg:newton-direction} which uses the previously designed preconditioner and perturbation vector to compute such an approximation:
-\begin{theorem}
-Assume that \(\gamma \in (0, 1)\) and \(\sigma \in (0, 1)\) are constant and that \(\mat{A}\) has full row-rank. \cref{alg:newton-direction} computes an approximation of the Newton direction that satisfies \cref{eqn:approx-newton} with \(\norm{v}_2 \leq \e_{\vek{v}}\) with probability at least \(1 - \delta\).
-Moreover, for \(\e_{\vek{v}} = \gamma \sigma \mu / 4\) the CG algorithm only needs \(O(\log(n))\) inner iterations and the whole algorithm needs \(O(???)\) flops.
-\end{theorem}
-
-These two theorems can be combined to obtain the convergence of our method and its runtime guarantees:
 \begin{theorem}
 Assume that \(\gamma \in (0, 1)\) and \(\sigma \in (0, \frac{4}{5})\) are constant and that the initial point \((\vek{x}^0, \vek{y}^0, \vek{s}^0)\) satisfies \((\vek{x}^0, \vek{s}^0) > (\vek{x}^*, \vek{s}^*)\) for some \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\).
 Furthermore, assume that \cref{alg:ipm} uses \cref{alg:newton-direction} with \(\e_{\vek{v}} = \gamma \sigma \mu^k / 4\) to determine the approximate Newton direction in every step.

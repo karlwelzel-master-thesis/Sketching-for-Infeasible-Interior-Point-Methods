@@ -184,7 +184,15 @@ The proof for \cref{thm:ipm-convergence} will be given in \cref{chap:convergence
 
 \begin{algorithm}[h]
   \SetKwInOut{Input}{Input}
-  \Input{\(\mat{A} \in \R^{m \times n}\), \(\vek{b} \in \R^m\), \(\vek{c} \in \R^n\), \(\gamma \in (0, 1)\), \(\sigma \in (0, 1)\), tolerance \(\e_\mu > 0\) and an intial point \((\vek{x}^0, \vek{y}^0, \vek{s}^0)\)}
+  \Input{
+    \(\mat{A} \in \R^{m \times n}\),
+    \(\vek{b} \in \R^m\),
+    \(\vek{c} \in \R^n\),
+    \(\gamma \in (0, 1)\),
+    \(\sigma \in (0, 1)\),
+    tolerance \(\e_\mu > 0\) and
+    an intial point \((\vek{x}^0, \vek{y}^0, \vek{s}^0)\)
+  }
   Initialize \(k = 0\) and \(\mu^0 = {(\vek{x}^0)}^T \vek{s}^0 /n\)\;
   \While{\(\mu^k = {(\vek{x}^k)}^T \vek{s}^k /n > \e_\mu \mu^0\)}{
     Compute \(\vek{r}_p^k = \mat{A}\vek{x}^k - \vek{b}\), \(\vek{r}_d^k = \mat{A}^T \vek{y}^k + \vek{s}^k - \vek{c}\), \(\mat{X} = \diag(\vek{x}^k)\), \(\mat{S} = \diag(\vek{s}^k)\)\;
@@ -211,6 +219,6 @@ The proof for \cref{thm:ipm-convergence} will be given in \cref{chap:convergence
 \end{algorithm}
 
 \begin{theorem}\label{thm:ipm-convergence}
-  Assume that \(\gamma \in (0, 1)\) and \(\sigma \in (0, \frac{4}{5})\) are constant and that the initial point \((\vek{x}^0, \vek{y}^0, \vek{s}^0)\) satisfies \((\vek{x}^0, \vek{s}^0) > (\vek{x}^*, \vek{s}^*)\) for some \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\).
+  Assume that \(\gamma \in (0, 1)\) and \(\sigma \in (0, \frac{4}{5})\) are constant and that the initial point \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \mathcal{N}_{-\infty}(\gamma)\)\footnote{As the initial point also appears in the definition of \(\mathcal{N}_{-\infty}(\gamma)\) the bound on the residuals is trivially satisfied and this condition simplifies to \(\vek{x}^0, \vek{s}^0 > \vek{0}\) and \(\vek{x}^0 \circ \vek{s}^0 \geq (1-\gamma)\vek{1}\)} satisfies \((\vek{x}^0, \vek{s}^0) \geq (\vek{x}^*, \vek{s}^*)\) for some \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\).
   Then \cref{alg:ipm} generates an iterate \((\vek{x}^k, \vek{y}^k, \vek{s}^k)\) satisfying \(\mu^k \leq \e_\mu \mu^0\) and \(\norm{\vek{r}^k} \leq \e_\mu \norm{\vek{r}^0}\) within \(O(n^2 \log(1/\e_\mu))\) iterations.
 \end{theorem}
