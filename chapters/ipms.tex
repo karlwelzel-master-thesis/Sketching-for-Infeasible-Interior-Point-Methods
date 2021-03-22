@@ -209,8 +209,8 @@ The proof for \cref{thm:ipm-convergence} will be given in \cref{chap:convergence
       -
       \begin{pmatrix} 0 \\ 0 \\ \vek{v} \end{pmatrix} \text{\;}
     \end{equation} \\\label{line:compute-approx-newton}
-    Determine the maximum \(\tilde{\alpha} \in [0, 1]\) such that for all \(\alpha \in [0, \tilde{\alpha}]\) we have \((\vek{x}^k, \vek{y}^k, \vek{s}^k) + \alpha (\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}}) \in \mathcal{N}_{-\infty}(\gamma)\)\;
-    Compute \(\bar{\alpha} = \argmin \set{ {(\vek{x}^k + \alpha \hat{\Delta\vek{x}})}^T (\vek{s}^k + \alpha \hat{\Delta\vek{s}}) | \alpha \in [0, \tilde{\alpha}]}\)\;
+    Determine the maximum \(\tilde{\alpha} \in [0, 1]\) such that for all \(\alpha \in [0, \tilde{\alpha}]\) we have \((\vek{x}^k, \vek{y}^k, \vek{s}^k) + \alpha (\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}}) \in \mathcal{N}_{-\infty}(\gamma)\)\; \label{line:alpha-tilde}
+    Compute \(\bar{\alpha} = \argmin \set{ {(\vek{x}^k + \alpha \hat{\Delta\vek{x}})}^T (\vek{s}^k + \alpha \hat{\Delta\vek{s}}) | \alpha \in [0, \tilde{\alpha}]}\)\; \label{line:alpha-bar}
     Set \((\vek{x}^{k+1}, \vek{y}^{k+1}, \vek{s}^{k+1}) = (\vek{x}^k, \vek{y}^k, \vek{s}^k) + \bar{\alpha} (\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}}) \)\;
     Increment \(k \leftarrow k+1\)\;
   }

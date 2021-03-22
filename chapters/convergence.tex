@@ -13,3 +13,44 @@ Assume that \(\gamma \in (0, 1)\) and \(\sigma \in (0, \frac{4}{5})\) are consta
 Furthermore, assume that \cref{alg:ipm} uses \cref{alg:newton-direction} with \(\e_{\vek{v}} = \gamma \sigma \mu^k / 4\) to determine the approximate Newton direction in every step.
 Then the algorithm terminates successfully using only \(O(???)\) flops with probability at least \(99\%\) for \(\delta = O(n^{-2})\).
 \end{theorem}
+
+Let us now turn to the proofs.
+A key observation is that shifting the error term in the Newton system with the perturbation vector \(\vek{v}\) so that \((\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}})\) satisfies \cref{eqn:approx-newton} ensures that at each iteration the residuals \(\vek{r}^k = (\vek{r}_p^k, \vek{r}_d^k)\) lie on the line segment between \(\vek{r}^0\) and \(\vek{0}\), i.e. \(\vek{r}^k = \eta \vek{r}^0\) for some \(\eta \in [0, 1]\).
+Moreover, by the definition of the neighbourhood \(\mathcal{N}_{-\infty}\) this \(\eta\) satisifies \(\eta \leq \frac{\mu^k}{\mu^0} = \frac{{\vek{x}^k}^T \vek{s}^k}{{\vek{x}^0}^T \vek{s}^0}\).
+Therefore our iterates satisfy all the conditions of the following lemma.
+
+\begin{lemma}[Lemma 3.2 in~\cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs}]
+  Let \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \R^n_{>0} \times \R^m \times \R^n_{>0}\) be a point such that \((\vek{x}^0, \vek{s}^0) \geq (\vek{x}^*, \vek{s}^*)\) for some \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\).
+  Then for any point \((\vek{x}, \vek{y}, \vek{s})\) such that the corresponding residuals satisfy \(\vek{r} = \eta \vek{r}^0\) for some \(\eta \in [0, 1]\) and \(\eta \leq \vek{x}^T \vek{s} / {\vek{x}^0}^T \vek{s}^0\) we have \(\eta ({\vek{x}^0}^T \vek{s} + \vek{x}^T {\vek{s}^0}) \leq 3 n \mu\).
+\end{lemma}
+
+Let \((\vek{x}, \vek{y}, \vek{s})\) denote an iterate during the course of \cref{alg:ipm}, \((\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}})\) the Newton direction determined in \cref{line:compute-approx-newton} and 
+\begin{align}
+  (\vek{x}(\alpha), \vek{y}(\alpha), \vek{s}(\alpha)) &\coloneqq (\vek{x}, \vek{y}, \vek{s}) + \alpha (\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}}) \\
+  \mu(\alpha) &\coloneqq \vek{x}(\alpha)^T \vek{s}(\alpha) \\
+  \vek{r}(\alpha) &\coloneqq (\mat{A}\vek{x}(\alpha) - \vek{b}, \mat{A}^T \vek{y}(\alpha) + \vek{s}(\alpha) - \vek{c}).
+\end{align}
+Using this notation~\citeauthor{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs} showed that the stepsize \(\bar{\alpha}\) determined in \cref{alg:ipm} is bounded from below.
+
+\begin{lemma}[Lemma 3.6 in~\cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs}]
+  Assume that \((\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}})\) satifies \cref{eqn:approx-newton} for some \(\sigma \in (0, \frac{4}{5})\), \((\vek{x}, \vek{y}, \vek{s}) \in \mathcal{N}_{-\infty}(\gamma)\) with \(\gamma \in (0, 1)\) and \(\vek{v} \in \R^n\) satisfying \(\norm{\vek{v}}_\infty \leq \gamma \sigma \mu / 4\).
+  Then the stepsize \(\bar{\alpha}\) determined in \cref{line:alpha-tilde,line:alpha-bar} satifies
+  \[ \bar{\alpha} \geq \min \Set{1, \frac{\min \Set{\gamma \sigma, 1 - \frac{5}{4}\gamma} \mu}{4 \norm{\hat{\Delta\vek{x}} \circ \hat{\Delta\vek{s}}}_\infty}} \]
+  and
+  \[ \mu(\bar{\alpha}) \leq \Paren{1 - \Paren{1 - \frac{5}{4}\sigma} \frac{\bar{\alpha}}{2}} \mu. \]
+\end{lemma}
+
+Note that the assumptions in this lemma are not stated in this form in the original lemma but are instead inferred from the definition of their algorithm.
+In the proof they show that \(\norm{\vek{v}}_\infty \leq \gamma \sigma \mu / 4\) and then deduce the results from this.
+It suffices now to upper-bound \(\norm{\hat{\Delta\vek{x}} \circ \hat{\Delta\vek{s}}}_\infty\) to show that \(\mu\) decreases enough in each iteration.
+
+\begin{lemma}[Lemma 16 in~\cite{Avron-FasterRandomizedInfeasibleIPMs}, Lemma 3.7 in~\cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs}]
+  Let \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \R^n_{>0} \times \R^m \times \R^n_{>0}\) be a point such that \((\vek{x}^0, \vek{s}^0) \geq (\vek{x}^*, \vek{s}^*)\) for some \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\).
+  Let \((\vek{x}, \vek{y}, \vek{s}) \in \mathcal{N}_{-\infty}(\gamma)\) be such that \(\vek{r} = \eta \vek{r}^0\) for some \(\eta \in [0, 1]\) and \(\norm{\vek{v}}_2 \leq \gamma \sigma \mu / 4 \).
+  Then \cref{eqn:approx-newton} implies
+  \[ \max\Set{\norm{\mat{D}^{-1}\hat{\Delta\vek{x}}}_2, \norm{\mat{D}\hat{\Delta\vek{s}}}_2} \leq \Paren{1 + \frac{\sigma^2}{1- \gamma} - 2\sigma}^{1/2} \sqrt{n \mu} + \frac{6n}{\sqrt{1 - \gamma}} \sqrt{\mu} + \frac{\gamma \sigma}{4 \sqrt{1 - \gamma}}\sqrt{\mu}\]
+\end{lemma}
+
+\begin{proof}[Proof of \cref{thm:ipm-convergence}]
+    
+\end{proof}
