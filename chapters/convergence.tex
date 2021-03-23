@@ -9,33 +9,24 @@ The essential assumptions in the following proofs are that the algorithms work w
 The two algorithms and theorems can be combined by using \cref{alg:newton-direction} in \cref{line:compute-approx-newton} of \cref{alg:ipm} which yields the following theorem.
 
 \begin{theorem}
-Assume that \(\gamma \in (0, 1)\) and \(\sigma \in (0, \frac{4}{5})\) are constant and that the initial point \((\vek{x}^0, \vek{y}^0, \vek{s}^0)\) satisfies \((\vek{x}^0, \vek{s}^0) > (\vek{x}^*, \vek{s}^*)\) for some \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\).
+Assume that \(\gamma \in (0, 1)\) and \(\sigma \in (0, \frac{4}{5})\) are constant and that the initial point \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \mathcal{G}\) satisfies \(\vek{x}^0 \circ \vek{s}^0 \geq (1-\gamma)\vek{1}\) and \((\vek{x}^0, \vek{s}^0) \geq (\vek{x}^*, \vek{s}^*)\) for some \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\).
 Furthermore, assume that \cref{alg:ipm} uses \cref{alg:newton-direction} with \(\e_{\vek{v}} = \gamma \sigma \mu^k / 4\) to determine the approximate Newton direction in every step.
 Then the algorithm terminates successfully using only \(O(???)\) flops with probability at least \(99\%\) for \(\delta = O(n^{-2})\).
 \end{theorem}
 
 Let us now turn to the proofs.
-A key observation is that shifting the error term in the Newton system with the perturbation vector \(\vek{v}\) so that \((\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}})\) satisfies \cref{eqn:approx-newton} ensures that at each iteration the residuals \(\vek{r}^k = (\vek{r}_p^k, \vek{r}_d^k)\) lie on the line segment between \(\vek{r}^0\) and \(\vek{0}\), i.e. \(\vek{r}^k = \eta \vek{r}^0\) for some \(\eta \in [0, 1]\).
-Moreover, by the definition of the neighbourhood \(\mathcal{N}_{-\infty}\) this \(\eta\) satisifies \(\eta \leq \frac{\mu^k}{\mu^0} = \frac{{\vek{x}^k}^T \vek{s}^k}{{\vek{x}^0}^T \vek{s}^0}\).
-Therefore our iterates satisfy all the conditions of the following lemma.
-
-\begin{lemma}[Lemma 3.2 in~\cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs}]
-  Let \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \R^n_{>0} \times \R^m \times \R^n_{>0}\) be a point such that \((\vek{x}^0, \vek{s}^0) \geq (\vek{x}^*, \vek{s}^*)\) for some \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\).
-  Then for any point \((\vek{x}, \vek{y}, \vek{s})\) such that the corresponding residuals satisfy \(\vek{r} = \eta \vek{r}^0\) for some \(\eta \in [0, 1]\) and \(\eta \leq \vek{x}^T \vek{s} / {\vek{x}^0}^T \vek{s}^0\) we have \(\eta ({\vek{x}^0}^T \vek{s} + \vek{x}^T {\vek{s}^0}) \leq 3 n \mu\).
-\end{lemma}
-
-Let \((\vek{x}, \vek{y}, \vek{s})\) denote an iterate during the course of \cref{alg:ipm}, \((\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}})\) the Newton direction determined in \cref{line:compute-approx-newton} and 
+Let \((\vek{x}, \vek{y}, \vek{s}) \in \mathcal{N}_{-\infty}(\gamma)\) denote an iterate during the course of \cref{alg:ipm}, \((\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}})\) the Newton direction determined in \cref{line:compute-approx-newton} and 
 \begin{align}
   (\vek{x}(\alpha), \vek{y}(\alpha), \vek{s}(\alpha)) &\coloneqq (\vek{x}, \vek{y}, \vek{s}) + \alpha (\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}}) \\
-  \mu(\alpha) &\coloneqq \vek{x}(\alpha)^T \vek{s}(\alpha) \\
+  \mu(\alpha) &\coloneqq {\vek{x}(\alpha)}^T \vek{s}(\alpha) \\
   \vek{r}(\alpha) &\coloneqq (\mat{A}\vek{x}(\alpha) - \vek{b}, \mat{A}^T \vek{y}(\alpha) + \vek{s}(\alpha) - \vek{c}).
 \end{align}
-Using this notation~\citeauthor{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs} showed that the stepsize \(\bar{\alpha}\) determined in \cref{alg:ipm} is bounded from below.
+Using this notation~\textcite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs} showed that the stepsize \(\bar{\alpha}\) determined in \cref{alg:ipm} is bounded from below.
 
-\begin{lemma}[Lemma 3.6 in~\cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs}]
-  Assume that \((\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}})\) satifies \cref{eqn:approx-newton} for some \(\sigma \in (0, \frac{4}{5})\), \((\vek{x}, \vek{y}, \vek{s}) \in \mathcal{N}_{-\infty}(\gamma)\) with \(\gamma \in (0, 1)\) and \(\vek{v} \in \R^n\) satisfying \(\norm{\vek{v}}_\infty \leq \gamma \sigma \mu / 4\).
+\begin{lemma}[Lemma 3.6 in~\cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs}]\label{thm:alpha-bar-bound}
+  Assume that \(\gamma \in (0, 1)\), \(\sigma \in (0, \frac{4}{5})\), \((\vek{x}, \vek{y}, \vek{s}) \in \mathcal{N}_{-\infty}(\gamma)\) and \((\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}})\) satifies \cref{eqn:approx-newton} such that \(\norm{\vek{v}}_\infty \leq \gamma \sigma \mu / 4\).
   Then the stepsize \(\bar{\alpha}\) determined in \cref{line:alpha-tilde,line:alpha-bar} satifies
-  \[ \bar{\alpha} \geq \min \Set{1, \frac{\min \Set{\gamma \sigma, 1 - \frac{5}{4}\gamma} \mu}{4 \norm{\hat{\Delta\vek{x}} \circ \hat{\Delta\vek{s}}}_\infty}} \]
+  \[ \bar{\alpha} \geq \min \Set{1, \frac{\min \Set{\gamma \sigma, 1 - \frac{5}{4}\sigma} \mu}{4 \norm{\hat{\Delta\vek{x}} \circ \hat{\Delta\vek{s}}}_\infty}} \]
   and
   \[ \mu(\bar{\alpha}) \leq \Paren{1 - \Paren{1 - \frac{5}{4}\sigma} \frac{\bar{\alpha}}{2}} \mu. \]
 \end{lemma}
@@ -43,14 +34,46 @@ Using this notation~\citeauthor{Monteiro-ConvergenceAnalysisLongStepInfeasibleIP
 Note that the assumptions in this lemma are not stated in this form in the original lemma but are instead inferred from the definition of their algorithm.
 In the proof they show that \(\norm{\vek{v}}_\infty \leq \gamma \sigma \mu / 4\) and then deduce the results from this.
 It suffices now to upper-bound \(\norm{\hat{\Delta\vek{x}} \circ \hat{\Delta\vek{s}}}_\infty\) to show that \(\mu\) decreases enough in each iteration.
+To show this we need a key observation which motivated us to shift the error term in \cref{chap:ipm} using the perturbation vector \(\vek{v}\):
+The form of the error term in \cref{eqn:approx-newton} ensures that at each iteration the residuals \(\vek{r} = (\vek{r}_p, \vek{r}_d)\) lie on the line segment between \(\vek{r}^0\) and \(\vek{0}\)
+because \(\vek{r}(\alpha) = (1 - \alpha) \vek{r}(0)\).
+In other words, \(\vek{r} = \eta \vek{r}^0\) with \(\eta \in [0, 1]\) for every iterate in \cref{alg:ipm}.
 
-\begin{lemma}[Lemma 16 in~\cite{Avron-FasterRandomizedInfeasibleIPMs}, Lemma 3.7 in~\cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs}]
-  Let \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \R^n_{>0} \times \R^m \times \R^n_{>0}\) be a point such that \((\vek{x}^0, \vek{s}^0) \geq (\vek{x}^*, \vek{s}^*)\) for some \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\).
-  Let \((\vek{x}, \vek{y}, \vek{s}) \in \mathcal{N}_{-\infty}(\gamma)\) be such that \(\vek{r} = \eta \vek{r}^0\) for some \(\eta \in [0, 1]\) and \(\norm{\vek{v}}_2 \leq \gamma \sigma \mu / 4 \).
-  Then \cref{eqn:approx-newton} implies
-  \[ \max\Set{\norm{\mat{D}^{-1}\hat{\Delta\vek{x}}}_2, \norm{\mat{D}\hat{\Delta\vek{s}}}_2} \leq \Paren{1 + \frac{\sigma^2}{1- \gamma} - 2\sigma}^{1/2} \sqrt{n \mu} + \frac{6n}{\sqrt{1 - \gamma}} \sqrt{\mu} + \frac{\gamma \sigma}{4 \sqrt{1 - \gamma}}\sqrt{\mu}\]
+\begin{lemma}[Lemma 16 in~\cite{Avron-FasterRandomizedInfeasibleIPMs}]\label{thm:delta-x-s-bound}
+  Assume that \(\gamma \in (0, 1)\), \(\sigma \in (0, 1)\), \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \mathcal{G}\) satisfies \((\vek{x}^0, \vek{s}^0) \geq (\vek{x}^*, \vek{s}^*)\) for some \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\), \((\vek{x}, \vek{y}, \vek{s}) \in \mathcal{N}_{-\infty}(\gamma)\) with \(\vek{r} = \eta \vek{r}^0\) for some \(\eta \in [0, 1]\) and \((\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}})\) satifies \cref{eqn:approx-newton} such that \(\norm{\vek{v}}_2 \leq \gamma \sigma \mu / 4\).
+  Then 
+  \[ \norm{\mat{D}^{-1}\hat{\Delta\vek{x}}}_2, \norm{\mat{D}\hat{\Delta\vek{s}}}_2 \leq \Paren{1 + \frac{\sigma^2}{1- \gamma} - 2\sigma}^{1/2} \sqrt{n \mu} + \frac{6}{\sqrt{1 - \gamma}} n\sqrt{\mu} + \frac{\gamma \sigma}{4 \sqrt{1 - \gamma}}\sqrt{\mu}\]
+  which implies that \(\norm{\mat{D}^{-1}\hat{\Delta\vek{x}}}_2\) and \(\norm{\mat{D}\hat{\Delta\vek{s}}}_2\) are bounded by \(C n \sqrt{\mu}\) for some constant \(C > 0\) depending on \(\gamma\) and \(\sigma\).
 \end{lemma}
 
+These two lemmas are enough to show the convergence of \cref{alg:ipm}.
+
 \begin{proof}[Proof of \cref{thm:ipm-convergence}]
-    
+  By the choice of \(\bar{\alpha}\) in \cref{line:alpha-tilde,line:alpha-bar} every iterate \((\vek{x}^k, \vek{y}^k, \vek{s}^k)\) is inside the specified neighbourhood \(\mathcal{N}_{-\infty}(\gamma)\).
+  Therefore, \(\mu^k \leq \e_\mu \mu^0\) implies \(\norm{\vek{r}^k} \leq \e_\mu \norm{\vek{r}^0}\) and it suffices to show the former for some \(k = O(n^2 \log(1/\e_\mu))\)
+
+  By \cref{thm:delta-x-s-bound} the search direction determined in \cref{line:compute-approx-newton} satisfies
+  \[ \norm{\hat{\Delta\vek{x}} \circ \hat{\Delta\vek{s}}}_\infty \leq \norm{\hat{\Delta\vek{x}} \circ \hat{\Delta\vek{s}}}_2 \leq \norm{\mat{D}^{-1}\hat{\Delta\vek{x}}}_2 \norm{\mat{D}\hat{\Delta\vek{s}}}_2 \leq C_1 n^2 \mu^k\]
+  in every iteration, such that by \cref{thm:alpha-bar-bound}
+  \[ \bar{\alpha} \geq \min \Set{1, \frac{\min \Set{\gamma \sigma, 1 - \frac{5}{4}\sigma} \mu^k}{4 C_1 n^2 \mu^k}} \geq \frac{C_2}{n^2} \]
+  where \(C_1, C_2 > 0\) are constants depending only on \(\gamma\) and \(\sigma\).
+  Plugging this inequality in the second bound in \cref{thm:alpha-bar-bound} we get
+  \[ \mu^{k+1} = \mu(\bar{\alpha}) \leq \Paren{ 1 - \Paren{1 - \frac{5}{4} \sigma} \frac{\bar{\alpha}}{2}} \mu^k \leq \Paren{ 1 - \Paren{1 - \frac{5}{4} \sigma} \frac{C_2}{2 n^2}} \mu^k \leq \Paren{1 - \frac{C_3}{n^2}} \mu^k \]
+  for some constant \(C_3 > 0\).
+  By induction this means that \(\mu^k \leq {(1 - \frac{C_3}{n^2})}^k \mu^0\) for all \(k \geq 0\).
+  If \(\e_\mu \geq 1\) the algorithm terminates instantly so we can assume that \(\e_\mu < 1\).
+  Now let \(k \geq n^2 \log(1/\e_\mu) / C_3\) which implies
+  \[ k \log\Paren{1 - \frac{C_3}{n^2}} \leq k \Paren{- \frac{C_3}{n^2}} \leq -\log(1/\e_\mu) = \log(\e_\mu) \]
+  using \(\log(\beta) \leq \beta-1\) for all \(\beta > 0\).
+  Applying the exponential function on both sides gives \({(1 - \frac{C_3}{n^2})}^k \leq \e_\mu\) which shows that \(O(n^2 \log(1/\e_\mu))\) iterations suffice to get \(\mu^k \leq \e_\mu \mu^0\).
 \end{proof}
+
+% \(\vek{r}^k = \eta \vek{r}^0\) for some \(\eta \in [0, 1]\).
+% Moreover, by the definition of the neighbourhood \(\mathcal{N}_{-\infty}(\gamma)\) this \(\eta\) satisifies \(\eta \leq \mu^k / \mu^0 = {\vek{x}^k}^T \vek{s}^k / {\vek{x}^0}^T \vek{s}^0\).
+% Therefore our iterates satisfy all of the conditions of the following lemma.
+
+% \begin{lemma}[Lemma 3.2 in~\cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs}]
+%   Assume that \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \mathcal{G}\) satisfies \((\vek{x}^0, \vek{s}^0) \geq (\vek{x}^*, \vek{s}^*)\) for some \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\).
+%   Then for any point \((\vek{x}, \vek{y}, \vek{s}) \in \mathcal{G}\) such that the corresponding residuals satisfy \(\vek{r} = \eta \vek{r}^0\) for some \(\eta \in [0, 1]\) and \(\eta \leq \vek{x}^T \vek{s} / {\vek{x}^0}^T \vek{s}^0\) we have
+%   \(\eta ({\vek{x}^0}^T \vek{s} + \vek{x}^T {\vek{s}^0}) \leq 3 n \mu\).
+% \end{lemma}
