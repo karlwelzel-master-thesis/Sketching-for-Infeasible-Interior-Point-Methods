@@ -49,6 +49,7 @@ Necessary and sufficient optimality conditions for both problems are therefore g
 Here, \(\vek{r}_p\) and \(\vek{r}_d\) denote the primal and dual residuals and \(\vek{r} = (\vek{r}_p, \vek{r}_d)\) denotes their concatenation as a vector in \(\R^{m+n}\).
 We denote the set of feasible points with \(\mathcal{F}\) and the set of solutions as \(\mathcal{F}^*\).
 The feasible points which satisfy \cref{eqn:nonnegativity} strictly (all entries need to be positive) are called \emph{strictly feasible} and the set of strictly feasible points is denoted by \(\mathcal{F}^o\).
+Because we will focus on a so-called infeasible IPM it is also useful to define \(\mathcal{G} \coloneqq \R^n_{>0} \times \R^m \times \R^n_{>0}\) as the set of points that satisfy \cref{eqn:nonnegativity} strictly without requiring feasibility.
 
 Assume strictly feasible points exist, then the unique solutions \((\vek{x}_\tau, \vek{y}_\tau, \vek{s}_\tau)\) of
 \begin{subequations}
@@ -66,14 +67,14 @@ Primal-dual IPMs now try to follow this path towards a solution by maintaining i
 In this thesis we focus on an IPM variant with good practical properties.
 Its neighbourhood is defined by
 \begin{equation}
-  \mathcal{N}_{-\infty}(\gamma) = \Set{ (\vek{x}, \vek{y}, \vek{s}) | \vek{x}, \vek{s} > \vek{0}, \ \vek{x} \circ \vek{s} \geq (1 - \gamma) \mu \vek{1}, \ \frac{\norm{\vek{r}}_2}{\norm{\vek{r}^0}_2} \leq \frac{\mu}{\mu^0} }. \label{eqn:neighbourhood}
+  \mathcal{N}_{-\infty}(\gamma) = \Set{ (\vek{x}, \vek{y}, \vek{s}) \in \mathcal{G} | \vek{x} \circ \vek{s} \geq (1 - \gamma) \mu \vek{1}, \ \frac{\norm{\vek{r}}_2}{\norm{\vek{r}^0}_2} \leq \frac{\mu}{\mu^0} }. \label{eqn:neighbourhood}
 \end{equation}
 where \(\mu = \vek{x}^T \vek{s}/n\), i.e.\ the average value of \(x_i s_i\), and the parameter \(\gamma \in (0, 1)\) controls the size of the neighbourhood.
-The first condition is one that all IPMs share.
+The condition \((\vek{x}, \vek{y}, \vek{s}) \in \mathcal{G}\) is shared by all IPMs.
 It keeps the \(\vek{x}\) and \(\vek{s}\) components of the iterates in the interior of the nonnegative orthant.
 The second one qualifies this IPM as a \emph{long-step} IPM as this one-sided \(\infty\)-norm bound allows for longer steps inside the neighbourhood compared to a two-sided 2-norm bound such as \(\norm{\vek{x} \circ \vek{s} - \mu \vek{1}}_2 \leq \gamma\).
 Neighbourhoods involving those bounds are known as \emph{short-step} IPMs and give better theoretical guarantees while having worse pratical performance.
-Lastly, the bound on the residuals (where \(\vek{r}^0\) and \(\mu^0\) are defined by the starting point \((\vek{x}^0, \vek{y}^0, \vek{s}^0)\)) implies that we will allow infeasible iterates as long as their residuals decrease to zero at least as fast as \(\mu\) does.
+Lastly, the bound on the residuals (where \(\vek{r}^0\) and \(\mu^0\) are defined by the starting point \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \mathcal{G}\)) implies that we will allow infeasible iterates as long as their residuals decrease to zero at least as fast as \(\mu\) does.
 Any algorithm that maintains iterates inside \(\mathcal{N}_{-\infty}(\gamma)\) and is able to decrease the corresponding \(\mu\) values to zero produces iterates which become arbitrarily close to optimality because \(\norm{\vek{r}}_2\) and \(x_i s_i\) converge to zero.
 
 The search direction in IPMs is determined by a Newton system that aims to find the root of 
@@ -196,7 +197,7 @@ The proof for \cref{thm:ipm-convergence} will be given in \cref{chap:convergence
   Initialize \(k = 0\) and \(\mu^0 = {(\vek{x}^0)}^T \vek{s}^0 /n\)\;
   \While{\(\mu^k = {(\vek{x}^k)}^T \vek{s}^k /n > \e_\mu \mu^0\)}{
     Compute \(\vek{r}_p^k = \mat{A}\vek{x}^k - \vek{b}\), \(\vek{r}_d^k = \mat{A}^T \vek{y}^k + \vek{s}^k - \vek{c}\), \(\mat{X} = \diag(\vek{x}^k)\), \(\mat{S} = \diag(\vek{s}^k)\)\;
-    Solve the following linear system such that \(\norm{\vek{v}}_\infty \leq  \gamma \sigma \mu^k/4\)
+    Solve the following linear system such that \(\norm{\vek{v}}_2 \leq  \gamma \sigma \mu^k/4\)
     \begin{equation} \label{eqn:approx-newton}
       \begin{pmatrix}
         \mat{A} & 0         & 0       \\
@@ -209,8 +210,8 @@ The proof for \cref{thm:ipm-convergence} will be given in \cref{chap:convergence
       -
       \begin{pmatrix} 0 \\ 0 \\ \vek{v} \end{pmatrix} \text{\;}
     \end{equation} \\\label{line:compute-approx-newton}
-    Determine the maximum \(\tilde{\alpha} \in [0, 1]\) such that for all \(\alpha \in [0, \tilde{\alpha}]\) we have \((\vek{x}^k, \vek{y}^k, \vek{s}^k) + \alpha (\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}}) \in \mathcal{N}_{-\infty}(\gamma)\)\; \label{line:alpha-tilde}
-    Compute \(\bar{\alpha} = \argmin \set{ {(\vek{x}^k + \alpha \hat{\Delta\vek{x}})}^T (\vek{s}^k + \alpha \hat{\Delta\vek{s}}) | \alpha \in [0, \tilde{\alpha}]}\)\; \label{line:alpha-bar}
+    Determine the maximum \(\tilde{\alpha} \in [0, 1]\) such that for all \(\alpha \in [0, \tilde{\alpha}]\) we have \((\vek{x}^k, \vek{y}^k, \vek{s}^k) + \alpha (\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}}) \in \mathcal{N}_{-\infty}(\gamma)\)\;\label{line:alpha-tilde}
+    Compute \(\bar{\alpha} = \argmin \set{ {(\vek{x}^k + \alpha \hat{\Delta\vek{x}})}^T (\vek{s}^k + \alpha \hat{\Delta\vek{s}}) | \alpha \in [0, \tilde{\alpha}]}\)\;\label{line:alpha-bar}
     Set \((\vek{x}^{k+1}, \vek{y}^{k+1}, \vek{s}^{k+1}) = (\vek{x}^k, \vek{y}^k, \vek{s}^k) + \bar{\alpha} (\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}}) \)\;
     Increment \(k \leftarrow k+1\)\;
   }
@@ -219,6 +220,6 @@ The proof for \cref{thm:ipm-convergence} will be given in \cref{chap:convergence
 \end{algorithm}
 
 \begin{theorem}\label{thm:ipm-convergence}
-  Assume that \(\gamma \in (0, 1)\) and \(\sigma \in (0, \frac{4}{5})\) are constant and that the initial point \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \mathcal{N}_{-\infty}(\gamma)\)\footnote{As the initial point also appears in the definition of \(\mathcal{N}_{-\infty}(\gamma)\) the bound on the residuals is trivially satisfied and this condition simplifies to \(\vek{x}^0, \vek{s}^0 > \vek{0}\) and \(\vek{x}^0 \circ \vek{s}^0 \geq (1-\gamma)\vek{1}\)} satisfies \((\vek{x}^0, \vek{s}^0) \geq (\vek{x}^*, \vek{s}^*)\) for some \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\).
+  Assume that \(\gamma \in (0, 1)\) and \(\sigma \in (0, \frac{4}{5})\) are constant and that the initial point \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \mathcal{G}\) satisfies \(\vek{x}^0 \circ \vek{s}^0 \geq (1-\gamma)\vek{1}\) and \((\vek{x}^0, \vek{s}^0) \geq (\vek{x}^*, \vek{s}^*)\) for some \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\).
   Then \cref{alg:ipm} generates an iterate \((\vek{x}^k, \vek{y}^k, \vek{s}^k)\) satisfying \(\mu^k \leq \e_\mu \mu^0\) and \(\norm{\vek{r}^k} \leq \e_\mu \norm{\vek{r}^0}\) within \(O(n^2 \log(1/\e_\mu))\) iterations.
 \end{theorem}
