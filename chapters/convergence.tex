@@ -151,6 +151,20 @@ Note that additionally by the definition of the neighbourhood \(\mathcal{N}_{-\i
   as claimed.
 \end{proof}
 
+\begin{proof}[Proof of \cref{thm:approximate-newton-convergence}]
+  By \cref{thm:sparse-ose} the matrix \(\mat{W}\) selected in \cref{line:draw-sketching-matrix} of \cref{alg:newton-direction} is a subspace embedding for \(\mat{D}\mat{A}^T\) with probability at least \(1 - \delta\), so it suffices to show all of the claims for this case.
+  Therefore, assume that \(\mat{W}\) is indeed a \((1 \pm \e)\) \(\ell_2\)-subspace embedding for \(\mat{D}\mat{A}^T\) for \(\e = 1/3\) from now on.
+  In this case the QR decomposition \(\mat{Q}\mat{R} = \mat{W}\mat{D}\mat{A}^T\) exists and by \cref{thm:condition-number-bound} we have
+  \[\norm{\mat{R}^{-T}\mat{A}\mat{D}}_2 \leq \sqrt{\frac{4}{3}} \leq \sqrt{2}.\]
+  Let \(\vek{q}^j\) be the iterates of the CG algorithm in \cref{line:cg} and let \(\vek{f}^j\) be the residuals defined by
+\( \vek{f}^j = \mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A} \mat{R}^{-1} \vek{q}^j - \mat{R}^{-T} \vek{p} \).
+  Using \cref{thm:initial-residual-bound} and \(\vek{q}^0 = \vek{0}\) we have \(\norm{\vek{f}^0}_2 = \norm{\mat{R}^{-T} \vek{p}}_2 \leq Cn\sqrt{\mu}\) for some constant \(C > 0\) depending on \(\gamma\).
+  \Cref{thm:cg-residual-bound} immediately implies that \(\norm{\vek{f}^j}_2\) converges to zero and the so \cref{line:cg} will terminate.
+  Moreover, it tells us that for \(j \geq \log_2(\e_{\vek{v}}/C n^2 \mu)\) we have
+  \[ \norm{\vek{f}^j}_2 \leq \Paren{\frac{1}{2}}^j \norm{\vek{f}^0}_2 \leq \frac{\e_{\vek{v}}}{C n^2 \mu} C n \sqrt{\mu} \leq \frac{\e_{\vek{v}}}{n \sqrt{\mu}} \]
+  so \cref{line:cg} will terminate after \(O(\log(\e_{\vek{v}} / n^2 \mu))\) CG iterations.
+\end{proof}
+
 % \Cref{thm:ipm-convergence} is concerned with the convergence and runtime of \cref{alg:ipm} while \cref{thm:approximate-newton-convergence} shows the correctness and runtime of \cref{alg:newton-direction}.
 % The two algorithms and theorems can be combined by using \cref{alg:newton-direction} in \cref{line:compute-approx-newton} of \cref{alg:ipm} which yields the following theorem.
 
