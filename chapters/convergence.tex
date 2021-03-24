@@ -42,7 +42,7 @@ In other words, \(\vek{r} = \eta \vek{r}^0\) with \(\eta \in [0, 1]\) for every 
     \item \((\vek{x}, \vek{y}, \vek{s}) \in \mathcal{N}_{-\infty}(\gamma)\) with \(\vek{r} = \eta \vek{r}^0\) for some \(\eta \in [0, 1]\) and
     \item \((\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}})\) satifies \cref{eqn:approx-newton} such that \(\norm{\vek{v}}_2 \leq \gamma \sigma \mu / 4\).
   \end{itemize}
-  Then 
+  Then
   \[ \norm{\mat{D}^{-1}\hat{\Delta\vek{x}}}_2, \norm{\mat{D}\hat{\Delta\vek{s}}}_2 \leq \Paren{1 + \frac{\sigma^2}{1- \gamma} - 2\sigma}^{1/2} \sqrt{n \mu} + \frac{6}{\sqrt{1 - \gamma}} n\sqrt{\mu} + \frac{\gamma \sigma}{4 \sqrt{1 - \gamma}}\sqrt{\mu}\]
   which implies that \(\norm{\mat{D}^{-1}\hat{\Delta\vek{x}}}_2\) and \(\norm{\mat{D}\hat{\Delta\vek{s}}}_2\) are bounded by \(C n \sqrt{\mu}\) for some constant \(C > 0\) depending on \(\gamma\) and \(\sigma\).
 \end{lemma}
@@ -69,12 +69,44 @@ These two lemmas are enough to show the convergence of \cref{alg:ipm}.
   Applying the exponential function on both sides gives \({(1 - \frac{C_3}{n^2})}^k \leq \e_\mu\) which shows that \(O(n^2 \log(1/\e_\mu))\) iterations suffice to get \(\mu^k \leq \e_\mu \mu^0\).
 \end{proof}
 
-% \(\vek{r}^k = \eta \vek{r}^0\) for some \(\eta \in [0, 1]\).
-% Moreover, by the definition of the neighbourhood \(\mathcal{N}_{-\infty}(\gamma)\) this \(\eta\) satisifies \(\eta \leq \mu^k / \mu^0 = {\vek{x}^k}^T \vek{s}^k / {\vek{x}^0}^T \vek{s}^0\).
-% Therefore our iterates satisfy all of the conditions of the following lemma.
+Next, we turn to the correctness of \cref{alg:newton-direction} which is concerned with calculating a sufficiently good approximation of the Newton direction.
+The proofs follow Lemma 11 to 13 in~\cite{Avron-FasterRandomizedInfeasibleIPMs} with slight simplifications.
+As linear convergence of the CG method was already established in \cref{thm:cg-residual-bound} our main goal is to bound the norm of the initial residual \(\mat{R}^{-T}\vek{p}\).
+To this end, we introduce the following bound that can already be found in~\cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs}.
 
-% \begin{lemma}[Lemma 3.2 in~\cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs}]
-%   Assume that \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \mathcal{G}\) satisfies \((\vek{x}^0, \vek{s}^0) \geq (\vek{x}^*, \vek{s}^*)\) for some \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\).
-%   Then for any point \((\vek{x}, \vek{y}, \vek{s}) \in \mathcal{G}\) such that the corresponding residuals satisfy \(\vek{r} = \eta \vek{r}^0\) for some \(\eta \in [0, 1]\) and \(\eta \leq \vek{x}^T \vek{s} / {\vek{x}^0}^T \vek{s}^0\) we have
-%   \(\eta ({\vek{x}^0}^T \vek{s} + \vek{x}^T {\vek{s}^0}) \leq 3 n \mu\).
-% \end{lemma}
+\begin{lemma}[Lemma 3.2 in~\cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs}, Lemma 11 in~\cite{Avron-FasterRandomizedInfeasibleIPMs}]\label{thm:eta-bound}
+  Assume that
+  \begin{itemize}
+    \item \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \mathcal{G}\) satisfies \((\vek{x}^0, \vek{s}^0) \geq (\vek{x}^*, \vek{s}^*)\) for some \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\) and
+    \item \((\vek{x}, \vek{y}, \vek{s}) \in \mathcal{G}\) satifies \(\vek{r} = \eta \vek{r}^0\) for some \(\eta \in [0, 1]\).
+  \end{itemize}
+  Then \(\eta \leq \vek{x}^T \vek{s} / {\vek{x}^0}^T \vek{s}^0\) implies \(\eta ({\vek{x}^0}^T \vek{s} + \vek{x}^T {\vek{s}^0}) \leq 3 n \mu\).
+  % Assume that the point \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \mathcal{G}\) satisfies \((\vek{x}^0, \vek{s}^0) \geq (\vek{x}^*, \vek{s}^*)\) for some \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\).
+  % Then for any point \((\vek{x}, \vek{y}, \vek{s}) \in \mathcal{G}\) such that the corresponding residuals satisfy \(\vek{r} = \eta \vek{r}^0\) for some \(\eta \in [0, 1]\) and \(\eta \leq \vek{x}^T \vek{s} / {\vek{x}^0}^T \vek{s}^0\) we have
+  % \(\eta ({\vek{x}^0}^T \vek{s} + \vek{x}^T {\vek{s}^0}) \leq 3 n \mu\).
+\end{lemma}
+
+Again this makes use of the observation that the residual \(\vek{r}\) of any iterate lies on the line segment between \(\vek{r}^0\) and \(\vek{0}\).
+Note that additionally by the definition of the neighbourhood \(\mathcal{N}_{-\infty}(\gamma)\) any point in it with \(\vek{r} = \eta \vek{r}^0\) also satisifies \(\eta \leq \mu^k / \mu^0 = {\vek{x}^k}^T \vek{s}^k / {\vek{x}^0}^T \vek{s}^0\).
+
+\begin{lemma}[Lemma 12 in~\cite{Avron-FasterRandomizedInfeasibleIPMs} (slightly simplified)]\label{thm:initial-residual-bound}
+  Assume that
+  \begin{itemize}
+    \item \(\gamma \in (0, 1)\), \(\sigma \in (0, 1)\), \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\),
+    \item \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \mathcal{G}\) satisfies \(\vek{x}^0 \geq \vek{x}^*\) and \(\vek{s}^0 \geq \max\set{\vek{s}^*, \abs{\vek{c} - \mat{A}^T\vek{y}^0}}\)
+    \item \((\vek{x}, \vek{y}, \vek{s}) \in \mathcal{N}_{-\infty}(\gamma)\) satisfies \(\vek{r} = \eta \vek{r}^0\) for some \(\eta \in [0, 1]\),
+    \item \(\mat{W}\) is a \((1 \pm \e)\) \(\ell_2\)-subspace embedding for \(\mat{D}\mat{A}^T\) for \(\e = 1/3\) and
+    \item \(\mat{Q}\mat{R} = \mat{W}\mat{D}\mat{A}^T\) is a QR decomposition.
+  \end{itemize}
+  Then
+  \[ \norm{\mat{R}^{-T} \vek{p}}_2 \leq \sqrt{\frac{2 \mu}{1 - \gamma}} \Paren{10n + \sigma \sqrt{n}} \leq 11 \sqrt{\frac{2}{1 - \gamma}} n \sqrt{\mu}. \]
+\end{lemma}
+
+% \Cref{thm:ipm-convergence} is concerned with the convergence and runtime of \cref{alg:ipm} while \cref{thm:approximate-newton-convergence} shows the correctness and runtime of \cref{alg:newton-direction}.
+% The two algorithms and theorems can be combined by using \cref{alg:newton-direction} in \cref{line:compute-approx-newton} of \cref{alg:ipm} which yields the following theorem.
+
+% \begin{theorem}
+%   Assume that \(\gamma \in (0, 1)\) and \(\sigma \in (0, \frac{4}{5})\) are constant and that the initial point \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \mathcal{G}\) satisfies \(\vek{x}^0 \circ \vek{s}^0 \geq (1-\gamma)\vek{1}\) and \((\vek{x}^0, \vek{s}^0) \geq (\vek{x}^*, \vek{s}^*)\) for some \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\).
+%   Furthermore, assume that \cref{alg:ipm} uses \cref{alg:newton-direction} with \(\e_{\vek{v}} = \gamma \sigma \mu^k / 4\) to determine the approximate Newton direction in every step.
+%   Then the algorithm terminates successfully using only \(O(???)\) flops with probability at least \(99\%\) for \(\delta = O(n^{-2})\).
+%  \end{theorem}
