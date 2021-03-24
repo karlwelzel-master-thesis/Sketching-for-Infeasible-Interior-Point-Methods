@@ -93,14 +93,63 @@ Note that additionally by the definition of the neighbourhood \(\mathcal{N}_{-\i
   Assume that
   \begin{itemize}
     \item \(\gamma \in (0, 1)\), \(\sigma \in (0, 1)\), \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\),
-    \item \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \mathcal{G}\) satisfies \(\vek{x}^0 \geq \vek{x}^*\) and \(\vek{s}^0 \geq \max\set{\vek{s}^*, \abs{\vek{c} - \mat{A}^T\vek{y}^0}}\)
-    \item \((\vek{x}, \vek{y}, \vek{s}) \in \mathcal{N}_{-\infty}(\gamma)\) satisfies \(\vek{r} = \eta \vek{r}^0\) for some \(\eta \in [0, 1]\),
-    \item \(\mat{W}\) is a \((1 \pm \e)\) \(\ell_2\)-subspace embedding for \(\mat{D}\mat{A}^T\) for \(\e = 1/3\) and
-    \item \(\mat{Q}\mat{R} = \mat{W}\mat{D}\mat{A}^T\) is a QR decomposition.
+    \item \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \mathcal{G}\) satisfies \(\vek{x}^0 \geq \vek{x}^*\) and \(\vek{s}^0 \geq \max\set{\vek{s}^*, \abs{\mat{A}^T\vek{y}^0 - \vek{c}}}\)
+    \item \((\vek{x}, \vek{y}, \vek{s}) \in \mathcal{N}_{-\infty}(\gamma)\) satisfies \(\vek{r} = \eta \vek{r}^0\) for some \(\eta \in [0, 1]\) and
+    \item \(\mat{R}^{-T} \in \R^{m \times m}\) satisifies \(\norm{\mat{R}^{-T}\mat{A}\mat{D}}_2 \leq \sqrt{2}\).
   \end{itemize}
   Then
   \[ \norm{\mat{R}^{-T} \vek{p}}_2 \leq \sqrt{\frac{2 \mu}{1 - \gamma}} \Paren{10n + \sigma \sqrt{n}} \leq 11 \sqrt{\frac{2}{1 - \gamma}} n \sqrt{\mu}. \]
 \end{lemma}
+
+\begin{proof}
+  First, we will deduce bounds for \(\eta\mat{S}(\vek{x}^0 - \vek{x}^*)\) and \(\eta\mat{X}\vek{r}_d^0\) from \cref{thm:eta-bound} that we need later.
+  Note that because \(\vek{0} \leq \vek{x}^* \leq \vek{x}^0\) and \(\vek{s} \geq \vek{0}\) we have \(\vek{0} \leq \mat{S}(\vek{x}^0 - \vek{x}^*) \leq \mat{S}\vek{x}^0 \), so
+  \[
+    \eta \norm{\mat{S}(\vek{x}^0 - \vek{x}^*)}_2
+    \leq \eta \norm{\mat{S}\vek{x}^0}_2
+    \leq \eta \norm{\mat{S}\vek{x}^0}_1
+    = \eta \vek{s}^T \vek{x}^0
+    \leq \eta ({\vek{x}^0}^T \vek{s} + \vek{x}^T {\vek{s}^0})
+    \leq 3 n \mu.
+  \]
+  Using a similar argument as above, \(\vek{0} \leq \abs{\mat{A}^T \vek{y}^0 - \vek{c}} \leq \vek{s}^0\) implies \(\norm{\mat{X} \abs{\mat{A}^T \vek{y}^0 - \vek{c}}}_2 \leq \norm{\mat{X}\vek{s}^0}_2\) and therefore
+  \begin{align*}
+    \eta \norm{\mat{X}\vek{r}_d^0}_2
+    &= \eta \norm{\mat{X}(\mat{A}^T \vek{y}^0 + \vek{s}^0 - \vek{c})}_2
+    \leq \eta \Paren{\norm{\mat{X}\vek{s}^0}_2 + \norm{\mat{X} \abs{\mat{A}^T \vek{y}^0 - \vek{c}}}_2} \\
+    &\leq 2 \eta \norm{\mat{X}\vek{s}^0}_2
+    \leq 2 \eta \norm{\mat{X}\vek{s}^0}_1
+    = 2 \eta \vek{x}^T \vek{s}^0
+    \leq 2 \eta ({\vek{x}^0}^T \vek{s} + \vek{x}^T {\vek{s}^0})
+    \leq 6n\mu.
+  \end{align*}
+  Now, consider the expression in the claim. Because
+  \begin{align*}
+    \mat{R}^{-T}\vek{p}
+    &= \mat{R}^{-T}\Paren{-\vek{r}_p + \mat{A} ( -\mat{S}^{-1} \mat{X} \vek{r}_d + \vek{x} - \sigma \mu \mat{S}^{-1} \vek{1} )} \\
+    &= \mat{R}^{-T}\Paren{-\vek{r}_p -\mat{A}\mat{S}^{-1}\mat{X} \vek{r}_d + \mat{A}\vek{x} - \sigma \mu \mat{A}\mat{S}^{-1} \vek{1} } \\
+    &= \mat{R}^{-T}\Paren{-\eta \vek{r}_p^0 - \eta \mat{A}\mat{S}^{-1}\mat{X} \vek{r}_d^0 + \mat{A}\vek{x} - \sigma \mu \mat{A}\mat{S}^{-1} \vek{1} } \\
+    &= \mat{R}^{-T}\Paren{- \eta \mat{A}(\vek{x}^0 - \vek{x}^*) - \eta \mat{A}\mat{S}^{-1}\mat{X} \vek{r}_d^0 + \mat{A}\vek{x} - \sigma \mu \mat{A}\mat{S}^{-1} \vek{1} } \\
+    &= \mat{R}^{-T}\mat{A}\Paren{- \eta (\vek{x}^0 - \vek{x}^*) - \eta \mat{S}^{-1}\mat{X} \vek{r}_d^0 + \vek{x} - \sigma \mu \mat{S}^{-1} \vek{1} } \\
+    &= \mat{R}^{-T}\mat{A}\mat{S}^{-1}\Paren{- \eta \mat{S}(\vek{x}^0 - \vek{x}^*) - \eta \mat{X} \vek{r}_d^0 + \mat{S}\vek{x} - \sigma \mu \vek{1} } \\
+    &= \mat{R}^{-T}\mat{A}\mat{D}{(\mat{S}\mat{X})}^{-1/2}\Paren{- \eta \mat{S}(\vek{x}^0 - \vek{x}^*) - \eta \mat{X} \vek{r}_d^0 + \mat{S}\vek{x} - \sigma \mu \vek{1} }
+  \end{align*}
+  using the definition of \(\vek{p}\) from \cref{eqn:normal-equation} and the assumption \(\vek{r} = \eta \vek{r}^0\), it suffices to bound each part of the last expression.
+  \(\norm{\mat{R}^{-T}\mat{A}\mat{D}}_2 \leq \sqrt{2}\) by assumption,
+  \[\norm{{(\mat{S}\mat{X})}^{-1/2}}_2 = \max_{1 \leq i \leq n} {(x_i s_i)}^{-1/2} \leq \sqrt{\frac{1}{(1 - \gamma) \mu}}\]
+  by the definition of the neighbourhood and
+  \(\norm{\mat{S}\vek{x}}_2 \leq \norm{\mat{S}\vek{x}}_1 = n \mu\)
+  using the definition of \(\mu\).
+  The two terms containing \(\eta\) were already bounded above and lastly, \(\norm{\vek{1}}_2 = \sqrt{n}\).
+  This implies
+  \begin{align*}
+    \norm{\mat{R}^{-T} \vek{p}}_2 
+    &\leq \norm{\mat{R}^{-T}\mat{A}\mat{D}}_2 \norm{{(\mat{S}\mat{X})}^{-1/2}}_2 \Paren{\eta \norm{\mat{S}(\vek{x}^0 - \vek{x}^*)} + \eta \norm{\mat{X}\vek{r}_d^0} + \norm{\mat{S}\vek{x}}_2 + \sigma \mu \norm{\vek{1}}_2} \\
+    &\leq \sqrt{2} \sqrt{\frac{1}{(1-\gamma) \mu}} \Paren{3n\mu + 6n\mu + n\mu + \sigma \mu \sqrt{n}}
+    = \sqrt{\frac{2 \mu}{1 - \gamma}} \Paren{10 n + \sigma \sqrt{n}}
+  \end{align*}
+  as claimed.
+\end{proof}
 
 % \Cref{thm:ipm-convergence} is concerned with the convergence and runtime of \cref{alg:ipm} while \cref{thm:approximate-newton-convergence} shows the correctness and runtime of \cref{alg:newton-direction}.
 % The two algorithms and theorems can be combined by using \cref{alg:newton-direction} in \cref{line:compute-approx-newton} of \cref{alg:ipm} which yields the following theorem.
