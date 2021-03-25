@@ -98,30 +98,26 @@ Note that additionally, by the definition of the neighbourhood \(\mathcal{N}_{-\
     \item \(\mat{R}^{-T} \in \R^{m \times m}\) satisifies \(\norm{\mat{R}^{-T}\mat{A}\mat{D}}_2 \leq \sqrt{2}\).
   \end{itemize}
   Then
-  \[ \norm{\mat{R}^{-T} \vek{p}}_2 \leq \sqrt{\frac{2 \mu}{1 - \gamma}} \Paren{10n + \sigma \sqrt{n}} \leq 11 \sqrt{\frac{2}{1 - \gamma}} n \sqrt{\mu}. \]
+  \[ \norm{\mat{R}^{-T} \vek{p}}_2 \leq \sqrt{\frac{2 \mu}{1 - \gamma}} \Paren{7n + \sigma \sqrt{n}} \leq 8 \sqrt{\frac{2}{1 - \gamma}} n \sqrt{\mu}. \]
 \end{lemma}
 
 \begin{proof}
-  First, we will deduce bounds for \(\eta\mat{S}(\vek{x}^0 - \vek{x}^*)\) and \(\eta\mat{X}\vek{r}_d^0\) from \cref{thm:eta-bound} that we need later.
+  First, we will deduce bounds for \(\mat{S}(\vek{x}^0 - \vek{x}^*)\) and \(\mat{X}\vek{r}_d^0\) that we need later.
   Note that because \(\vek{0} \leq \vek{x}^* \leq \vek{x}^0\) and \(\vek{s} \geq \vek{0}\) we have \(\vek{0} \leq \mat{S}(\vek{x}^0 - \vek{x}^*) \leq \mat{S}\vek{x}^0 \), so
   \[
-    \eta \norm{\mat{S}(\vek{x}^0 - \vek{x}^*)}_2
-    \leq \eta \norm{\mat{S}\vek{x}^0}_2
-    \leq \eta \norm{\mat{S}\vek{x}^0}_1
-    = \eta \vek{s}^T \vek{x}^0
-    \leq \eta ({\vek{x}^0}^T \vek{s} + \vek{x}^T {\vek{s}^0})
-    \leq 3 n \mu.
+    \norm{\mat{S}(\vek{x}^0 - \vek{x}^*)}_2
+    \leq \norm{\mat{S}\vek{x}^0}_2
+    \leq \norm{\mat{S}\vek{x}^0}_1
+    = \vek{s}^T \vek{x}^0.
   \]
   Using a similar argument as above, \(\vek{0} \leq \abs{\mat{A}^T \vek{y}^0 - \vek{c}} \leq \vek{s}^0\) implies \(\norm{\mat{X} \abs{\mat{A}^T \vek{y}^0 - \vek{c}}}_2 \leq \norm{\mat{X}\vek{s}^0}_2\) and therefore
   \begin{align*}
-    \eta \norm{\mat{X}\vek{r}_d^0}_2
-    &= \eta \norm{\mat{X}(\mat{A}^T \vek{y}^0 + \vek{s}^0 - \vek{c})}_2
-    \leq \eta \Paren{\norm{\mat{X}\vek{s}^0}_2 + \norm{\mat{X} \abs{\mat{A}^T \vek{y}^0 - \vek{c}}}_2} \\
-    &\leq 2 \eta \norm{\mat{X}\vek{s}^0}_2
-    \leq 2 \eta \norm{\mat{X}\vek{s}^0}_1
-    = 2 \eta \vek{x}^T \vek{s}^0
-    \leq 2 \eta ({\vek{x}^0}^T \vek{s} + \vek{x}^T {\vek{s}^0})
-    \leq 6n\mu.
+    \norm{\mat{X}\vek{r}_d^0}_2
+    &= \norm{\mat{X}(\mat{A}^T \vek{y}^0 + \vek{s}^0 - \vek{c})}_2
+    \leq \norm{\mat{X}\vek{s}^0}_2 + \norm{\mat{X} \abs{\mat{A}^T \vek{y}^0 - \vek{c}}}_2 \\
+    &\leq 2 \norm{\mat{X}\vek{s}^0}_2
+    \leq 2 \norm{\mat{X}\vek{s}^0}_1
+    = 2 \vek{x}^T \vek{s}^0.
   \end{align*}
   Now, consider the expression in the claim. Because
   \begin{align*}
@@ -140,15 +136,16 @@ Note that additionally, by the definition of the neighbourhood \(\mathcal{N}_{-\
   by the definition of the neighbourhood and
   \(\norm{\mat{S}\vek{x}}_2 \leq \norm{\mat{S}\vek{x}}_1 = n \mu\)
   using the definition of \(\mu\).
-  The two terms containing \(\eta\) were already bounded above and lastly, \(\norm{\vek{1}}_2 = \sqrt{n}\).
+  \(\norm{\mat{S}(\vek{x}^0 - \vek{x}^*)}_2\) and \(\norm{\mat{X}\vek{r}_d^0}_2\) were already bounded above and lastly, \(\norm{\vek{1}}_2 = \sqrt{n}\).
   This implies
   \begin{align*}
     \norm{\mat{R}^{-T} \vek{p}}_2 
     &\leq \norm{\mat{R}^{-T}\mat{A}\mat{D}}_2 \norm{{(\mat{S}\mat{X})}^{-1/2}}_2 \Paren{\eta \norm{\mat{S}(\vek{x}^0 - \vek{x}^*)} + \eta \norm{\mat{X}\vek{r}_d^0} + \norm{\mat{S}\vek{x}}_2 + \sigma \mu \norm{\vek{1}}_2} \\
-    &\leq \sqrt{2} \sqrt{\frac{1}{(1-\gamma) \mu}} \Paren{3n\mu + 6n\mu + n\mu + \sigma \mu \sqrt{n}}
-    = \sqrt{\frac{2 \mu}{1 - \gamma}} \Paren{10 n + \sigma \sqrt{n}}
+    &\leq \sqrt{2} \sqrt{\frac{1}{(1-\gamma) \mu}} \Paren{\eta \vek{s}^T \vek{x}^0 + 2 \eta \vek{x}^T \vek{s}^0 + n\mu + \sigma \mu \sqrt{n}} \\
+    &\leq \sqrt{2} \sqrt{\frac{1}{(1-\gamma) \mu}} \Paren{6 n \mu + n\mu + \sigma \mu \sqrt{n}}
+    = \sqrt{\frac{2 \mu}{1 - \gamma}} \Paren{7 n + \sigma \sqrt{n}}
   \end{align*}
-  as claimed.
+  with the help of \cref{thm:eta-bound}.
 \end{proof}
 
 Equipped with this result, we can prove the main result regarding \cref{alg:newton-direction}.
