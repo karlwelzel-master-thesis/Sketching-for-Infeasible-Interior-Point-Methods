@@ -196,9 +196,9 @@ The proof for \cref{thm:ipm-convergence} will be given in \cref{chap:convergence
   }
   Initialize \(k = 0\) and \(\mu^0 = {(\vek{x}^0)}^T \vek{s}^0 /n\)\;
   \While{\(\mu^k = {(\vek{x}^k)}^T \vek{s}^k /n > \e_\mu \mu^0\)}{
-    Compute \(\vek{r}_p^k = \mat{A}\vek{x}^k - \vek{b}\), \(\vek{r}_d^k = \mat{A}^T \vek{y}^k + \vek{s}^k - \vek{c}\), \(\mat{X} = \diag(\vek{x}^k)\), \(\mat{S} = \diag(\vek{s}^k)\)\;
+    Compute \(\vek{r}_p^k = \mat{A}\vek{x}^k - \vek{b}\), \(\vek{r}_d^k = \mat{A}^T \vek{y}^k + \vek{s}^k - \vek{c}\), \(\mat{X} = \diag(\vek{x}^k)\), \(\mat{S} = \diag(\vek{s}^k)\)\;\label{line:prepare-approximate-newton}
     Solve the following linear system such that \(\norm{\vek{v}}_2 \leq  \gamma \sigma \mu^k/4\)
-    \begin{equation} \label{eqn:approx-newton}
+    \begin{equation} \label{eqn:approximate-newton}
       \begin{pmatrix}
         \mat{A} & 0         & 0       \\
         0       & \mat{A}^T & \mat{I} \\
@@ -209,7 +209,7 @@ The proof for \cref{thm:ipm-convergence} will be given in \cref{chap:convergence
       \begin{pmatrix} -\vek{r}_p^k \\ -\vek{r}_d^k \\ -\vek{x}^k \circ \vek{s}^k + \sigma \mu^k \vek{1} \end{pmatrix}
       -
       \begin{pmatrix} 0 \\ 0 \\ \vek{v} \end{pmatrix} \text{\;}
-    \end{equation} \\\label{line:compute-approx-newton}
+    \end{equation} \\\label{line:compute-approximate-newton}
     Determine the maximum \(\tilde{\alpha} \in [0, 1]\) such that for all \(\alpha \in [0, \tilde{\alpha}]\) we have \((\vek{x}^k, \vek{y}^k, \vek{s}^k) + \alpha (\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}}) \in \mathcal{N}_{-\infty}(\gamma)\)\;\label{line:alpha-tilde}
     Compute \(\bar{\alpha} = \argmin \set{ {(\vek{x}^k + \alpha \hat{\Delta\vek{x}})}^T (\vek{s}^k + \alpha \hat{\Delta\vek{s}}) | \alpha \in [0, \tilde{\alpha}]}\)\;\label{line:alpha-bar}
     Set \((\vek{x}^{k+1}, \vek{y}^{k+1}, \vek{s}^{k+1}) = (\vek{x}^k, \vek{y}^k, \vek{s}^k) + \bar{\alpha} (\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}}) \)\;
