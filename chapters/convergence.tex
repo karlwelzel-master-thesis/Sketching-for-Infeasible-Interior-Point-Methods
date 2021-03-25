@@ -18,7 +18,7 @@ Using this notation~\textcite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs
   \begin{itemize}
     \item \(\gamma \in (0, 1)\), \(\sigma \in (0, \frac{4}{5})\),
     \item \((\vek{x}, \vek{y}, \vek{s}) \in \mathcal{N}_{-\infty}(\gamma)\) and
-    \item \((\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}})\) satifies \cref{eqn:approx-newton} such that \(\norm{\vek{v}}_\infty \leq \gamma \sigma \mu / 4\).
+    \item \((\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}})\) satifies \cref{eqn:perturbed-search-direction} such that \(\norm{\vek{v}}_\infty \leq \gamma \sigma \mu / 4\).
   \end{itemize}
   Then the stepsize \(\bar{\alpha}\) determined in \cref{line:alpha-tilde,line:alpha-bar} satifies
   \[ \bar{\alpha} \geq \min \Set{1, \frac{\min \Set{\gamma \sigma, 1 - \frac{5}{4}\sigma} \mu}{4 \norm{\hat{\Delta\vek{x}} \circ \hat{\Delta\vek{s}}}_\infty}} \]
@@ -40,7 +40,7 @@ In other words, \(\vek{r} = \eta \vek{r}^0\) with \(\eta \in [0, 1]\) for every 
     \item \(\gamma \in (0, 1)\), \(\sigma \in (0, 1)\), 
     \item \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \mathcal{G}\) satisfies \((\vek{x}^0, \vek{s}^0) \geq (\vek{x}^*, \vek{s}^*)\) for some \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\), 
     \item \((\vek{x}, \vek{y}, \vek{s}) \in \mathcal{N}_{-\infty}(\gamma)\) with \(\vek{r} = \eta \vek{r}^0\) for some \(\eta \in [0, 1]\) and
-    \item \((\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}})\) satifies \cref{eqn:approx-newton} such that \(\norm{\vek{v}}_2 \leq \gamma \sigma \mu / 4\).
+    \item \((\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}})\) satifies \cref{eqn:perturbed-search-direction} such that \(\norm{\vek{v}}_2 \leq \gamma \sigma \mu / 4\).
   \end{itemize}
   Then
   \[ \norm{\mat{D}^{-1}\hat{\Delta\vek{x}}}_2, \norm{\mat{D}\hat{\Delta\vek{s}}}_2 \leq \Paren{1 + \frac{\sigma^2}{1- \gamma} - 2\sigma}^{1/2} \sqrt{n \mu} + \frac{6}{\sqrt{1 - \gamma}} n\sqrt{\mu} + \frac{\gamma \sigma}{4 \sqrt{1 - \gamma}}\sqrt{\mu}\]
@@ -190,9 +190,9 @@ Equipped with this result, we can prove the main result regarding \cref{alg:newt
   The number of CG iterations in \cref{line:cg} were already bounded by \(O(\log(n^2 \mu / \e_{\vek{v}}))\) and the runtime of each iteration is dominated by a matrix-vector product involving \(\mat{R}^{-T}\mat{A}\mat{D}^2\mat{A}^T\mat{R}^{-1}\) which takes \(O(\nnz(\mat{A}) + m^2)\) flops.
   Lastly, the perturbation vector \(\vek{v}\) is calculated in \cref{line:compute-v} in \(O(ns + m^2)\) time.
   Combining these upper bounds gives
-  \[ O(\nnz(\mat{A}) + m^2 + ns + s \nnz(\mat{A}) + wm^2 + \log(n^2 \mu / \e_{\vek{v}})(\nnz(\mat{A}) + m^2)) \]
+  \[ O \Paren{\nnz(\mat{A}) + m^2 + ns + s \nnz(\mat{A}) + wm^2 + \log \Paren{n^2 \mu / \e_{\vek{v}}} \Paren{\nnz(\mat{A}) + m^2}} \]
   operations which simplifies to
-  \[ O(\log(m/\delta) (\nnz(\mat{A}) + m^3) + \log(n^2 \mu / \e_{\vek{v}})(\nnz(\mat{A}) + m^2)) \]
+  \[ O \Paren{\log \Paren{m/\delta} \Paren{\nnz(\mat{A}) + m^3} + \log \Paren{n^2 \mu / \e_{\vek{v}}} \Paren{\nnz(\mat{A}) + m^2}} \]
   operations because \(w\) and \(s\) were chosen according to \cref{thm:sparse-ose}.
 \end{proof}
 

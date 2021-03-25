@@ -248,7 +248,7 @@ We will just assume that the algorithm fails if this is the case and discuss the
 \end{algorithm}
 
 \begin{theorem}\label{thm:approximate-newton-convergence}
-  Assume that \(\gamma \in (0, 1)\) and \(\sigma \in (0, 1)\) are constant, that the initial point \((\vek{x}^0, \vek{y}^0, \vek{s}^0)\) satisfies \(\vek{x}^0 \geq \vek{x}^*\) and \(\vek{s}^0 \geq \max \{\vek{s}^*, \abs{\mat{A}^T \vek{y}^0 - \vek{c}}\}\) for some \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\) and that \(\mat{A}\) has full row rank.
+  Assume that \(\gamma \in (0, 1)\) and \(\sigma \in (0, 1)\) are constant, that the initial point \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \mathcal{G}\) satisfies \(\vek{x}^0 \geq \vek{x}^*\) and \(\vek{s}^0 \geq \max \{\vek{s}^*, \abs{\mat{A}^T \vek{y}^0 - \vek{c}}\}\) for some \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\) and that \(\mat{A}\) has full row rank.
   Let \((\vek{x}, \vek{y}, \vek{s}) \in \mathcal{N}_{-\infty}(\gamma)\) be such that \(\vek{r} = \eta \vek{r}^0\) for some \(\eta \in [0, 1]\).
   \cref{alg:newton-direction} computes an approximation of the Newton direction that satisfies \cref{eqn:perturbed-search-direction} with \(\norm{\vek{v}}_2 \leq \e_{\vek{v}}\) with probability at least \(1 - \delta\).
   Moreover, if the algorithm does not fail, the CG method only needs \(O(\log(n^2 \mu / \e_{\vek{v}}))\) CG iterations and the whole algorithm needs \(O(\log(m/\delta) (\nnz(\mat{A}) + m^3) + \log(n^2 \mu / \e_{\vek{v}})(\nnz(\mat{A}) + m^2))\) operations assuming \(n \leq \nnz(\mat{A})\).
