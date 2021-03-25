@@ -20,7 +20,6 @@
  linesnumbered,
 ]{algorithm2e}
 
-
 % ----------------------------------------------------------------------
 %  Common abbreviations and words with accents
 % ----------------------------------------------------------------------
@@ -208,16 +207,18 @@ stereo-iso-mer Round-table homol-ogous homol-ogy}
 %  Maths environments (using amsthm)
 % ----------------------------------------------------------------------
 
-\newtheorem{theorem}{Theorem}[chapter] % label starts with 'thm:'
-\newtheorem{lemma}[theorem]{Lemma} % label starts with 'thm:'
-\newtheorem{corollary}[theorem]{Corollary} % label starts with 'thm:'
+% The \AtBeginDocument hack is included to define those labels after including cleverref
+\AtBeginDocument{
+  \newtheorem{theorem}{Theorem}[chapter] % label starts with 'thm:'
+  \newtheorem{lemma}[theorem]{Lemma} % label starts with 'thm:'
+  \newtheorem{corollary}[theorem]{Corollary} % label starts with 'thm:'
 
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}[chapter] % label starts with 'def:'
+  \theoremstyle{definition}
+  \newtheorem{definition}{Definition}[chapter] % label starts with 'def:'
 
-\theoremstyle{remark}
-\newtheorem*{remark}{Remark} % label starts with 'rem:'
-
+  \theoremstyle{remark}
+  \newtheorem*{remark}{Remark} % label starts with 'rem:'
+}
 
 % ----------------------------------------------------------------------
 %  Standard notation for vectors and matrices
