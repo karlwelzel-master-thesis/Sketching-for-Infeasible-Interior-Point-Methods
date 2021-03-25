@@ -62,8 +62,7 @@ These two lemmas are enough to show the convergence of \cref{alg:ipm}.
   \[ \mu^{k+1} = \mu(\bar{\alpha}) \leq \Paren{ 1 - \Paren{1 - \frac{5}{4} \sigma} \frac{\bar{\alpha}}{2}} \mu^k \leq \Paren{ 1 - \Paren{1 - \frac{5}{4} \sigma} \frac{C_2}{2 n^2}} \mu^k \leq \Paren{1 - \frac{C_3}{n^2}} \mu^k \]
   for some constant \(C_3 > 0\).
   By induction this means that \(\mu^k \leq {(1 - \frac{C_3}{n^2})}^k \mu^0\) for all \(k \geq 0\).
-  If \(\e_\mu \geq 1\) the algorithm terminates instantly so we can assume that \(\e_\mu < 1\).
-  Now let \(k \geq n^2 \log(1/\e_\mu) / C_3\) which implies
+  Now, let \(k \geq n^2 \log(1/\e_\mu) / C_3\) which implies
   \[ k \log\Paren{1 - \frac{C_3}{n^2}} \leq k \Paren{- \frac{C_3}{n^2}} \leq -\log(1/\e_\mu) = \log(\e_\mu) \]
   using \(\log(\beta) \leq \beta-1\) for all \(\beta > 0\).
   Applying the exponential function on both sides gives \({(1 - \frac{C_3}{n^2})}^k \leq \e_\mu\) which shows that \(O(n^2 \log(1/\e_\mu))\) iterations suffice to get \(\mu^k \leq \e_\mu \mu^0\).
