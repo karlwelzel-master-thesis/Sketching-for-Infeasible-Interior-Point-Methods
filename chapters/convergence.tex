@@ -196,11 +196,11 @@ Equipped with this result, we can prove the main result regarding \cref{alg:newt
   operations because \(w\) and \(s\) were chosen according to \cref{thm:sparse-ose}.
 \end{proof}
 
-% \Cref{thm:ipm-convergence} is concerned with the convergence and runtime of \cref{alg:ipm} while \cref{thm:approximate-newton-convergence} shows the correctness and runtime of \cref{alg:newton-direction}.
-% The two algorithms and theorems can be combined by using \cref{alg:newton-direction} in \cref{line:compute-approx-newton} of \cref{alg:ipm} which yields the following theorem.
+\Cref{thm:ipm-convergence,thm:approximate-newton-convergence} were the stepping stones towards the final result of this chapter.
+The combination of \cref{alg:ipm,alg:newton-direction} is an efficient algorithm for solving linear programs where \(m \ll n\):
 
-% \begin{theorem}
-%   Assume that \(\gamma \in (0, 1)\) and \(\sigma \in (0, \frac{4}{5})\) are constant and that the initial point \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \mathcal{G}\) satisfies \(\vek{x}^0 \circ \vek{s}^0 \geq (1-\gamma)\vek{1}\) and \((\vek{x}^0, \vek{s}^0) \geq (\vek{x}^*, \vek{s}^*)\) for some \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\).
-%   Furthermore, assume that \cref{alg:ipm} uses \cref{alg:newton-direction} with \(\e_{\vek{v}} = \gamma \sigma \mu^k / 4\) to determine the approximate Newton direction in every step.
-%   Then the algorithm terminates successfully using only \(O(???)\) flops with probability at least \(99\%\) for \(\delta = O(n^{-2})\).
-%  \end{theorem}
+\begin{theorem}\label{thm:combined-algorithm-convergence}
+  Assume that \(\gamma \in (0, 1)\), \(\sigma \in (0, \frac{4}{5})\) and \(\e_\mu \in (0, 1)\) are constant, that the initial point \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \mathcal{G}\) satisfies \(\vek{x}^0 \circ \vek{s}^0 \geq (1-\gamma)\vek{1}\), \(\vek{x}^0 \geq \vek{x}^*\) and \(\vek{s}^0 \geq \max \{\vek{s}^*, \abs{\mat{A}^T \vek{y}^0 - \vek{c}}\}\) for some \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\) and that \(\mat{A}\) has full row rank.
+  Furthermore, assume that \cref{alg:ipm} uses \cref{alg:newton-direction} with \(\e_{\vek{v}} = \gamma \sigma \mu^k / 4\) to determine the approximate Newton direction in \cref{line:compute-approximate-newton,line:prepare-approximate-newton}.
+  Then it is possible to choose \(\delta\) in such a way that the algorithm generates an iterate \((\vek{x}^k, \vek{y}^k, \vek{s}^k)\) satisfying \(\mu^k \leq \e_\mu \mu^0\) and \(\norm{\vek{r}^k} \leq \e_\mu \norm{\vek{r}^0}\) using \(O(???)\) operations with probability at least \(99\%\).
+\end{theorem}
