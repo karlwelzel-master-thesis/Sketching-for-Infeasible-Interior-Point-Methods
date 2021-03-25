@@ -159,9 +159,42 @@ Equipped with this result, we can prove the main result regarding \cref{alg:newt
 \( \vek{f}^j = \mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A} \mat{R}^{-1} \vek{q}^j - \mat{R}^{-T} \vek{p} \).
   Using \cref{thm:initial-residual-bound} and \(\vek{q}^0 = \vek{0}\) we have \(\norm{\vek{f}^0}_2 = \norm{\mat{R}^{-T} \vek{p}}_2 \leq Cn\sqrt{\mu}\) for some constant \(C > 0\) depending on \(\gamma\).
   \Cref{thm:cg-residual-bound} immediately implies that \(\norm{\vek{f}^j}_2\) converges to zero and the so \cref{line:cg} will terminate.
-  Moreover, it tells us that for \(j \geq \log_2(\e_{\vek{v}}/C n^2 \mu)\) we have
+  Moreover, it tells us that for \(j \geq \log_{1/2}(\e_{\vek{v}}/C n^2 \mu) = \log_2(C n^2 \mu / \e_{\vek{v}})\) we have
   \[ \norm{\vek{f}^j}_2 \leq \Paren{\frac{1}{2}}^j \norm{\vek{f}^0}_2 \leq \frac{\e_{\vek{v}}}{C n^2 \mu} C n \sqrt{\mu} \leq \frac{\e_{\vek{v}}}{n \sqrt{\mu}} \]
-  so \cref{line:cg} will terminate after \(O(\log(\e_{\vek{v}} / n^2 \mu))\) CG iterations.
+  so \cref{line:cg} will terminate after \(O(\log(n^2 \mu / \e_{\vek{v}}))\) CG iterations.
+  By \cref{thm:perturbation-vector} and the definition of \(\vek{v}\) in \cref{line:compute-v} \(\norm{\vek{f}^j}_2 \leq \e_{\vek{v}}/n\sqrt{\mu}\) implies \(\norm{\vek{v}}_2 \leq \e_{\vek{v}}\).
+  \Cref{line:compute-delta-x,line:compute-delta-y,line:compute-delta-s} compute \((\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}})\) which satisfy \cref{eqn:perturbed-search-direction-choice} for \(\tilde{\vek{f}} = \mat{R}^T \vek{f}\).
+  Using \cref{thm:perturbation-vector} again we can see that
+  \begin{align*}
+    \mat{A}\hat{\Delta\vek{x}} 
+    &= \mat{A} (-\vek{x} + \sigma \mu \mat{S}^{-1}\vek{1} - \mat{S}^{-1}\mat{X}\hat{\Delta\vek{s}} - \mat{S}^{-1}\vek{v}) \\
+    &= -\mat{A}\vek{x} + \sigma \mu \mat{A}\mat{S}^{-1}\vek{1} - \mat{A}\mat{S}^{-1}\mat{X}\hat{\Delta\vek{s}} - \mat{A}\mat{S}^{-1}\vek{v} \\
+    &= -\mat{A}\vek{x} + \sigma \mu \mat{A}\mat{S}^{-1}\vek{1} + \mat{A}\mat{S}^{-1}\mat{X}\vek{r}_d + \mat{A}\mat{S}^{-1}\mat{X}\mat{A}^T \hat{\Delta\vek{y}} - \mat{A}\mat{S}^{-1}\vek{v} \\
+    &= -\mat{A}\vek{x} + \sigma \mu \mat{A}\mat{S}^{-1}\vek{1} + \mat{A}\mat{S}^{-1}\mat{X}\vek{r}_d + \vek{p} + \vek{R}^T\vek{f} - \mat{A}\mat{S}^{-1}\vek{v} \\
+    &= -\vek{r}_p + \mat{R}^T \vek{f} - \mat{A}\mat{S}^{-1}\vek{v} \\
+    &= -\vek{r}_p \\
+    \mat{A}^T \hat{\Delta\vek{y}} + \hat{\Delta\vek{s}}
+    &= \mat{A}^T \hat{\Delta\vek{y}} - \vek{r}_d - \mat{A}^T \hat{\Delta\vek{y}} \\
+    &= -\vek{r}_d \\
+    \mat{S}\hat{\Delta\vek{x}} + \mat{X}\hat{\Delta\vek{s}} 
+    &= \mat{S}(-\vek{x} + \sigma \mu \mat{S}^{-1}\vek{1} - \mat{S}^{-1}\mat{X}\hat{\Delta\vek{s}} - \mat{S}^{-1}\vek{v}) + \mat{X}\hat{\Delta\vek{s}} \\
+    &= -\mat{S}\vek{x} + \sigma \mu \vek{1} - \mat{X}\hat{\Delta\vek{s}} - \vek{v} + \mat{X}\hat{\Delta\vek{s}} \\
+    &= -\vek{x} \circ \vek{s} + \sigma \mu \vek{1} - \vek{v}
+  \end{align*}
+  which shows that the determined search direction indeed satisfies \cref{eqn:perturbed-search-direction} with \(\norm{\vek{v}}_2 \leq \e_{\vek{v}}\).
+
+  After showing that the algorithm works correctly, we need to bound the running time.
+  Multiplication with \(\mat{X}, \mat{X}^{1/2}, \mat{S}, \mat{S}^{1/2}\) and their inverses can be done in \(O(n)\), multiplication with \(\mat{A}\) and \(\mat{A}^T\) in \(O(\nnz(\mat{A}))\) and multiplication with \(\mat{R}^{-1}\) and \(\mat{R}^{-T}\) in \(O(m^2)\) using triangular solves.
+  Because \(m \leq n \leq \nnz(\mat{A})\) we can thus conclude that \cref{line:compute-residuals,line:compute-p,line:compute-delta-x,line:compute-delta-y,line:compute-delta-s} run in \(O(\nnz(\mat{A}) + m^2)\) operations.
+  Constructing the random sparse embedding matrix in \cref{line:draw-sketching-matrix} requires us to choose \(n \cdot s\) random nonzero entries and therefore needs \(O(n s)\) time.
+  Computing \(\mat{W}\mat{D}\mat{A}^T\) in \cref{line:compute-qr} can be done in \(O(s \nnz(\mat{A}))\) because of the sparsity of \(\mat{W}\) and computing the QR decomposition of a \(w \times m\) matrix takes \(O(w m^2)\) operations.
+  The number of CG iterations in \cref{line:cg} were already bounded by \(O(\log(n^2 \mu / \e_{\vek{v}}))\) and the runtime of each iteration is dominated by a matrix-vector product involving \(\mat{R}^{-T}\mat{A}\mat{D}^2\mat{A}^T\mat{R}^{-1}\) which takes \(O(\nnz(\mat{A}) + m^2)\) flops.
+  Lastly, the perturbation vector \(\vek{v}\) is calculated in \cref{line:compute-v} in \(O(ns + m^2)\) time.
+  Combining these upper bounds gives
+  \[ O(\nnz(\mat{A}) + m^2 + ns + s \nnz(\mat{A}) + wm^2 + \log(n^2 \mu / \e_{\vek{v}})(\nnz(\mat{A}) + m^2)) \]
+  operations which simplifies to
+  \[ O(\log(m/\delta) (\nnz(\mat{A}) + m^3) + \log(n^2 \mu / \e_{\vek{v}})(\nnz(\mat{A}) + m^2)) \]
+  operations because \(w\) and \(s\) were chosen according to \cref{thm:sparse-ose}.
 \end{proof}
 
 % \Cref{thm:ipm-convergence} is concerned with the convergence and runtime of \cref{alg:ipm} while \cref{thm:approximate-newton-convergence} shows the correctness and runtime of \cref{alg:newton-direction}.
