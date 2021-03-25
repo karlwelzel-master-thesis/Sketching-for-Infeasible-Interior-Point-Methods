@@ -27,9 +27,9 @@ Using this notation~\textcite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs
 \end{lemma}
 
 Note that the assumptions in this lemma are not stated in this form in the original lemma but are instead inferred from the definition of their algorithm.
-In the proof they show that \(\norm{\vek{v}}_\infty \leq \gamma \sigma \mu / 4\) and then deduce the results from this.
+In the proof they show that \(\norm{\vek{v}}_\infty \leq \gamma \sigma \mu / 4\) and then deduce the results from it.
 It suffices now to upper-bound \(\norm{\hat{\Delta\vek{x}} \circ \hat{\Delta\vek{s}}}_\infty\) to show that \(\mu\) decreases enough in each iteration.
-To show this we need a key observation which motivated us to shift the error term in \cref{chap:ipm} using the perturbation vector \(\vek{v}\):
+To this end, we need a key observation which motivated us to shift the error term in \cref{chap:ipm} using the perturbation vector \(\vek{v}\):
 The form of the error term in \cref{eqn:approx-newton} ensures that at each iteration the residuals \(\vek{r} = (\vek{r}_p, \vek{r}_d)\) lie on the line segment between \(\vek{r}^0\) and \(\vek{0}\)
 because \(\vek{r}(\alpha) = (1 - \alpha) \vek{r}(0)\).
 In other words, \(\vek{r} = \eta \vek{r}^0\) with \(\eta \in [0, 1]\) for every iterate in \cref{alg:ipm}.
@@ -55,7 +55,7 @@ These two lemmas are enough to show the convergence of \cref{alg:ipm}.
 
   By \cref{thm:delta-x-s-bound} the search direction determined in \cref{line:compute-approx-newton} satisfies
   \[ \norm{\hat{\Delta\vek{x}} \circ \hat{\Delta\vek{s}}}_\infty \leq \norm{\hat{\Delta\vek{x}} \circ \hat{\Delta\vek{s}}}_2 \leq \norm{\mat{D}^{-1}\hat{\Delta\vek{x}}}_2 \norm{\mat{D}\hat{\Delta\vek{s}}}_2 \leq C_1 n^2 \mu^k\]
-  in every iteration, such that by \cref{thm:alpha-bar-bound}
+  in every iteration, such that by \cref{thm:alpha-bar-bound} (\(\norm{\vek{v}}_\infty \leq \norm{\vek{v}}_2 \leq \gamma \sigma \mu^k/4\))
   \[ \bar{\alpha} \geq \min \Set{1, \frac{\min \Set{\gamma \sigma, 1 - \frac{5}{4}\sigma} \mu^k}{4 C_1 n^2 \mu^k}} \geq \frac{C_2}{n^2} \]
   where \(C_1, C_2 > 0\) are constants depending only on \(\gamma\) and \(\sigma\).
   Plugging this inequality in the second bound in \cref{thm:alpha-bar-bound} we get
@@ -86,8 +86,8 @@ To this end, we introduce the following bound that can already be found in~\cite
   % \(\eta ({\vek{x}^0}^T \vek{s} + \vek{x}^T {\vek{s}^0}) \leq 3 n \mu\).
 \end{lemma}
 
-Again this makes use of the observation that the residual \(\vek{r}\) of any iterate lies on the line segment between \(\vek{r}^0\) and \(\vek{0}\).
-Note that additionally by the definition of the neighbourhood \(\mathcal{N}_{-\infty}(\gamma)\) any point in it with \(\vek{r} = \eta \vek{r}^0\) also satisifies \(\eta \leq \mu^k / \mu^0 = {\vek{x}^k}^T \vek{s}^k / {\vek{x}^0}^T \vek{s}^0\).
+Again, this makes use of the observation that the residual \(\vek{r}\) of any iterate lies on the line segment between \(\vek{r}^0\) and \(\vek{0}\).
+Note that additionally, by the definition of the neighbourhood \(\mathcal{N}_{-\infty}(\gamma)\), any point in it with \(\vek{r} = \eta \vek{r}^0\) also satisifies \(\eta \leq \mu^k / \mu^0 = {\vek{x}^k}^T \vek{s}^k / {\vek{x}^0}^T \vek{s}^0\).
 
 \begin{lemma}[Lemma 12 in~\cite{Avron-FasterRandomizedInfeasibleIPMs} (slightly simplified)]\label{thm:initial-residual-bound}
   Assume that
@@ -150,6 +150,8 @@ Note that additionally by the definition of the neighbourhood \(\mathcal{N}_{-\i
   \end{align*}
   as claimed.
 \end{proof}
+
+Equipped with this result, we can prove the main result regarding \cref{alg:newton-direction}.
 
 \begin{proof}[Proof of \cref{thm:approximate-newton-convergence}]
   By \cref{thm:sparse-ose} the matrix \(\mat{W}\) selected in \cref{line:draw-sketching-matrix} of \cref{alg:newton-direction} is a subspace embedding for \(\mat{D}\mat{A}^T\) with probability at least \(1 - \delta\), so it suffices to show all of the claims for this case.
