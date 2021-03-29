@@ -72,8 +72,8 @@ Its neighbourhood is defined by
 where \(\mu = \vek{x}^T \vek{s}/n\), i.e.\ the average value of \(x_i s_i\), and the parameter \(\gamma \in (0, 1)\) controls the size of the neighbourhood.
 The condition \((\vek{x}, \vek{y}, \vek{s}) \in \mathcal{G}\) is shared by all IPMs.
 It keeps the \(\vek{x}\) and \(\vek{s}\) components of the iterates in the interior of the nonnegative orthant.
-The second one qualifies this IPM as a \emph{long-step} IPM as this one-sided \(\infty\)-norm bound allows for longer steps inside the neighbourhood compared to a two-sided 2-norm bound such as \(\norm{\vek{x} \circ \vek{s} - \mu \vek{1}}_2 \leq \gamma\).
-Neighbourhoods involving those bounds are known as \emph{short-step} IPMs and give better theoretical guarantees while having worse pratical performance.
+The second condition qualifies this IPM as a \emph{long-step} IPM as this one-sided \(\infty\)-norm bound allows for longer steps inside the neighbourhood compared to a two-sided 2-norm bound such as \(\norm{\vek{x} \circ \vek{s} - \mu \vek{1}}_2 \leq \gamma \mu\).
+Neighbourhoods involving those bounds are known as \emph{short-step} IPMs and give better theoretical guarantees while having worse pratical performance~\cite[Chapter 5]{Wright-PrimalDualInteriorPointMethods}.
 Lastly, the bound on the residuals (where \(\vek{r}^0\) and \(\mu^0\) are defined by the starting point \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \mathcal{G}\)) implies that we will allow infeasible iterates as long as their residuals decrease to zero at least as fast as \(\mu\) does.
 Any algorithm that maintains iterates inside \(\mathcal{N}_{-\infty}(\gamma)\) and is able to decrease the corresponding \(\mu\) values to zero produces iterates which become arbitrarily close to optimality because \(\norm{\vek{r}}_2\) and \(x_i s_i\) converge to zero.
 
