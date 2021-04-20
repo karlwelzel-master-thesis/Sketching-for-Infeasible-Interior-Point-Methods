@@ -1,19 +1,6 @@
 \chapter{Interior-Point Methods for Linear Programming}\label{chap:ipm}
 
-% Important concepts to cover
-% \begin{enumerate}
-%  \item Notation (A, b, c, x, y, s, residuals, mu)
-%  \item Optimality conditions
-%  \item Newton system: Complete system (?), augmented system, normal equation
-%  \item Focus on infeasible, inexact, long-step IPMs
-%  \begin{enumerate}
-%    \item Central path
-%    \item \(\mathcal{N}_{-\infty}\) neighbourhood
-%    \item Error in the normal equation translates to error in \(\mat{A}\Delta\vek{x} = \vek{r}_p\)
-%  \end{enumerate}
-% \end{enumerate}
-
-% \hrule
+\section{Central Concepts}
 
 The standard form linear programming (LP) problem is given by
 \begin{equation}\label{eqn:primal-lp}
@@ -77,6 +64,8 @@ Neighbourhoods involving those bounds are known as \emph{short-step} IPMs and gi
 Lastly, the bound on the residuals (where \(\vek{r}^0\) and \(\mu^0\) are defined by the starting point \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \mathcal{G}\)) implies that we will allow infeasible iterates as long as their residuals decrease to zero at least as fast as \(\mu\) does.
 Any algorithm that maintains iterates inside \(\mathcal{N}_{-\infty}(\gamma)\) and is able to decrease the corresponding \(\mu\) values to zero produces iterates which become arbitrarily close to optimality because \(\norm{\vek{r}}_2\) and \(x_i s_i\) converge to zero.
 
+\section{The Normal Equation}\label{sec:ipm-search-direction}
+
 The search direction in IPMs is determined by a Newton system that aims to find the root of 
 \begin{equation}
   F(\vek{x}, \vek{y}, \vek{s}) \deq \begin{pmatrix} \mat{A}\vek{x} - \vek{b} \\ \mat{A}^T \vek{y} + \vek{s} - \vek{c} \\ \vek{x} \circ \vek{s} - \sigma \mu \vek{1} \end{pmatrix}
@@ -131,6 +120,8 @@ in which the first equation is called the \emph{normal equation}, see~\cite[p. 1
 Here, \(\mat{D}\) is defined as the diagonal matrix \(\mat{S}^{-1/2} \mat{X}^{1/2}\) to simplify the notation.
 \Cref{eqn:normal-equation} is called the normal equation because it can be written as the normal equation of a least squares system with coefficient matrix \(\mat{D}\mat{A}^T\) if \(\vek{r}_p = \vek{0}\).
 
+\section{Shifting Error Terms}\label{sec:ipm-shifting-error-terms}
+
 Our goal is to solve the normal equation using a preconditioner and an iterative solver.
 To figure out how many iterations of this solver are needed to obtain a sufficiently accurate solution, assume that some error term \(\tilde{\vek{f}}\) is introduced.
 This means \(\Delta\vek{y}\) solves
@@ -179,11 +170,13 @@ and solves
 as shown by \textcite[p. 10]{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs}.
 Hence, we successfully shifted the error term in the Newton system.
 We will see that we can construct \(\vek{v}\) from \(\tilde{\vek{f}}\) in such a way that the size of the error \(\norm{\vek{v}}_2\) is bounded in terms of the error \(\norm{\tilde{\vek{f}}}_2\) in the next chapter.
-To see why this is important consider the proposed IPM algorithm and the corresponding convergence result
+To see why this is important, consider the following IPM algorithm and the corresponding convergence result
 and note that apart from conditions for the initial point it only requires the search direction to satisfy \cref{eqn:perturbed-search-direction} and \(\norm{\vek{v}}_2\) to be sufficiently small.
 The proof for \cref{thm:ipm-convergence} will be given in \cref{chap:convergence}.
 
-\begin{algorithm}[h]
+\section{The Infeasible IPM Algorithm}
+
+\begin{algorithm}[htbp]
   \SetKwInOut{Input}{Input}
   \Input{
     \(\mat{A} \in \R^{m \times n}\),
