@@ -1,20 +1,9 @@
-\chapter{Sketching}\label{chap:sketching}
-
-% Important concepts to cover
-% \begin{enumerate}
-%   \item Goal of finding a preconditioner
-%   \item Definition of a \((1\pm\e)\)-subspace embedding
-%   \item Definition of an oblivious subspace embedding
-%   \item Equivalent statements for subspace embeddings
-%   \item State sparse sketching result
-%   \item Apply sparse sketching result to \({(\mat{A}\mat{D})}^T\) and show that \(\mat{R}^{-1}\) is a good two-sided preconditioner
-% \end{enumerate}
-
-% \hrule
+\chapter{Sketching -- A Useful Dimensionality Reduction Technique}\label{chap:sketching}
 
 Based on~\cite{Avron-FasterRandomizedInfeasibleIPMs} we will use sketching to determine a preconditioner for \(\mat{A} \mat{D}^2 \mat{A}^T\).
 These results not only apply to this specific matrix but all symmetric positive definite matrices of the form \(\mat{B}^T \mat{B}\) for some \(\mat{B} \in \R^{n \times m}\) with \(m \ll n\).
-To emphasise this generality the proofs will all involve a general \(\mat{B}\) and their consequences for \(\mat{A}\mat{D}^2\mat{A}^T\) will be given as corollaries.
+
+\section{Overview and a Sparse Sketching Result}\label{sec:sketching-overview}
 
 The following introduction to sketching is based on~\cite{Woodruff-Sketching} and begins with the central concept of a subspace embedding:
 \begin{definition}\label{def:subspace-embedding}
@@ -84,6 +73,8 @@ This defines a probability distribution over \(\R^{w \times n}\) where each samp
 For any \(\delta < 1/2, \ \e < 1/2\) and \(m, n \in \N\) the \((s, w)\)-sparse embedding matrices form an oblivious \(\ell_2\)-subspace embedding for
 \[ w = O \Paren{\frac{m \log(m/\delta)}{\e^2}} \quad \text{and} \quad s = O \Paren{\frac{\log(m/\delta)}{\e}}. \]
 \end{theorem}
+
+\section{Sketching-Based Preconditioning}\label{sec:sketching-preconditioning}
 
 To simplify the runtime bounds and the following discussion we will from now on fix \(\e = 1/3 < 1/2\) and furthermore assume that \(\mat{W} \in \R^{w \times n}\) is a sparse embedding matrix and a \((1\pm\e)\) \(\ell_2\)-subspace embedding of the column space of \(\mat{B} \in \R^{n \times m}\).
 From the previous result we get that choosing
@@ -164,6 +155,9 @@ Applying this technique to \cref{eqn:normal-equation} we get
   \mat{R}^{-T}\mat{A}\mat{D}^2\mat{A}^T\mat{R}^{-1}\vek{q} = \mat{R}^{-T}\vek{p} \quad \text{and} \quad \Delta\vek{y} = \mat{R}^{-1}\vek{q}
 \end{equation}
 by setting \(\mat{B} = \mat{D}\mat{A}^T\).
+
+\section{Choosing the Perturbation Vector}\label{sec:sektching-perturbation-vector}
+
 Now as mentioned in \cref{chap:ipm} we need to define a perturbation vector \(\vek{v} \in \R^n\) to shift the error term in the Newton system.
 Because we apply the CG method to \cref{eqn:preconditioned-normal-equation} an error term \(\vek{f} = \mat{R}^{-T}\mat{A}\mat{D}^2\mat{A}^T\mat{R}^{-1}\vek{q} - \mat{R}^{-T}\vek{p}\) propagates so that
 \begin{equation}
@@ -219,6 +213,8 @@ as claimed.
 
 Note that compared to the corresponding result in Lemma 4 of~\cite{Avron-FasterRandomizedInfeasibleIPMs} the bound \(\norm{\vek{v}}_2 \leq n \sqrt{\mu} \norm{\vek{f}}_2\) is slightly worse but does not introduce any additional randomness and does not even depend on \(\mat{W}\) being a subspace embedding.
 It is only assumed that the QR decomposition of \(\mat{W}\mat{D}\mat{A}^T\) exists.
+
+\section{Computing an Approximate Newton Direction}\label{sec:sketching-approximate-newton}
 
 The previous considerations give rise to \cref{alg:newton-direction} that tries to determine an approximate Newton direction as in \cref{eqn:perturbed-search-direction} with \(\norm{\vek{v}}_2 \leq \e_{\vek{v}}\).
 The behavior of this algorithm if \(\mat{W}\) is not a subspace embedding for \(\mat{D}\mat{A}^T\) is not specified.
