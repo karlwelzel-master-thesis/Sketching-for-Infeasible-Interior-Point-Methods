@@ -2,6 +2,7 @@
 
 Based on~\cite{Avron-FasterRandomizedInfeasibleIPMs} we will use sketching to determine a preconditioner for \(\mat{A} \mat{D}^2 \mat{A}^T\).
 These results not only apply to this specific matrix but all symmetric positive definite matrices of the form \(\mat{B}^T \mat{B}\) for some \(\mat{B} \in \R^{n \times m}\) with \(m \ll n\).
+To emphasise this, the theorems will all involve a general matrix \(\mat{B}\) and their consequences for \(\mat{A}\mat{D}^2\mat{A}^T\) will be discussed afterwards.
 
 \section{Overview and a Sparse Sketching Result}\label{sec:sketching-overview}
 
@@ -31,7 +32,7 @@ Then the following statements are equivalent
 \begin{proof}
 The first equivalence holds by definition. Statement 3 is equivalent to
 \[ 1-\e \leq \norm{\mat{W}\mat{s}}_2^2 \leq 1+\e \quad \forall \vek{s} \in \mathcal{S} \text{ with } \norm{\vek{s}}_2 = 1. \]
-In this form statement 2 immediately implies 3 and choosing \(\vek{s} = \norm{\mat{B}\vek{z}}_2^{-1} \mat{B}\vek{z}\) and multiplying both sides by \(\norm{\mat{B}\vek{z}}_2^2\) we obtain that it is indeed equivalent to statement 2.
+In this form statement 2 immediately implies 3 and choosing \(\vek{s} = \norm{\mat{B}\vek{z}}_2^{-1} \mat{B}\vek{z}\) for \(\mat{B}\vek{z} \neq \vek{0}\) and multiplying both sides by \(\norm{\mat{B}\vek{z}}_2^2\) we obtain that the two statements are indeed equivalent.
 
 Note that the matrix \(\mat{U}^T \mat{W}^T \mat{W} \mat{U} - \mat{I}_d\) is real and symmetric and therefore its 2-norm is given by the maximum absolute value of the Rayleigh quotient~\cite[Equation (5.2)]{Demmel-AppliedNumericalLinearAlgebra}.
 Using \(\norm{\mat{U}\vek{e}}_2 = \norm{\vek{e}}_2\), this implies
