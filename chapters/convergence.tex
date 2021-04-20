@@ -1,9 +1,11 @@
-\chapter{Theoretical Convergence}\label{chap:convergence}
+\chapter{Convergence Proofs}\label{chap:convergence}
 
 After the previous two chapters introduced the important ideas and algorithms, we need to establish their convergence properties.
 Note that \cref{alg:ipm} is the same infeasible inexact long-step IPM as in~\cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs,Avron-FasterRandomizedInfeasibleIPMs} but with a different preconditioner.
 Thus, the following proofs are very similar to those in their works with only slight changes.
 The essential assumptions in the following proofs are that the algorithms work with exact arithmetic, that solutions of \labelcref{eqn:primal-lp,eqn:dual-lp} exist and that \(\mat{A}\) has full row rank.
+
+\section{Convergence Proof for the Infeasible IPM Algorithm}
 
 Let \((\vek{x}, \vek{y}, \vek{s}) \in \mathcal{N}_{-\infty}(\gamma)\) denote a possible iterate during the course of \cref{alg:ipm}, \((\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}})\) the Newton direction determined in \cref{line:compute-approximate-newton} and 
 \begin{align}
@@ -67,6 +69,8 @@ These two lemmas are enough to show the convergence of \cref{alg:ipm}.
   using \(\log(\beta) \leq \beta-1\) for all \(\beta > 0\).
   Applying the exponential function on both sides gives \({(1 - \frac{C_3}{n^2})}^k \leq \e_\mu\) which shows that \(O(n^2 \log(1/\e_\mu))\) iterations suffice to get \(\mu^k \leq \e_\mu \mu^0\).
 \end{proof}
+
+\section{Convergence Proof for the Approximate Newton Direction Algorithm}
 
 Next, we turn to the correctness of \cref{alg:newton-direction} which is concerned with calculating a sufficiently good approximation of the Newton direction.
 The proofs follow Lemma 11 to 13 in~\cite{Avron-FasterRandomizedInfeasibleIPMs} with slight simplifications.
@@ -195,6 +199,8 @@ Equipped with this result, we can prove the main result regarding \cref{alg:newt
   \[ O \Paren{\log \Paren{m/\delta} \Paren{\nnz(\mat{A}) + m^3} + \log \Paren{n^2 \mu / \e_{\vek{v}}} \Paren{\nnz(\mat{A}) + m^2}} \]
   operations because \(w\) and \(s\) were chosen according to \cref{thm:sparse-ose}.
 \end{proof}
+
+\section{Runtime Bounds for the Combined Algorithm}
 
 \Cref{thm:ipm-convergence,thm:approximate-newton-convergence} were the stepping stones towards the final result of this chapter.
 The combination of \cref{alg:ipm,alg:newton-direction} is an efficient algorithm for solving linear programs where \(\mat{A}\) is sparse and \(m \ll n\):
