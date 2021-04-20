@@ -155,15 +155,16 @@ Equipped with this result, we can prove the main result regarding \cref{alg:newt
 
 \begin{proof}[Proof of \cref{thm:approximate-newton-convergence}]
   By \cref{thm:sparse-ose} the matrix \(\mat{W}\) selected in \cref{line:draw-sketching-matrix} of \cref{alg:newton-direction} is a subspace embedding for \(\mat{D}\mat{A}^T\) with probability at least \(1 - \delta\), so it suffices to show all of the claims for this case.
-  Therefore, assume that \(\mat{W}\) is indeed a \((1 \pm \e)\) \(\ell_2\)-subspace embedding for \(\mat{D}\mat{A}^T\) for \(\e = 1/3\) from now on.
+  Therefore, assume that \(\mat{W}\) is indeed a \((1 \pm \e)\) \(\ell_2\)-subspace embedding for \(\mat{D}\mat{A}^T\) from now on.
   In this case the QR decomposition \(\mat{Q}\mat{R} = \mat{W}\mat{D}\mat{A}^T\) exists and by \cref{thm:condition-number-bound} we have
-  \[\norm{\mat{R}^{-T}\mat{A}\mat{D}}_2 \leq \sqrt{\frac{4}{3}} \leq \sqrt{2}.\]
+  \[\norm{\mat{R}^{-T}\mat{A}\mat{D}}_2 \leq \sqrt{\frac{1}{1 - \e}} \leq \sqrt{2}\]
+  using \(\e < \frac{1}{2}\).
   Let \(\vek{q}^j\) be the iterates of the CG algorithm in \cref{line:cg} and let \(\vek{f}^j\) be the residuals defined by
 \( \vek{f}^j = \mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A} \mat{R}^{-1} \vek{q}^j - \mat{R}^{-T} \vek{p} \).
   Using \cref{thm:initial-residual-bound} and \(\vek{q}^0 = \vek{0}\) we have \(\norm{\vek{f}^0}_2 = \norm{\mat{R}^{-T} \vek{p}}_2 \leq Cn\sqrt{\mu}\) for some constant \(C > 0\) depending on \(\gamma\).
   \Cref{thm:cg-residual-bound} immediately implies that \(\norm{\vek{f}^j}_2\) converges to zero and the so \cref{line:cg} will terminate.
-  Moreover, it tells us that for \(j \geq \log_{1/2}(\e_{\vek{v}}/C n^2 \mu) = \log_2(C n^2 \mu / \e_{\vek{v}})\) we have
-  \[ \norm{\vek{f}^j}_2 \leq \Paren{\frac{1}{2}}^j \norm{\vek{f}^0}_2 \leq \frac{\e_{\vek{v}}}{C n^2 \mu} C n \sqrt{\mu} \leq \frac{\e_{\vek{v}}}{n \sqrt{\mu}} \]
+  Moreover, it tells us that for \(j \geq \log_{\frac{1 - \e}{1 + \e}}(\e_{\vek{v}}/C n^2 \mu) = \log_{\frac{1 + \e}{1 - \e}}(C n^2 \mu / \e_{\vek{v}})\) we have
+  \[ \norm{\vek{f}^j}_2 \leq \Paren{\frac{1 - \e}{1 + \e}}^j \norm{\vek{f}^0}_2 \leq \frac{\e_{\vek{v}}}{C n^2 \mu} C n \sqrt{\mu} \leq \frac{\e_{\vek{v}}}{n \sqrt{\mu}} \]
   so \cref{line:cg} will terminate after \(O(\log(n^2 \mu / \e_{\vek{v}}))\) CG iterations.
   By \cref{thm:perturbation-vector} and the definition of \(\vek{v}\) in \cref{line:compute-v} \(\norm{\vek{f}^j}_2 \leq \e_{\vek{v}}/n\sqrt{\mu}\) implies \(\norm{\vek{v}}_2 \leq \e_{\vek{v}}\).
   \Cref{line:compute-delta-x,line:compute-delta-y,line:compute-delta-s} compute \((\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}})\) which satisfy \cref{eqn:perturbed-search-direction-choice} for \(\tilde{\vek{f}} = \mat{R}^T \vek{f}\).
@@ -206,7 +207,7 @@ Equipped with this result, we can prove the main result regarding \cref{alg:newt
 The combination of \cref{alg:ipm,alg:newton-direction} is an efficient algorithm for solving linear programs where \(\mat{A}\) is sparse and \(m \ll n\):
 
 \begin{theorem}\label{thm:combined-algorithm-convergence}
-  Assume that \(\gamma \in (0, 1)\), \(\sigma \in (0, \frac{4}{5})\) and \(\e_\mu \in (0, 1)\) are constant, that the initial point \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \mathcal{G}\) satisfies \(\vek{x}^0 \circ \vek{s}^0 \geq (1-\gamma)\vek{1}\), \(\vek{x}^0 \geq \vek{x}^*\) and \(\vek{s}^0 \geq \max \{\vek{s}^*, \abs{\mat{A}^T \vek{y}^0 - \vek{c}}\}\) for some \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\) and that \(\mat{A}\) has full row rank.
+  Assume that \(\gamma \in (0, 1)\), \(\sigma \in (0, \frac{4}{5})\), \(\e \in (0, \frac{1}{2})\) and \(\e_\mu \in (0, 1)\) are constant, that the initial point \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \mathcal{G}\) satisfies \(\vek{x}^0 \circ \vek{s}^0 \geq (1-\gamma)\vek{1}\), \(\vek{x}^0 \geq \vek{x}^*\) and \(\vek{s}^0 \geq \max \{\vek{s}^*, \abs{\mat{A}^T \vek{y}^0 - \vek{c}}\}\) for some \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\) and that \(\mat{A}\) has full row rank.
   Furthermore, assume that \cref{alg:ipm} uses \cref{alg:newton-direction} with \(\e_{\vek{v}} = \gamma \sigma \mu^k / 4\) to determine the approximate Newton direction in \cref{line:compute-approximate-newton,line:prepare-approximate-newton}.
   Then it is possible to choose \(\delta\) in such a way that the algorithm generates an iterate \((\vek{x}^k, \vek{y}^k, \vek{s}^k)\) satisfying \(\mu^k \leq \e_\mu \mu^0\) and \(\norm{\vek{r}^k} \leq \e_\mu \norm{\vek{r}^0}\) using \(O(n^2 \log(n) (\nnz(\mat{A}) + m^3))\) operations with probability at least \(99\%\).
 \end{theorem}
