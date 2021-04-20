@@ -1,6 +1,6 @@
 % arara: latexmk
 
-\documentclass[a4paper, 12pt, oneside, egregdoesnotlikesansseriftitles]{scrbook}
+\documentclass[a4paper, 12pt, egregdoesnotlikesansseriftitles]{scrreprt}
 
 \usepackage{import}
 \subimport{settings/}{_all.tex}
@@ -15,17 +15,14 @@
 \maketitle
 \hypersetup{pageanchor=true}
 
-\frontmatter{}
 \tableofcontents
 
-\mainmatter{}
 \subimport{chapters/}{introduction.tex}
 \subimport{chapters/}{ipms.tex}
 \subimport{chapters/}{sketching.tex}
 \subimport{chapters/}{convergence.tex}
 \subimport{chapters/}{experiments.tex}
 
-\backmatter{}
 \printbibliography[heading=bibintoc]
 
 \end{document}
