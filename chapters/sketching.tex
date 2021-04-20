@@ -71,8 +71,9 @@ This defines a probability distribution over \(\R^{w \times n}\) where each samp
 \end{definition}
 
 \begin{theorem}[Theorem 4.2 in~\cite{Cohen-NearlyTightObliviousSubspaceEmbeddings}]\label{thm:sparse-ose}
-For any \(\delta < 1/2, \ \e < 1/2\) and \(m, n \in \N\) the \((s, w)\)-sparse embedding matrices form an oblivious \(\ell_2\)-subspace embedding for
-\[ w = O \Paren{\frac{m \log(m/\delta)}{\e^2}} \quad \text{and} \quad s = O \Paren{\frac{\log(m/\delta)}{\e}}. \]
+For any \(\delta < 1/2, \ \e < 1/2\) and \(m, n \in \N\) there exist \(s, w \in \N\) with
+\[ w = O \Paren{\frac{m \log(m/\delta)}{\e^2}} \quad \text{and} \quad s = O \Paren{\frac{\log(m/\delta)}{\e}} \]
+such that the \((s, w)\)-sparse embedding matrices form an oblivious \(\ell_2\)-subspace embedding.
 \end{theorem}
 
 \section{Sketching-Based Preconditioning}\label{sec:sketching-preconditioning}
