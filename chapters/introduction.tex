@@ -24,7 +24,6 @@ Based on the work by \textcite{Avron-FasterRandomizedInfeasibleIPMs} we will sho
 In the last decade many advances in numerical linear algebra where achieved by incorporating randomness.
 We will focus on a RLA tool called sketching which is relevant for our work.
 \textcite{Woodruff-Sketching} gives an overview on how sketching matrices lead to dimensionality reductions that can be applied to least squares problems, low-rank approximation and graph-sparsification.
-The use of sketching techniques even gave rise to Blendenpik~\cite{Avron-Blendenpik}, one of the state-of-the-art methods for least squares problems for tall matrices.
 The key idea is that a matrix \(\mat{B} \in \R^{n \times m}\) with \(m \ll n\) has an \(m\)-dimensional column space that forms a subspace of \(\R^n\).
 This ambient dimension of \(n\) is unnecessarily large.
 There are random \(w \times n\) matrices describing linear maps which approximately preserve the geometry of any fixed \(m\)-dimensional subspace of \(\R^n\) with high probability.
@@ -38,7 +37,13 @@ In this work, we will assume that \(\mat{A}\) is a sparse \(m \times n\) matrix 
 \Textcite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs} showed that a long-step infeasible primal-dual IPM converges in \(O(n^2 \log(1/\e))\) iterations if the Newton direction is determined sufficiently accurate in every iteration.
 This allows us to bound the total number of operations by bounding the runtime of each iteration given that we want a high success probability over all iterations.
 
-The special case of LPs with sparse constraint matrices \(\mat{A}\) and \(m \ll n\) is not just convenient because of the RLA results but also comes up in pratice.
+The same idea of preconditioning using a decomposition of a reduced matrix was previously successfully applied in Blendenpik~\cite{Avron-Blendenpik} and LSRN~\cite{MengSaundersMahoney-LSRN} to linear least squares problems.
+Blendenpik~\cite{Avron-Blendenpik} uses a dimensionality reduction technique based on randomly sampling rows of after applying a Walsh--Hadamard transform, a discrete cosine transform or a discrete Hartley transform, that aim to even out the importance of each row, and determines the preconditioner using a QR decomposition.
+The authors of LSRN \textcite{MengSaundersMahoney-LSRN} decided to use a Gaussian sketch and an SVD of the sketched matrix as a preconditioner.
+Afterwards both methods use an iterative least-squares solver to find the solution to the preconditioned problem.
+Both papers report that the generated preconditioners bring the condition number down to a small constant and provide a great speedup compared to direct methods based on decompositions of the full-sized matrix.
+
+The special case of LPs with sparse constraint matrices \(\mat{A}\) and \(m \ll n\) considered in this thesis is not just convenient because of the RLA results but also comes up in pratice.
 In particular, optimizing \(\ell_1\)-regularized SVMs~\cite{ZhuRossetTibshiraniHastie-1normSupportVectorMachines} with more features than data points and recovering sparse vectors in compressed sensing~\cite{YangZhang-l1ProblemsInCompressiveSensing} produce LP instances with these properties.
 We want to highlight a few previous papers on LPs in this setting. \textcite{LondonVardiWiermanYi-PackingLinearPrograms} devised a black box algorithm that speeds up any given algorithm for solving packing LPs (where each variable is restricted to lie between 0 and 1) if the number of variables is much larger than the number of constraints.
 This is achieved by sampling a fraction of the variables randomly, solving the restricted problem optimally and setting each variable to 0 or 1 depending on the outcome.
