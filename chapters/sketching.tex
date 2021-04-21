@@ -58,8 +58,8 @@ A probability distribution \(\Pi\) over matrices \(\mat{W} \in \R^{w \times n}\)
 Because we will later compute a decomposition of the sketched matrix \(\mat{W}\mat{B}\) we want \(w\) to be as small as possible.
 A classic result in sketching is that there are OSEs with \(w = O((m + \log(1/\delta))\e^{-2})\) without any dependence on \(n\).
 \Textcite[Theorem 6]{Woodruff-Sketching} shows how this follows from the so-called Johnson-Lindenstrauss Lemma and that it can be achieved by choosing the matrix entries to be properly normalized independent Gaussian random variables.
-Unfortunately, a matrix \(\mat{W}\) with Gaussian entries is dense so computing the matrix product \(\mat{W}\mat{B}\) takes \(O(w n m)\) operations in general.
-If the matrix \(\mat{B}\) is sparse we need an OSE where all sampled matrices are sparse to take advantage of that.
+As a matrix \(\mat{W}\) with Gaussian entries is dense computing the matrix product \(\mat{W}\mat{B}\) takes \(O(w \nnz(\mat{B}))\) operations.
+A sparse OSE where all sampled matrices only have \(s\) nonzero entries per column can improve the cost of this product to \(O(s \nnz(\mat{B}))\).
 The following sparse OSE result is taken from~\cite{Cohen-NearlyTightObliviousSubspaceEmbeddings}.
 \Textcite{Avron-FasterRandomizedInfeasibleIPMs} use the sketching result from~\cite{Cohen-OptimalApproximateMatrixProduct} but we replaced it by a simpler one giving the same complexity guarantees in the end.
 

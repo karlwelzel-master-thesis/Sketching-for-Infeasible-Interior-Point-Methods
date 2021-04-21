@@ -193,7 +193,8 @@ Equipped with this result, we can prove the main result regarding \cref{alg:newt
   Multiplication with \(\mat{X}, \mat{X}^{1/2}, \mat{S}, \mat{S}^{1/2}\) and their inverses can be done in \(O(n)\), multiplication with \(\mat{A}\) and \(\mat{A}^T\) in \(O(\nnz(\mat{A}))\) and multiplication with \(\mat{R}^{-1}\) and \(\mat{R}^{-T}\) in \(O(m^2)\) using triangular solves.
   Because \(m \leq n \leq \nnz(\mat{A})\) we can thus conclude that \cref{line:compute-residuals,line:compute-p,line:compute-delta-x,line:compute-delta-y,line:compute-delta-s} run in \(O(\nnz(\mat{A}) + m^2)\) operations.
   Constructing the random sparse embedding matrix in \cref{line:draw-sketching-matrix} requires us to choose \(n \cdot s\) random nonzero entries and therefore needs \(O(n s)\) time.
-  Computing \(\mat{W}\mat{D}\mat{A}^T\) in \cref{line:compute-qr} can be done in \(O(s \nnz(\mat{A}))\) because of the sparsity of \(\mat{W}\) and computing the QR decomposition of a \(w \times m\) matrix takes \(O(w m^2)\) operations.
+  Computing \(\mat{W}\mat{D}\mat{A}^T\) in \cref{line:compute-qr} can be done in \(O(s \nnz(\mat{A}))\) by taking the product of each nonzero entry of \(\mat{D}\mat{A}^T\) with each nonzero entry in the appropriate column of \(\mat{W}\) and adding the result to the appropriate entry in the matrix product.
+  Computing the QR decomposition of a \(w \times m\) matrix takes \(O(w m^2)\) operations.
   The number of CG iterations in \cref{line:cg} were already bounded by \(O(\log(n^2 \mu / \e_{\vek{v}}))\) and the runtime of each iteration is dominated by a matrix-vector product involving \(\mat{R}^{-T}\mat{A}\mat{D}^2\mat{A}^T\mat{R}^{-1}\) which takes \(O(\nnz(\mat{A}) + m^2)\) flops.
   Lastly, the perturbation vector \(\vek{v}\) is calculated in \cref{line:compute-v} in \(O(ns + m^2)\) time.
   Combining these upper bounds gives
