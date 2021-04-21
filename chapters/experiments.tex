@@ -1,30 +1,56 @@
 \chapter{Experiments}\label{chap:experiments}
 
-Some practical remarks:
-\begin{enumerate}
-  \item \Cref{line:compute-v} of \cref{alg:newton-direction} can be simplified to directly compute \(\mat{S}^{-1}\vek{v}\) which is needed in \cref{line:compute-delta-x}.
-  \item We can use a sparse QR solver in \cref{alg:newton-direction} (SPQR by Tim Davis)
-  \item How to choose \(\alpha\)?
-  \begin{itemize}
-    \item The function \({(\vek{x}^k + \alpha \Delta\vek{x}^k)}^T (\vek{s}^k + \Delta\vek{s}^k)\) is a quadratic function in \(\alpha\) so it is easy to minimise.
-    \item We do not need to minimise \(\mu(\alpha)\). Just choose \(\alpha = 0.9\).
-  \end{itemize}
-  \item We do not need to care about \(\vek{v}\) in practice. (Experiment with this: How do \(\norm{\vek{v}}\) and \(\norm{\vek{f}}\) behave?)
-  \item To avoid nearly rank-deficient matrices we need to construct our synthetic data in a clever way
-  \item Real data can be obtained from netlib or the datasets used by Avron
-  \item How to terminate CG\@? Fixed number of iterations, fixed accuracy?
-  \item We do not need to scrap our results if the subspace embedding fails
-  \item How to choose \(\sigma\)? \(\sigma = 0.1\) should be good, cite Zhen
-  \item How to choose \(w, s\)? \(m < w < 2m\) and \(s = 2, 3\) works, cite Zhen
-  \item It does not matter if the implementation is indeed the long-step infeasible IPM above, an existing Mehrotra Predictor-Corrector code is also okay.
-\end{enumerate}
+In this chapter we evaluate the preconditioning technique introduced in \cref{chap:sketching} inside the implementation of the IPM algorithm of \textcite{AndersenAndersen-MosekInteriorPointMethod} provided by the open source Python-based scientific computing library \texttt{scipy}~\cite{Scipy}.
 
-\begin{figure}[h]
-  \centering
-  \import{plots/}{sketching_parameters_1.pgf}
-\end{figure}
+\section{The Homogeneous Algorithm}
 
-\begin{figure}[h]
-  \centering
-  \import{plots/}{sketching_parameters_2.pgf}
-\end{figure}
+The interior-point method implemented in \texttt{scipy} is based on the MOSEK interior-point optimizer as published by \textcite{AndersenAndersen-MosekInteriorPointMethod}.
+The most important difference to the general infeasible IPM described in \cref{alg:ipm} is its use of the homogeneous model presented in~\cite{XuHungYe-SimplifiedHomogeneousAlgorithm}.
+The primal LP problem in standard form \cref{eqn:primal-lp} is replaced by the self-dual formulation
+\begin{subequations}
+  \begin{align}
+    \mat{A}\vek{x} - \vek{b} \tau &= \vek{0} \\
+    \mat{A}^T \vek{y} + \vek{s} - \vek{c}\tau &= \vek{0} \\
+    - \vek{c}^T\vek{x} + \vek{b}^T\vek{y} - \kappa &= 0 \\
+    \vek{x}, \vek{s} &\geq \vek{0} \\
+    \tau, \kappa &\geq 0
+  \end{align}
+\end{subequations}
+where \(\tau\) and \(\kappa\) are additional variables and the objective function is zero.
+Observe that setting \(\vek{x}\), \(\vek{y}\), \(\vek{s}\), \(\tau\) and \(\kappa\) to zero gives a solution, so the LP above is always feasible.
+The crucial advantage of using this LP formulation is that there is always a solution where \((\vek{x}, \tau)\) and \((\vek{s}, \kappa)\) are strictly complimentary and every such solution can be transformed into either a solution of the original LP (if \(\tau > 0\)) or a certificate that the original LP is infeasible or unbounded (if \(\kappa > 0\)).
+
+% Defining 
+% \begin{subequations}
+%   \begin{align}
+%     \vek{r}_p &\coloneqq \mat{A}\vek{x} - \vek{b} \tau \\
+%     \vek{r}_d &\coloneqq \mat{A}^T\vek{y} + \vek{s} - \vek{c}\tau \\
+%     \vek{r}_g &\coloneqq -\vek{c}^T \vek{x} + \vek{b}^T \vek{y} - \kappa \\
+%     \mu &\coloneqq (\vek{x}^T\vek{s} + \tau \kappa) / (n+1)
+%   \end{align}
+% \end{subequations}
+% the corresponding Newton system that needs to be solved is 
+% \begin{equation}
+%   \begin{pmatrix}
+%     \mat{A}    & -\vek{b} & \mat{0}   & \mat{0} & \mat{0} \\
+%     \mat{0}    & -\vek{c} & \mat{A}^T & \mat{I} & \mat{0} \\
+%     -\vek{c}^T & \mat{0}  & \vek{b}^T & \mat{0} & -1 \\
+%     \mat{S}    & \mat{0}  & \mat{0}   & \mat{X} & \mat{0} \\
+%     \mat{0}    & \kappa   & \mat{0}   & \mat{0} & \tau
+%   \end{pmatrix}
+%   \begin{pmatrix}
+%     \Delta\vek{x} \\
+%     \Delta\tau \\
+%     \Delta\vek{y} \\
+%     \Delta\vek{s} \\
+%     \Delta\kappa
+%   \end{pmatrix}
+%   =
+%   \begin{pmatrix}
+%     -\sigma \vek{r}_p \\
+%     -\sigma \vek{r}_d \\
+%     -\sigma \vek{r}_g \\
+%     -\vek{x} \circ \vek{s} + \sigma \mu \vek{1} \\
+%     -\tau \kappa + \sigma \mu
+%   \end{pmatrix}
+% \end{equation}
