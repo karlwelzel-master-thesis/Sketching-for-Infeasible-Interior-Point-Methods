@@ -63,8 +63,8 @@ A sparse OSE where all sampled matrices only have \(s\) nonzero entries per colu
 The following sparse OSE result is taken from~\cite{Cohen-NearlyTightObliviousSubspaceEmbeddings}.
 \Textcite{Avron-FasterRandomizedInfeasibleIPMs} use the sketching result from~\cite{Cohen-OptimalApproximateMatrixProduct} but we replaced it by a simpler one giving the same complexity guarantees in the end.
 
-\begin{definition}
-An \emph{\((s, w)\)-sparse embedding matrix} \(\mat{W} \in \R^{w \times n}\) is constructed in the following way:
+\begin{definition}[\cite{CartisFialaShao-EfficientSparseSketchingForLargeScaleLinearLeastSquares}]\label{def:s-hasing-matrix}
+An \emph{\(s\)-hashing matrix} \(\mat{W} \in \R^{w \times n}\) is constructed in the following way:
 For each column \(s\) entries are sampled randomly without replacement and for each such entry its value is randomly drawn from \(\{ - \frac{1}{\sqrt{s}}, \frac{1}{\sqrt{s}} \}\).
 All other entries of \(\mat{W}\) are set to zero.
 This defines a probability distribution over \(\R^{w \times n}\) where each sampled matrix has exactly \(s \cdot n\) nonzero entries.
@@ -73,12 +73,12 @@ This defines a probability distribution over \(\R^{w \times n}\) where each samp
 \begin{theorem}[Theorem 4.2 in~\cite{Cohen-NearlyTightObliviousSubspaceEmbeddings}]\label{thm:sparse-ose}
 For any \(\delta < 1/2, \ \e < 1/2\) and \(m, n \in \N\) there exist \(s, w \in \N\) with
 \[ w = O \Paren{\frac{m \log(m/\delta)}{\e^2}} \quad \text{and} \quad s = O \Paren{\frac{\log(m/\delta)}{\e}} \]
-such that the \((s, w)\)-sparse embedding matrices form an oblivious \(\ell_2\)-subspace embedding.
+such that the \(s\)-hashing matrices form an oblivious \(\ell_2\)-subspace embedding.
 \end{theorem}
 
 \section{Sketching-Based Preconditioning}\label{sec:sketching-preconditioning}
 
-To simplify the runtime bounds and the following discussion, we will from now on assume that \(\e < 1/2\) is fixed and furthermore assume that \(\mat{W} \in \R^{w \times n}\) is a sparse embedding matrix and a \((1\pm\e)\) \(\ell_2\)-subspace embedding of the column space of \(\mat{B} \in \R^{n \times m}\).
+To simplify the runtime bounds and the following discussion, we will from now on assume that \(\e < 1/2\) is fixed and furthermore assume that \(\mat{W} \in \R^{w \times n}\) is a \(s\)-hashing matrix and a \((1\pm\e)\) \(\ell_2\)-subspace embedding of the column space of \(\mat{B} \in \R^{n \times m}\).
 By \cref{thm:sparse-ose} \(w\) and \(s\) can be chosen such that the latter assumption holds with probability at least \(1 - \delta\) and 
 \begin{equation} \label{eqn:sparse-ose-params}
   w = O \Paren{m \log(m/\delta)} \quad \text{and} \quad s = O \Paren{\log(m/\delta)}.
@@ -173,7 +173,7 @@ Similar to the method of \textcite{Avron-FasterRandomizedInfeasibleIPMs}, we cho
 This also allows us to bound the size of the perturbation vector by the size of \(\vek{f}\).
 
 \begin{lemma}\label{thm:perturbation-vector}
-Suppose \(\mat{W}\) is a \((s, w)\)-sparse embedding matrix and \(\mat{Q}\mat{R}\) is the QR decomposition of \(\mat{W}\mat{D}\mat{A}^T\).
+Suppose \(\mat{W}\) is a \(s\)-hashing matrix and \(\mat{Q}\mat{R}\) is the QR decomposition of \(\mat{W}\mat{D}\mat{A}^T\).
 Given a vector \(\vek{f} \in \R^m\) the vector
 \[ \vek{v} = {(\mat{S}\mat{X})}^{1/2} \mat{W}^T \mat{Q} \vek{f} \]
 satisfies \( \mat{A}\mat{S}^{-1}\vek{v} = \mat{R}^T \vek{f} \) and \(\norm{\vek{v}}_2 \leq n \sqrt{\mu} \norm{\vek{f}}_2\).
@@ -238,7 +238,7 @@ It is unclear whether there is an efficient way to recognize such a sketching fa
   }
   Compute \(\vek{r}_p = \mat{A}\vek{x} - \vek{b}\), \(\vek{r}_d = \mat{A}^T \vek{y} + \vek{s} - \vek{c}\), \(\mat{X} = \diag(\vek{x})\), \(\mat{S} = \diag(\vek{s})\)\;\label{line:compute-residuals}
   Compute \(\vek{p} = -\vek{r}_p + \mat{A}(-\mat{S}^{-1}\mat{X}\vek{r}_d + \vek{x} - \sigma \mu \mat{S}^{-1} \vek{1})\)\;\label{line:compute-p}
-  Construct a random sparse embedding matrix \(\mat{W} \in \R^{w \times m}\) as in \cref{thm:sparse-ose} for the given \(\delta\) and \(\e\)\;\label{line:draw-sketching-matrix}
+  Construct a random \(s\)-hashing matrix \(\mat{W} \in \R^{w \times m}\) as in \cref{thm:sparse-ose} for the given \(\delta\) and \(\e\)\;\label{line:draw-sketching-matrix}
   Compute the QR decomposition \(\mat{Q} \mat{R} = \mat{W} \mat{D} \mat{A}^T\)\;\label{line:compute-qr}
   Run the CG method with \(\vek{q}^0 = \vek{0}\) until \(\mat{R}^{-T} \mat{A} \mat{D}^2 \mat{A}^T \mat{R}^{-1} \vek{q} = \mat{R}^{-T} \vek{p} + \vek{f}\) for some error \(\vek{f}\) satisfying \(\norm{\vek{f}}_2 \leq \e_{\vek{v}}/(n \sqrt{\mu})\)\;\label{line:cg}
   Compute \(\vek{v} = {(\mat{S} \mat{X})}^{1/2} \mat{W}^T \mat{Q} \vek{f}\)\;\label{line:compute-v}
