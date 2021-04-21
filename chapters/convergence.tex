@@ -75,7 +75,6 @@ These two lemmas are enough to show the convergence of \cref{alg:ipm}.
 \section{Convergence Proof for the Approximate Newton Direction Algorithm}
 
 Next, we turn to the correctness of \cref{alg:newton-direction} which is concerned with calculating a sufficiently good approximation of the Newton direction.
-The proofs follow Lemma 11 to 13 in~\cite{Avron-FasterRandomizedInfeasibleIPMs} with slight simplifications.
 As linear convergence of the CG method was already established in \cref{thm:cg-residual-bound} our main goal is to bound the norm of the initial residual \(\mat{R}^{-T}\vek{p}\).
 To this end, we introduce the following bound that can already be found in~\cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs}.
 
@@ -94,7 +93,7 @@ To this end, we introduce the following bound that can already be found in~\cite
 Again, this makes use of the observation that the residual \(\vek{r}\) of any iterate lies on the line segment between \(\vek{r}^0\) and \(\vek{0}\).
 Note that additionally, by the definition of the neighbourhood \(\mathcal{N}_{-\infty}(\gamma)\), any point in it with \(\vek{r} = \eta \vek{r}^0\) also satisifies \(\eta \leq \mu^k / \mu^0 = {\vek{x}^k}^T \vek{s}^k / {\vek{x}^0}^T \vek{s}^0\).
 
-\begin{lemma}[Lemma 12 in~\cite{Avron-FasterRandomizedInfeasibleIPMs} (slightly simplified)]\label{thm:initial-residual-bound}
+\begin{lemma}[Lemma 12 in~\cite{Avron-FasterRandomizedInfeasibleIPMs} (simplified)]\label{thm:initial-residual-bound}
   Assume that
   \begin{itemize}
     \item \(\gamma \in (0, 1)\), \(\sigma \in (0, 1)\), \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\),
@@ -103,7 +102,8 @@ Note that additionally, by the definition of the neighbourhood \(\mathcal{N}_{-\
     \item \(\mat{R}^{-T} \in \R^{m \times m}\) satisifies \(\norm{\mat{R}^{-T}\mat{A}\mat{D}}_2 \leq \sqrt{2}\).
   \end{itemize}
   Then
-  \[ \norm{\mat{R}^{-T} \vek{p}}_2 \leq \sqrt{\frac{2 \mu}{1 - \gamma}} \Paren{7n + \sigma \sqrt{n}} \leq 8 \sqrt{\frac{2}{1 - \gamma}} n \sqrt{\mu}. \]
+  \[ \norm{\mat{R}^{-T} \vek{p}}_2 \leq \sqrt{\frac{2 \mu}{1 - \gamma}} \Paren{7n + \sigma \sqrt{n}} \leq 8 \sqrt{\frac{2}{1 - \gamma}} n \sqrt{\mu} \]
+  where \(\vek{p} = -\vek{r}_p + \mat{A} ( -\mat{S}^{-1} \mat{X} \vek{r}_d + \vek{x} - \sigma \mu \mat{S}^{-1} \vek{1} )\) as in \cref{eqn:normal-equation}.
 \end{lemma}
 
 \begin{proof}
@@ -203,6 +203,10 @@ Equipped with this result, we can prove the main result regarding \cref{alg:newt
   operations because \(w\) and \(s\) were chosen according to \cref{thm:sparse-ose}.
 \end{proof}
 
+% \begin{remark}
+%   A crucial observation at this point is that the QR decomposition of the sketched matrix \(\mat{W}\mat{D}\mat{A}^T\) needs \(O(wm^2)\) operations and is therefore asymptotically at least as expensive as a Cholesky decomposition of \(\mat{A}\mat{D}^2\mat{A}^T\) which takes \(O(m^3)\) operations.
+% \end{remark}
+
 \section{Runtime Bounds for the Combined Algorithm}
 
 \Cref{thm:ipm-convergence,thm:approximate-newton-convergence} were the stepping stones towards the final result of this chapter.
@@ -218,12 +222,14 @@ The combination of \cref{alg:ipm,alg:newton-direction} is an efficient algorithm
   To simplify the runtime bounds we assume that \(\e_\mu\) is constant, so \(O(n^2 \log(1/\e_\mu)) = O(n^2)\).
 
   The probability of zero failures over \(k\) IPM iterations is at least \({(1 - \delta)}^k\) because the random sketching matrices are independently drawn for each iteration.
-  As the overall success probability should be above \(99\%\) and the number of IPM iterations is bounded by \(C n^2\) for some constant \(C > 0\), it suffices to choose \(\delta\) small enough such that
-  \( {(1 - \delta)}^{C n^2} \geq 0.99 \).
-  Let \(\delta = -\frac{\log(0.999)}{C n^2}\). When \(C n^2\) converges to infinity
-  \[ {(1 - \delta)}^{C n^2} = \Paren{1 + \frac{\log(0.999)}{C n^2}}^{C n^2} \to 0.999 > 0.99 \]
-  and therefore \( {(1 - \delta)}^{C n^2} \geq 0.99 \) is satisfied for \(n\) large enough.
-  In other words, it suffices to choose \(1/\delta = O(n^2)\) to guarantee a \(99\%\) success probability.
+  As the overall failure probability should be below some arbitrary constant, say \(\delta_{\mathrm{IPM}} = 1\%\), and the number of IPM iterations is bounded by \(C n^2\) for some constant \(C > 0\), it suffices to choose \(\delta\) small enough such that
+  \( {(1 - \delta)}^{C n^2} \geq 1 - \delta_{\mathrm{IPM}} \).
+  For 
+  \[ \delta = -\frac{\log(1 - \delta_{\mathrm{IPM}} / 2)}{Cn^2} = O(n^{-2})\]
+  we get
+  \[ \lim_{n \to \infty} {(1 - \delta)}^{C n^2} = \lim_{n \to \infty} \Paren{1 + \frac{\log(1 - \delta_{\mathrm{IPM}} / 2)}{Cn^2}}^{C n^2} = 1 - \delta_{\mathrm{IPM}} / 2 > 1 - \delta_{\mathrm{IPM}} \]
+  so \( {(1 - \delta)}^{C n^2} \geq 1 - \delta_{\mathrm{IPM}} \) is satisfied for \(n\) large enough.
+  In other words, for large enough instances an arbitrarily low fixed failure probability \(\delta_{\mathrm{IPM}} > 0\) can be guaranteed for some \(\delta = O(n^{-2})\).
 
   With this choice of \(\delta\) and \(\e_{\vek{v}} = \gamma \sigma \mu / 4\) \cref{line:prepare-approximate-newton,line:compute-approximate-newton} of \cref{alg:ipm} (which use \cref{alg:newton-direction}) need
   \begin{align*}
@@ -234,28 +240,44 @@ The combination of \cref{alg:ipm,alg:newton-direction} is an efficient algorithm
   operations per iteration by \cref{thm:approximate-newton-convergence}.
   Note that asymptotically the computation of \(\mat{W}\mat{D}\mat{A}^T\) and its decomposition are among the most expensive operations.
 
-  In \cref{line:alpha-tilde} the task of determining \(\tilde{\alpha}\) can be split up into two parts:
+  To show that the remaining operations in \cref{line:alpha-tilde,line:alpha-bar,line:compute-next-iterate,line:increment-k} do not change the asymptotic runtime bound for each IPM iteration, first consider
   \begin{align*}
-    \tilde{\alpha}_1 &= \max \Set{\alpha' \in [0, 1] | \vek{x}(\alpha) \circ \vek{s}(\alpha) \geq (1 - \gamma)\mu(\alpha) \vek{1} \ \forall \alpha \in [0, \alpha']} \\
-    \tilde{\alpha}_2 &= \max \Set{\alpha' \in [0, 1] | \frac{\norm{\vek{r}(\alpha)}_2}{\norm{\vek{r}^0}_2} \leq \frac{\mu(\alpha)}{\mu^0} \ \forall \alpha \in [0, \alpha']} \\
-    \tilde{\alpha} &= \min \Set{\tilde{\alpha}_1, \tilde{\alpha}_2}
+    \vek{x}^k(\alpha) &\coloneqq \vek{x}^k + \alpha \hat{\Delta\vek{x}} \\
+    \vek{y}^k(\alpha) &\coloneqq \vek{y}^k + \alpha \hat{\Delta\vek{y}} \\
+    \vek{s}^k(\alpha) &\coloneqq \vek{s}^k + \alpha \hat{\Delta\vek{s}} \\
+    \mu^k(\alpha) &\coloneqq {\vek{x}^k(\alpha)}^T \vek{s}^k(\alpha) \\
+    \vek{r}^k(\alpha) &\coloneqq (\mat{A}\vek{x}^k(\alpha) - \vek{b}, \mat{A}^T \vek{y}^k(\alpha) + \vek{s}^k(\alpha) - \vek{c}).
   \end{align*}
-  As the components of \(\vek{x}(\alpha)\) and \(\vek{s}(\alpha)\) are linear in \(\alpha\), the components of \(\vek{x}(\alpha) \circ \vek{s}(\alpha)\) and \(\mu(\alpha)\) are quadratic in \(\alpha\).
-  Therefore,
-  \[ \tilde{\alpha}_1 = \min \Set{ \alpha \in [0, 1] | x_i(\alpha) s_i(\alpha) - (1 - \gamma)\mu(\alpha) = 0 \text{ for some } 1 \leq i \leq n } \]
-  (or \(\tilde{\alpha}_1 = 1\) if the set is empty) can be determined in \(O(n)\) because it requires to solve one quadratic equation for each \(i\) and constructing the quadratic form of \(\mu(\alpha)\) also takes \(O(n)\).
-  As previously mentioned, \(\vek{r}(\alpha) = (1 - \alpha)\vek{r}(0)\), so \(\frac{\norm{\vek{r}(\alpha)}_2}{\norm{\vek{r}^0}_2}\) is linear and \(\frac{\mu(\alpha)}{\mu^0}\) is quadratic in \(\alpha\).
-  Thus, \(\tilde{\alpha}_2\) can be determined in \(O(1)\) by solving a single quadratic equation using the previously constructed quadratic form of \(\mu(\alpha)\).
-  When \(\tilde{\alpha}\) is calculated as described above the condition \(\vek{x}(\tilde{\alpha}), \vek{s}(\tilde{\alpha}) > \vek{0}\) seems to be missing but it is already included in the computation of \(\tilde{\alpha}_1\).
-  Any negative value of \(x_i(\alpha)\) or \(s_i(\alpha)\) is preceded by a zero of \(x_i(\alpha) s_i(\alpha) - (1 - \gamma)\mu(\alpha)\) and if \(x_i(\alpha) = 0\) or \(s_i(\alpha) = 0\) for some \(i\) then \(\vek{x}(\alpha) \circ \vek{s}(\alpha) \geq (1 - \gamma)\mu(\alpha) \vek{1}\) implies \(\mu(\alpha) = 0\) in which case we also have \(\vek{r}(\alpha) = 0\).
+  and their dependence on \(\alpha\).
+  As \(\vek{x}^k(\alpha)\), \(\vek{y}^k(\alpha)\) and \(\vek{s}^k(\alpha)\) are linear in \(\alpha\), \(\mu^k(\alpha)\) and \(\vek{x}^k(\alpha) \circ \vek{s}^k(\alpha)\) are quadratic functions in alpha in each component.
+  Because the search direction satisfies \cref{eqn:perturbed-search-direction}, \(\vek{r}^k(\alpha) = (1 - \alpha)\vek{r}^k(0)\) and so \(\norm{\vek{r}^k(\alpha)}_2 / \norm{\vek{r}^0}_2\) is linear in \(\alpha\).
+  Therefore all terms of interest are either linear or quadratic in \(\alpha\) and we will assume that all polynomial coefficients for these functions are determined at the start which can be done in \(O(n)\).
+
+  We begin in \cref{line:alpha-tilde} in which the maximum \(\tilde{\alpha} \in [0, 1]\) is determined such that for all \(\alpha \in [0, \tilde{\alpha}]\) we have \((\vek{x}^k, \vek{y}^k, \vek{s}^k) + \alpha (\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}}) \in \mathcal{N}_{-\infty}(\gamma)\).
+  Define
+  \begin{align*}
+    \tilde{\alpha}_1 &= \max \set{\alpha' \in [0, 1] | \vek{x}^k(\alpha) \circ \vek{s}^k(\alpha) \geq (1 - \gamma)\mu^k(\alpha) \vek{1} \ \forall \alpha \in [0, \alpha']} \\
+    \tilde{\alpha}_2 &= \max \Set{\alpha' \in [0, 1] | \frac{\norm{\vek{r}^k(\alpha)}_2}{\norm{\vek{r}^0}_2} \leq \frac{\mu^k(\alpha)}{\mu^0} \ \forall \alpha \in [0, \alpha']}
+  \end{align*}
+  and note that
+  \begin{align*}
+    \tilde{\alpha}_1 &= \min \set{ \alpha \in [0, 1] | x_i^k(\alpha) s_i^k(\alpha) - (1 - \gamma)\mu^k(\alpha) = 0 \text{ for some } 1 \leq i \leq n } \\
+    \tilde{\alpha}_2 &= \min \Set{ \alpha \in [0, 1] | \frac{\norm{\vek{r}^k(\alpha)}_2}{\norm{\vek{r}^0}_2} - \frac{\mu^k(\alpha)}{\mu^0} = 0 }
+  \end{align*}
+  because \((\vek{x}^k(0), \vek{y}^k(0), \vek{s}^k(0)) \in \mathcal{N}_{-\infty}(\gamma)\).
+  Using the second characterisation \(\tilde{\alpha}_1\) can be determined in \(O(n)\) by solving \(n\) quadratic equations and \(\tilde{\alpha}_2\) can be determined in \(O(1)\) by solving one quadratic equation.
+
+  At this point \(\tilde{\alpha} = \min\{\tilde{\alpha}_1, \tilde{\alpha}_2\}\) even though the condition \(\vek{x}^k(\alpha), \vek{s}^k(\alpha) > \vek{0}\) which is part of the defintion of \(\mathcal{N}_{-\infty}(\gamma)\) is missing:
+  Any negative value of \(x_i(\alpha)\) or \(s_i(\alpha)\) is preceded by a zero of \(x_i(\alpha) s_i(\alpha) - (1 - \gamma)\mu(\alpha)\), so because \(\tilde{\alpha} \geq \tilde{\alpha}_1\) all entries of \(\vek{x}^k(\tilde{\alpha})\) and \(\vek{s}^k(\tilde{\alpha})\) are nonnegative.
+  If \(x_i(\tilde{\alpha}) = 0\) or \(s_i(\tilde{\alpha}) = 0\) for some \(i\) then \(\vek{x}(\tilde{\alpha}) \circ \vek{s}(\tilde{\alpha}) \geq (1 - \gamma)\mu(\tilde{\alpha}) \vek{1}\) implies \(\mu(\tilde{\alpha}) = 0\) in which case we also have \(\vek{r}(\tilde{\alpha}) = 0\).
   This means that the only case where \(\vek{x}(\tilde{\alpha}), \vek{s}(\tilde{\alpha}) > \vek{0}\) might be violated is when a solution was determined and in this case the algorithm will terminate.
 
   Next, computing \(\bar{\alpha}\) in \cref{line:alpha-bar} is equivalent to minimizing the quadratic function \(\mu(\alpha)\) in \([0, \tilde{\alpha}]\).
-  Computing the coefficients of the quadratic function \(\mu(\alpha)\) takes \(O(n)\), computing its stationary points \(O(1)\) and determining whether the minimum is attained at the boundary of \([0, \tilde{\alpha}]\) or at the stationary point can also be done in \(O(1)\).
+  Computing the stationary point of the quadratic function \(\mu(\alpha)\) takes \(O(1)\) and determining whether the minimum is attained at the boundary of \([0, \tilde{\alpha}]\) or at the stationary point can also be done in \(O(1)\).
 
   Lastly, \cref{line:compute-next-iterate} takes \(O(n)\) and \cref{line:increment-k} \(O(1)\) operations.
-  We can conclude that all computations outside of \cref{line:prepare-approximate-newton,line:compute-approximate-newton} can be completed in \(O(n)\) and therefore the total worst-case complexity is bounded by
+  We can conclude that all computations outside of \cref{line:prepare-approximate-newton,line:compute-approximate-newton} can be completed in \(O(n)\) and therefore the worst-case complexity per iteration is still bounded by \( O \Paren{\log(n) \Paren{\nnz(\mat{A}) + m^3}} \).
+  Because \(O(n^2)\) iterations need to be performed the total complexity is
   \[ O \Paren{n^2 \log(n) \Paren{\nnz(\mat{A}) + m^3}} \]
   as claimed.
-  %TODO Bound the runtime of Lines 5 to 8 in Algorithm 1
 \end{proof}
