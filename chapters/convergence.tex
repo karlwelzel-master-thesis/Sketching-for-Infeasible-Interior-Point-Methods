@@ -1,8 +1,10 @@
 \chapter{Convergence Proofs}\label{chap:convergence}
 
 After the previous two chapters introduced the important ideas and algorithms, we need to establish their convergence properties.
-Note that \cref{alg:ipm} is the same infeasible inexact long-step IPM as in~\cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs,Avron-FasterRandomizedInfeasibleIPMs} but with a different preconditioner.
-Thus, the following proofs are very similar to those in their works with only slight changes.
+Note that \cref{alg:ipm} is the same infeasible inexact long-step IPM as in~\cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs} but with a different preconditioner.
+Thus, the following proofs are similar to those in their work adapted to the new preconditioner using the ideas of \textcite{Avron-FasterRandomizedInfeasibleIPMs}.
+The proofs in~\cite{Avron-FasterRandomizedInfeasibleIPMs} were often schematic, especially the runtime considerations.
+The following section therefore tries to clearly lay out how the different lemmas imply \cref{thm:ipm-convergence,thm:approximate-newton-convergence} and how the runtimes for \cref{alg:ipm,alg:newton-direction} can be derived.
 The essential assumptions in the following proofs are that the algorithms work with exact arithmetic, that solutions of \labelcref{eqn:primal-lp,eqn:dual-lp} exist and that \(\mat{A}\) has full row rank.
 
 \section{Convergence Proof for the Infeasible IPM Algorithm}
@@ -55,7 +57,7 @@ These two lemmas are enough to show the convergence of \cref{alg:ipm}.
   By the choice of the initial point \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \mathcal{N}_{-\infty}(\gamma)\) and \(\bar{\alpha}\) in \cref{line:alpha-tilde,line:alpha-bar} every iterate \((\vek{x}^k, \vek{y}^k, \vek{s}^k)\) is inside the specified neighbourhood \(\mathcal{N}_{-\infty}(\gamma)\).
   Therefore, \(\mu^k \leq \e_\mu \mu^0\) implies \(\norm{\vek{r}^k} \leq \e_\mu \norm{\vek{r}^0}\) and it suffices to show the former for some \(k = O(n^2 \log(1/\e_\mu))\).
 
-  By \cref{thm:delta-x-s-bound} the search direction determined in \cref{line:compute-approximate-newton} satisfies
+  By \cref{thm:delta-x-s-bound} and the fact that \(\mat{D}\) and \(\mat{D}^{-1}\) are diagonal matrices the search direction determined in \cref{line:compute-approximate-newton} satisfies
   \[ \norm{\hat{\Delta\vek{x}} \circ \hat{\Delta\vek{s}}}_\infty \leq \norm{\hat{\Delta\vek{x}} \circ \hat{\Delta\vek{s}}}_2 \leq \norm{\mat{D}^{-1}\hat{\Delta\vek{x}}}_2 \norm{\mat{D}\hat{\Delta\vek{s}}}_2 \leq C_1 n^2 \mu^k\]
   in every iteration, such that by \cref{thm:alpha-bar-bound} (\(\norm{\vek{v}}_\infty \leq \norm{\vek{v}}_2 \leq \gamma \sigma \mu^k/4\))
   \[ \bar{\alpha} \geq \min \Set{1, \frac{\min \Set{\gamma \sigma, 1 - \frac{5}{4}\sigma} \mu^k}{4 C_1 n^2 \mu^k}} \geq \frac{C_2}{n^2} \]
