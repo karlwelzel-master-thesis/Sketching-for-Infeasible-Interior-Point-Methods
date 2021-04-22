@@ -63,7 +63,7 @@ A sparse OSE where all sampled matrices only have \(s\) nonzero entries per colu
 The following sparse OSE result is taken from~\cite{Cohen-NearlyTightObliviousSubspaceEmbeddings}.
 \Textcite{Avron-FasterRandomizedInfeasibleIPMs} use the sketching result from~\cite{Cohen-OptimalApproximateMatrixProduct} but we replaced it by a simpler one giving the same complexity guarantees in the end.
 
-\begin{definition}[\cite{CartisFialaShao-EfficientSparseSketchingForLargeScaleLinearLeastSquares}]\label{def:s-hasing-matrix}
+\begin{definition}[\cite{CartisFialaShao-EfficientSparseSketchingForLargeScaleLinearLeastSquares}]\label{def:s-hashing-matrix}
 An \emph{\(s\)-hashing matrix} \(\mat{W} \in \R^{w \times n}\) is constructed in the following way:
 For each column \(s\) entries are sampled randomly without replacement and for each such entry its value is randomly drawn from \(\{ - \frac{1}{\sqrt{s}}, \frac{1}{\sqrt{s}} \}\).
 All other entries of \(\mat{W}\) are set to zero.

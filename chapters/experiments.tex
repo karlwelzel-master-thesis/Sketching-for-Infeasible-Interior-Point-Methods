@@ -108,3 +108,68 @@ The code for the homogeneous IPM algorithm described above was taken from the \t
 To avoid inconsistent results the routines for eliminating unnecessary constraints and automatically rescaling the instances were disabled as were the use of the predictor-corrector method and the initial point heuristic.
 Each parameter combination in the following experiments were run twice on the same four randomly generated instances.
 This way we have hopefully captured the typical behaviour of the algorithm without giving some parameter setting an unfair advantage based on luck.
+
+\section{Impact of the Sketching Parameters}
+
+The first question we want to tackle is how good the preconditioners are, how fast they can be computed and how the answers to these questions are influenced by the sketching parameters \(w\) and \(s\) as defined in \cref{def:s-hashing-matrix}. \(w\) controls the number of columns of the sparse sketching matrix while \(s\) determines the number of nonzero entries per column.
+By \cref{thm:sparse-ose} we expect larger values of \(w\) and \(s\) to give better preconditioners while also increasing the runtime of computing \(\mat{W}\mat{D}\mat{A}^T\) and its QR decomposition.
+
+\begin{figure}[htbp]
+  \centering%
+  \ifdraft{%
+    \includegraphics[width=6.1in, height=3.97in]{example-image-a}%
+  }{%
+    \import{plots/}{sketching_parameters_condition_number_history.pgf}%
+  }
+  \caption{Condition numbers as the IPM algorithm progresses}%
+\end{figure}
+
+\begin{figure}[htbp]%
+  \centering%
+  \ifdraft{%
+    \includegraphics[width=6.1in, height=3.97in]{example-image-a}%
+  }{%
+    \import{plots/}{sketching_parameters_condition_number.pgf}%
+  }
+  \caption{Condition numbers depending on \(w\) and \(s\)}%
+\end{figure}%
+
+\begin{figure}[htbp]%
+  \centering%
+  \ifdraft{%
+    \includegraphics[width=6.1in, height=3.97in]{example-image-a}%
+  }{%
+    \import{plots/}{sketching_parameters_sparsity.pgf}%
+  }
+  \caption{Sparsity of \(\mat{W}\mat{D}\mat{A}^T\) depending on \(w\) and \(s\)}%
+\end{figure}%
+
+\begin{figure}
+  \centering
+  \ifdraft{%
+    \includegraphics[width=6.1in, height=3.97in]{example-image-a}%
+  }{%
+    \import{plots/}{sketching_parameters_generate_sketch_duration.pgf}
+  }
+  \caption{Time spent generating the \(s\)-hashing matrix \(\mat{W}\)}%
+\end{figure}
+
+\begin{figure}
+  \centering%
+  \ifdraft{%
+    \includegraphics[width=6.1in, height=3.97in]{example-image-a}%
+  }{%
+    \import{plots/}{sketching_parameters_sketching_duration.pgf}%
+  }
+  \caption{Time spent computing the product \(\mat{W}\mat{D}\mat{A}^T\)}%
+\end{figure}
+
+\begin{figure}
+  \centering%
+  \ifdraft{%
+    \includegraphics[width=6.1in, height=3.97in]{example-image-a}%
+  }{%
+    \import{plots/}{sketching_parameters_decomposition_duration.pgf}%
+  }
+  \caption{Time spent computing the QR decomposition of \(\mat{W}\mat{D}\mat{A}^T\)}%
+\end{figure}
