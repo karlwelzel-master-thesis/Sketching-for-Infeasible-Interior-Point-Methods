@@ -108,13 +108,15 @@ The code for the homogeneous IPM algorithm described above was taken from the \t
 To avoid inconsistent results the routines for eliminating unnecessary constraints and automatically rescaling the instances were disabled as were the use of the predictor-corrector method and the initial point heuristic.
 Each parameter combination in the following experiments were run twice on the same four randomly generated instances.
 This way we have hopefully captured the typical behaviour of the algorithm without giving some parameter setting an unfair advantage based on luck.
+To visualize the range of recorded values the following graphs all include errorbars.
+The height of the line or bar indicates the median value while the errorbars indicate the range from the 5th percentile to the 95th percentile.
 
 \section{Impact of the Sketching Parameters}
 
 The first question we want to tackle is how good the preconditioners are, how fast they can be computed and how the answers to these questions are influenced by the sketching parameters \(w\) and \(s\) as defined in \cref{def:s-hashing-matrix}. \(w\) controls the number of columns of the sparse sketching matrix while \(s\) determines the number of nonzero entries per column.
 By \cref{thm:sparse-ose} we expect larger values of \(w\) and \(s\) to give better preconditioners while also increasing the runtime of computing \(\mat{W}\mat{D}\mat{A}^T\) and its QR decomposition.
 
-\begin{figure}[htbp]
+\begin{figure}[tbp]
   \centering%
   \ifdraft{%
     \includegraphics[width=6.1in, height=3.97in]{example-image-a}%
@@ -122,9 +124,10 @@ By \cref{thm:sparse-ose} we expect larger values of \(w\) and \(s\) to give bett
     \import{plots/}{sketching_parameters_condition_number_history.pgf}%
   }
   \caption{Condition numbers as the IPM algorithm progresses}%
+  \label{fig:condition_number_history}
 \end{figure}
 
-\begin{figure}[htbp]%
+\begin{figure}[tbp]%
   \centering%
   \ifdraft{%
     \includegraphics[width=6.1in, height=3.97in]{example-image-a}%
@@ -132,9 +135,19 @@ By \cref{thm:sparse-ose} we expect larger values of \(w\) and \(s\) to give bett
     \import{plots/}{sketching_parameters_condition_number.pgf}%
   }
   \caption{Condition numbers depending on \(w\) and \(s\)}%
+  \label{fig:condition_number}
 \end{figure}%
 
-\begin{figure}[htbp]%
+\Cref{fig:condition_number_history} shows how the condition number of the condition numbers of unpreconditioned matrix \(\mat{A}\mat{D}\mat{A}^T\) and the preconditioned matrix \(\mat{R}^{-T}\mat{A}\mat{D}\mat{A}^T\mat{R}^{-1}\) evolves during a run of the IPM algorithm.
+Here the sketching matrix was constructed using \(w=2m\) and \(s \in \{2, 3, 4, 5\}\).
+While the condition number of the unpreconditioned system steadily rises up to about \(10^{12}\) the preconditioned systems are much better.
+For all but the \(s=2\) case the condition numbers consistently stay below \(100\).
+To see the impact of the different values of \(s\) more closely \cref{fig:condition_number} plots the condition numbers on a rescaled y-axis.
+Additionally, the figure shows all combinations of \(s \in \{3,4,5\}\) and \(w \in \{1.5m, 2m, 2.5m, 3m\}\).
+As predicted by the theory the condition numbers decrease as \(w\) and \(s\) increase.
+Interestingly, the lower end of the error bars line up for every fixed value of \(w\), suggesting that the value of \(w\) is the decisive factor for how low the condition number can become while \(s\) mainly influences the range of the distribution.
+
+\begin{figure}[tbp]%
   \centering%
   \ifdraft{%
     \includegraphics[width=6.1in, height=3.97in]{example-image-a}%
@@ -142,9 +155,10 @@ By \cref{thm:sparse-ose} we expect larger values of \(w\) and \(s\) to give bett
     \import{plots/}{sketching_parameters_sparsity.pgf}%
   }
   \caption{Sparsity of \(\mat{W}\mat{D}\mat{A}^T\) depending on \(w\) and \(s\)}%
+  \label{fig:sparsity}
 \end{figure}%
 
-\begin{figure}
+\begin{figure}[tbp]
   \centering
   \ifdraft{%
     \includegraphics[width=6.1in, height=3.97in]{example-image-a}%
@@ -152,9 +166,10 @@ By \cref{thm:sparse-ose} we expect larger values of \(w\) and \(s\) to give bett
     \import{plots/}{sketching_parameters_generate_sketch_duration.pgf}
   }
   \caption{Time spent generating the \(s\)-hashing matrix \(\mat{W}\)}%
+  \label{fig:generate_sketch_duration}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[tbp]
   \centering%
   \ifdraft{%
     \includegraphics[width=6.1in, height=3.97in]{example-image-a}%
@@ -162,9 +177,10 @@ By \cref{thm:sparse-ose} we expect larger values of \(w\) and \(s\) to give bett
     \import{plots/}{sketching_parameters_sketching_duration.pgf}%
   }
   \caption{Time spent computing the product \(\mat{W}\mat{D}\mat{A}^T\)}%
+  \label{fig:sketching_duration}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[tbp]
   \centering%
   \ifdraft{%
     \includegraphics[width=6.1in, height=3.97in]{example-image-a}%
@@ -172,4 +188,5 @@ By \cref{thm:sparse-ose} we expect larger values of \(w\) and \(s\) to give bett
     \import{plots/}{sketching_parameters_decomposition_duration.pgf}%
   }
   \caption{Time spent computing the QR decomposition of \(\mat{W}\mat{D}\mat{A}^T\)}%
+  \label{fig:decomposition_duration}
 \end{figure}
