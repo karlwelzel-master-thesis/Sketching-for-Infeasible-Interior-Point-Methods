@@ -100,3 +100,11 @@ Then setting
   \vek{b} = \mat{A} \tilde{\vek{x}} \quad \text{and} \quad \vek{c} = \mat{A}^T \tilde{\vek{y}} + \tilde{\vek{s}}
 \end{equation}
 ensures the feasibility and boundedness of \cref{eqn:primal-lp-instance}.
+
+\section{Experiment Configuration}
+
+The experiments were all run on an Intel® Core™ i7-1165G7 using \texttt{scipy} version 1.6.2 and \texttt{numpy} version 1.20.2 with OpenBLAS version 0.3.8.
+The code for the homogeneous IPM algorithm described above was taken from the \texttt{scipy.optimize} package\footnote{\url{https://github.com/scipy/scipy/blob/v1.6.2/scipy/optimize/_linprog_ip.py}} and adapted to incorporate iterative solvers and sketching based preconditioning.
+To avoid inconsistent results the routines for eliminating unnecessary constraints and automatically rescaling the instances were disabled as were the use of the predictor-corrector method and the initial point heuristic.
+Each parameter combination in the following experiments were run twice on the same four randomly generated instances.
+This way we have hopefully captured the typical behaviour of the algorithm without giving some parameter setting an unfair advantage based on luck.
