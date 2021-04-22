@@ -90,11 +90,11 @@ The search direction \((\Delta\vek{x}, \Delta\vek{y}, \Delta\vek{s})\) is theref
 where \(\mat{X} = \diag(\vek{x})\) and \(\mat{S} = \diag(\vek{s})\).
 Because \(\mat{X}\) and \(\mat{S}\) are diagonal they can be easily inverted and we can simplify the linear system into smaller ones and a series of matrix-vector products.
 \Cref{eqn:newton-system} is equivalent to 
-\begin{subequations}\label{eqn:augmented-system}
+\begin{subequations}\label{eqn:augmented-system-system}
   \begin{align}
     \begin{pmatrix}
-      \mat{A}              & \mat{0} \\
       \mat{X}^{-1} \mat{S} & \mat{A}^T \\
+      \mat{A}              & \mat{0}
     \end{pmatrix}
     \begin{pmatrix}
       \Delta\vek{x} \\
@@ -102,10 +102,10 @@ Because \(\mat{X}\) and \(\mat{S}\) are diagonal they can be easily inverted and
     \end{pmatrix}
     &=
     \begin{pmatrix}
-      -\vek{r}_p \\
-      -\vek{r}_d -\vek{s} + \sigma \mu \mat{X}^{-1} \vek{1}
-    \end{pmatrix} \\
-    \Delta\vek{s} &= -\vek{s} + \sigma \mu \mat{X}^{-1} \vek{1} - \mat{X}^{-1} \mat{S} \Delta\vek{x}
+      -\vek{r}_d -\vek{s} + \sigma \mu \mat{X}^{-1} \vek{1} \\
+      -\vek{r}_p
+    \end{pmatrix} \label{eqn:augmented-system} \\
+    \Delta\vek{s} &= -\vek{s} + \sigma \mu \mat{X}^{-1} \vek{1} - \mat{X}^{-1} \mat{S} \Delta\vek{x} \label{eqn:s-from-augmented}
   \end{align}
 \end{subequations}
 in which the first equation is called the \emph{augmented system} and 

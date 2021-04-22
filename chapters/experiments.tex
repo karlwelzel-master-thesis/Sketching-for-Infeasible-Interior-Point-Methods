@@ -6,51 +6,80 @@ In this chapter we evaluate the preconditioning technique introduced in \cref{ch
 
 The interior-point method implemented in \texttt{scipy} is based on the MOSEK interior-point optimizer as published by \textcite{AndersenAndersen-MosekInteriorPointMethod}.
 The most important difference to the general infeasible IPM described in \cref{alg:ipm} is its use of the homogeneous model presented in~\cite{XuHungYe-SimplifiedHomogeneousAlgorithm}.
-The primal LP problem in standard form \cref{eqn:primal-lp} is replaced by the self-dual formulation
+While in \cref{chap:ipm} the original LP \cref{eqn:primal-lp} was solved by considering the primal and dual LP at the same time and adding a complimentary condition, the homogeneous algorithm replaces this primal-dual formulation by the self-dual LP
 \begin{subequations}
   \begin{align}
-    \mat{A}\vek{x} - \vek{b} \tau &= \vek{0} \\
-    \mat{A}^T \vek{y} + \vek{s} - \vek{c}\tau &= \vek{0} \\
-    - \vek{c}^T\vek{x} + \vek{b}^T\vek{y} - \kappa &= 0 \\
+    \vek{r}_p \coloneqq \mat{A}\vek{x} - \vek{b} \tau &= \vek{0} \\
+    \vek{r}_d \coloneqq \mat{A}^T \vek{y} + \vek{s} - \vek{c}\tau &= \vek{0} \\
+    \vek{r}_g \coloneqq - \vek{c}^T\vek{x} + \vek{b}^T\vek{y} - \kappa &= 0 \\
     \vek{x}, \vek{s} &\geq \vek{0} \\
     \tau, \kappa &\geq 0
   \end{align}
 \end{subequations}
-where \(\tau\) and \(\kappa\) are additional variables and the objective function is zero.
+where \(\tau\) and \(\kappa\) are additional variables.
 Observe that setting \(\vek{x}\), \(\vek{y}\), \(\vek{s}\), \(\tau\) and \(\kappa\) to zero gives a solution, so the LP above is always feasible.
-The crucial advantage of using this LP formulation is that there is always a solution where \((\vek{x}, \tau)\) and \((\vek{s}, \kappa)\) are strictly complimentary and every such solution can be transformed into either a solution of the original LP (if \(\tau > 0\)) or a certificate that the original LP is infeasible or unbounded (if \(\kappa > 0\)).
+The crucial advantage of using this homogeneous model is that there is always a solution where \((\vek{x}, \tau)\) and \((\vek{s}, \kappa)\) are strictly complimentary and every such solution can be transformed into either a solution of the original LP (if \(\tau > 0\)) or a certificate that the original LP is infeasible or unbounded (if \(\kappa > 0\)).
+In other words, adding two additional variables the interior-point method can also handle infeasible and unbounded LPs.
 
-% Defining 
-% \begin{subequations}
-%   \begin{align}
-%     \vek{r}_p &\coloneqq \mat{A}\vek{x} - \vek{b} \tau \\
-%     \vek{r}_d &\coloneqq \mat{A}^T\vek{y} + \vek{s} - \vek{c}\tau \\
-%     \vek{r}_g &\coloneqq -\vek{c}^T \vek{x} + \vek{b}^T \vek{y} - \kappa \\
-%     \mu &\coloneqq (\vek{x}^T\vek{s} + \tau \kappa) / (n+1)
-%   \end{align}
-% \end{subequations}
-% the corresponding Newton system that needs to be solved is 
-% \begin{equation}
-%   \begin{pmatrix}
-%     \mat{A}    & -\vek{b} & \mat{0}   & \mat{0} & \mat{0} \\
-%     \mat{0}    & -\vek{c} & \mat{A}^T & \mat{I} & \mat{0} \\
-%     -\vek{c}^T & \mat{0}  & \vek{b}^T & \mat{0} & -1 \\
-%     \mat{S}    & \mat{0}  & \mat{0}   & \mat{X} & \mat{0} \\
-%     \mat{0}    & \kappa   & \mat{0}   & \mat{0} & \tau
-%   \end{pmatrix}
-%   \begin{pmatrix}
-%     \Delta\vek{x} \\
-%     \Delta\tau \\
-%     \Delta\vek{y} \\
-%     \Delta\vek{s} \\
-%     \Delta\kappa
-%   \end{pmatrix}
-%   =
-%   \begin{pmatrix}
-%     -\sigma \vek{r}_p \\
-%     -\sigma \vek{r}_d \\
-%     -\sigma \vek{r}_g \\
-%     -\vek{x} \circ \vek{s} + \sigma \mu \vek{1} \\
-%     -\tau \kappa + \sigma \mu
-%   \end{pmatrix}
-% \end{equation}
+The Newton system that would correspond to \cref{eqn:newton-system} is now given by
+\begin{equation}\label{eqn:homogeneous-newton-system}
+  \begin{pmatrix}
+    \mat{A}    & -\vek{b} &           &         &         \\
+               & -\vek{c} & \mat{A}^T & \mat{I} &         \\
+    -\vek{c}^T &          & \vek{b}^T &         & -1 \\
+    \mat{S}    &          &           & \mat{X} &         \\
+               & \kappa   &           &         & \tau
+  \end{pmatrix}
+  \begin{pmatrix}
+    \Delta\vek{x} \\
+    \Delta\tau \\
+    \Delta\vek{y} \\
+    \Delta\vek{s} \\
+    \Delta\kappa
+  \end{pmatrix}
+  =
+  \begin{pmatrix}
+    -\vek{r}_p \\
+    -\vek{r}_d \\
+    -\vek{r}_g \\
+    -\vek{x} \circ \vek{s} + \sigma \mu \vek{1} \\
+    -\tau \kappa + \sigma \mu
+  \end{pmatrix}
+\end{equation}
+where \(\mu = (\vek{x}^T \vek{s} + \tau \kappa)/(n+1)\).
+In the implementation the right hand side is modified to balance out the ambitiousness of reducing the infeasibility and the complementarity gap using heuristics.
+Optionally, one can also enable an adaptation of Mehrotra's predictor-corrector approach first proposed in \cite{Mehrotra-PredictorCorrector} which first solves \cref{eqn:homogeneous-newton-system} for \(\sigma = 0\) and then solves the same system with a modified right hand side to determine the search direction.
+
+In any case, it is necessary to solve \cref{eqn:homogeneous-newton-system} for various right hand sides.
+The problem can be simplified as in \cref{chap:ipm} by exploiting that \(\mat{X}\) and \(\mat{S}\) are easily invertible.
+The remaining linear system involves the matrix
+\begin{equation}
+  \begin{pmatrix}
+    -\mat{X}^{-1}\mat{S} & \mat{A}^T & -\vek{c} \\
+    \mat{A}              &           & -\vek{b} \\
+    -\vek{c}^T           & \vek{b}^T & \tau^{-1}\kappa 
+  \end{pmatrix}
+\end{equation}
+and can be transformed into two linear systems using the matrix from the augmented system \cref{eqn:augmented-system}.
+Each of these can now be solved using the normal equation \(\mat{A}\mat{D}^2\mat{A}^T\vek{v} = \vek{p}\) for some vector \(\vek{p}\).
+The details of this transformation process can be found in section 5 of \cite{AndersenAndersen-MosekInteriorPointMethod}.
+The important takeaway is that solving \cref{eqn:homogeneous-newton-system} can be done by solving the normal equation twice for different right hand sides and some cheap matrix-vector products.
+This allows us to use the sketching based preconditioning explained in \cref{chap:sketching} inside this IPM implementation.
+Moreover, because the two linear systems involve the same matrix the preconditioner only needs to be determined once for both systems.
+
+Some more differences between \cref{alg:ipm} and this implementation need to be addressed.
+First, the neighbourhood used in this algorithm also includes a one-sided \(\infty\)-norm bound but drops the bound on the residual norms:
+\begin{equation}
+  \mathcal{N}(\gamma) = \Set{ \vek{x}, \vek{y}, \vek{s}, \tau, \kappa | \vek{x}, \vek{s} \geq \vek{0}, \ \tau, \kappa \geq 0, \ (\vek{x}, \tau) \circ (\vek{s}, \kappa) \geq (1-\gamma) \mu \vek{1} }
+\end{equation}
+Second, the step size \(\alpha\) is chosen to be the largest possible step that does not violate the nonnegativity constraint, multiplied by a constant slightly smaller than 1 and then reduced until the new iterate is inside the neighbourhood.
+Third, the stopping criterion used is based on 
+\begin{equation}
+  \rho_p \coloneqq \frac{\norm{\vek{r}_p}_2}{\max(1, \norm{\vek{r}^0_p}_2)}, \ 
+  \rho_d \coloneqq \frac{\norm{\vek{r}_d}_2}{\max(1, \norm{\vek{r}^0_d}_2)}, \ 
+  \rho_A \coloneqq \frac{\abs{\vek{c}^T\vek{x} - \vek{b}^T \vek{y}}}{\tau + \abs{\vek{b}^T\vek{y}}}
+\end{equation}
+measuring the size of the primal and dual residuals and of the duality gap.
+As long as no infeasibility of the original LP is detected, the algorithm stops once the maximum of these three values drops below a user-specified tolerance.
+For our purposes let \(\rho_{\mathrm{tol}} = \max(\rho_p, \rho_d, \rho_A)\) measure the smallest tolerance for which the algorithm would terminate at a certain point during the algorithm.
+Lastly, the starting point of the algorithm is typically chosen as \((\vek{x}, \tau, \vek{y}, \vek{s}, \kappa) = (\vek{1}, 1, \vek{0}, \vek{1}, 1)\) but with an option to instead use a heuristic at the same cost as one additional IPM iteration.
