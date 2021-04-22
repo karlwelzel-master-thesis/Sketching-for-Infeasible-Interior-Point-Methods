@@ -196,3 +196,13 @@ Note that for example, for \(w = 2m\) about \(25\%\) to \(40\%\) of the entries 
   \caption{Time spent computing the QR decomposition of \(\mat{W}\mat{D}\mat{A}^T\)}%
   \label{fig:decomposition_duration}
 \end{figure}
+
+\Cref{fig:generate_sketch_duration,fig:sketching_duration,fig:decomposition_duration} visualize the time spent in the different steps of sketching.
+First, consider generating the sketching matrix \(\mat{W}\).
+It turns out, that randomly drawing the row indices for all columns without replacement is much faster than drawing them with replacement for each column separately, so it was beneficial to generate slightly more row indices than needed and then discard those instance where collisions occured.
+This deletion process might explain the low dependence on \(w\) in \cref{fig:generate_sketch_duration} but in any case the time is negligibly small for our purposes.
+The time it takes to multiply the sketching matrix with \(\mat{D}\mat{A}^T\) is similarly small as shown by \cref{fig:sketching_duration}.
+Similarly to the number of nonzero entries of \(\mat{W}\mat{D}\mat{A}^T\) this duration mainly depends on the value of \(s\).
+The majority of the sketching process is actually spent determining a QR decomposition of \(\mat{W}\mat{D}\mat{A}^T\), see \cref{fig:decomposition_duration}.
+Because the available sparse QR implementation did not bring any performance gains a QR decomposition algorithm for dense matrices was used whose runtime, unsurprinsingly, mainly depends on the matrix dimension, i.e. on \(w\).
+As such the runtime of determining a preconditioner depends mainly on \(w\) so we chose a moderate value of \(w=2m\) and a large value of \(s=5\) for the following experiments.
