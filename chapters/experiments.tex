@@ -161,9 +161,8 @@ Next, \cref{fig:sparsity} shows the sparsity of \(\mat{W}\mat{D}\mat{A}^T\) by p
 While in this work the impact of the sparsity on the running time is negligible, as we will see, for other applications the sparsity preservation that is achieved by sketching with a sparse matrix may be of great importance.
 The red line indicates the number of nonzero entries of \(\mat{A}^T\) itself, all other colors bear the same meaning as in \cref{fig:condition_number}.
 A simple upper bound to the number of nonzero entries is given by \(\nnz(\mat{W}\mat{D}\mat{A}^T) \leq s \nnz(\mat{A})\).
-Even though in reality the number of nonzero entries ss lower, the graph reflects that \(s\) is the main influence on the number of nonzero entries while the value of \(w\) only plays a minor role.
-Note that this graph does not show that \(\mat{W}\mat{D}\mat{A}^T\) is not very sparse.
-For example, for \(w = 2m\) about \(25\%\) to \(40\%\) of the entries of the sketched matrix are nonzero which is not very sparse compared to the density of \(\mat{A}\) at around \(0.2\%\).
+Even though in reality the number of nonzero entries is lower, the graph reflects that \(s\) is the main influence on the number of nonzero entries while the value of \(w\) only plays a minor role.
+Note that for example, for \(w = 2m\) about \(25\%\) to \(40\%\) of the entries of the sketched matrix are nonzero which is not very sparse compared to the density of \(\mat{A}\) at around \(0.2\%\).
 
 \begin{figure}[tbp]
   \centering
