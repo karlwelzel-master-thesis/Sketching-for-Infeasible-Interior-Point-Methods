@@ -140,11 +140,10 @@ By \cref{thm:sparse-ose} we expect larger values of \(w\) and \(s\) to give bett
 
 \Cref{fig:condition_number_history} shows how the condition number of the condition numbers of unpreconditioned matrix \(\mat{A}\mat{D}\mat{A}^T\) and the preconditioned matrix \(\mat{R}^{-T}\mat{A}\mat{D}\mat{A}^T\mat{R}^{-1}\) evolves during a run of the IPM algorithm.
 Here the sketching matrix was constructed using \(w=2m\) and \(s \in \{2, 3, 4, 5\}\).
-While the condition number of the unpreconditioned system steadily rises up to about \(10^{12}\) the preconditioned systems are much better.
+While the condition number of the unpreconditioned system steadily rises up to about \(10^{12}\) the values for the preconditioned systems look much better.
 For all but the \(s=2\) case the condition numbers consistently stay below \(100\).
-To see the impact of the different values of \(s\) more closely \cref{fig:condition_number} plots the condition numbers on a rescaled y-axis.
-Additionally, the figure shows all combinations of \(s \in \{3,4,5\}\) and \(w \in \{1.5m, 2m, 2.5m, 3m\}\).
-As predicted by the theory the condition numbers decrease as \(w\) and \(s\) increase.
+\cref{fig:condition_number} shows the same condition numbers for all combinations of \(s \in \{3,4,5\}\) and \(w \in \{1.5m, 2m, 2.5m, 3m\}\).
+As predicted by the theory the condition numbers are effectively bounded by a constant which decreases as \(w\) and \(s\) increase.
 Interestingly, the lower end of the error bars line up for every fixed value of \(w\), suggesting that the value of \(w\) is the decisive factor for how low the condition number can become while \(s\) mainly influences the range of the distribution.
 
 \begin{figure}[tbp]%
