@@ -138,7 +138,7 @@ By \cref{thm:sparse-ose} we expect larger values of \(w\) and \(s\) to give bett
   \label{fig:condition_number}
 \end{figure}%
 
-\Cref{fig:condition_number_history} shows how the condition number of the condition numbers of the unpreconditioned matrix \(\mat{A}\mat{D}\mat{A}^T\) and the preconditioned matrix \(\mat{R}^{-T}\mat{A}\mat{D}\mat{A}^T\mat{R}^{-1}\) evolves during a run of the IPM algorithm.
+\Cref{fig:condition_number_history} shows how the condition number of the condition numbers of the unpreconditioned matrix \(\mat{A}\mat{D}^2\mat{A}^T\) and the preconditioned matrix \(\mat{R}^{-T}\mat{A}\mat{D}^2\mat{A}^T\mat{R}^{-1}\) evolves during a run of the IPM algorithm.
 Here the sketching matrix was constructed using \(w=2m\) and \(s \in \{2, 3, 4, 5\}\).
 While the condition number of the unpreconditioned system steadily rises up to about \(10^{12}\) the values for the preconditioned systems look much better.
 For all but the \(s=2\) case the condition numbers consistently stay below \(100\).
@@ -261,3 +261,40 @@ It is not clear if adding this bound would help to minimize \(\rho_{\mathrm{tol}
 For this IPM implementation as expected, the minimum value of \(\rho_{\mathrm{tol}}\) is lower the smaller the error in the solution of the normal equation.
 The tradeoff between solution accuracy and time spent per iteration can be more closely examined in \cref{fig:accuracy_vs_time}.
 One can conclude that more CG iterations lead to better solutions up to about 100 iterations and also that using a Cholesky factorisation consistently outperforms the iterative solver both in solution quality and in runtime.
+
+\section{Timing Considerations}
+
+% TODO: Scrap all these options, rename to "final comparison" and focus on table
+
+The time per IPM iteration as recorded in \cref{fig:accuracy_vs_time} includes both the time to compute the preconditioner \(\mat{R}\) at slightly more than 0.3 seconds and the time it takes the CG solver for a fixed amount of iterations.
+The latter is very much influenced by the way the matrix vector products required for the CG algorithm are implemented.
+Three options come to mind:
+\begin{enumerate}
+  \item Invert \(\mat{R}\) and compute \(\mat{R}^{-T}\mat{A}\mat{D}^2\mat{A}^T\mat{R}^{-1}\) explicitly at the start and apply the resulting matrix to each vector \(\vek{v}\) inside CG (expensive precomputation, cheap iterations)
+  \item Invert \(\mat{R}\) at the start and compute \(\mat{R}^{-T}\mat{A}\mat{D}^2\mat{A}^T\mat{R}^{-1}\vek{v}\) lazily inside CG, i.e. using five matrix vector products (moderate precomputation and iteration costs)
+  \item Compute \(\mat{R}^{-T}\mat{A}\mat{D}^2\mat{A}^T\mat{R}^{-1}\vek{v}\) lazily inside CG and use triangular solves for matrix vector products involving \(\mat{R}^{-1}\) and \(\mat{R}^{-T}\) (no precomputation, expensive iterations)
+\end{enumerate}
+As it turns out if constrained to a single thread each approach is fastest for some range of CG iterations: Option 3 until 80, option 2 until 180 and option 1 from then on.
+If multithreading is allowed option 1 already takes over at 60 iterations.
+While in \cref{fig:accuracy_vs_time} only option 3 was employed the conclusions from it hold true: To achieve somewhat accurate solutions the time per IPM iteration need to be between 0.5 and 0.8 seconds.
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{ccc}
+    \toprule
+    Method & Time per iteration [s] & Best \(\rho_{\mathrm{tol}}\) \\
+    \midrule
+    Direct Cholesky & 0.01 & \(10^{-10}\) \\
+    Preconditioned CG & 0.8 & \(10^{-8}\) \\
+    Cholesky by QR & 48 & \(10^{-10}\) \\
+    \bottomrule
+  \end{tabular}
+  \caption{Runtime comparison with direct solvers}
+  \label{table:runtime_comparison}
+\end{table}
+
+To finish this chapter, a direct comparison between our iterative approach and the direct solvers is due.
+A Cholesky decomposition might either be determined after computing \(\mat{A}\mat{D}^2\mat{A}^T\) or by finding a QR decomposition of \(\mat{D}\mat{A}^T\).
+The latter is called \enquote{Cholesky by QR} in \cref{table:runtime_comparison}.
+The parameters for this comparison where chosen to be \(w=2m\), \(s=5\), 100 CG iterations and option 3.
+\Cref{table:runtime_comparison} shows that while computing the QR of the sketched matrix \(\mat{W}\mat{D}\mat{A}^T\) is much faster than computing the QR decomposition of the full matrix \(\mat{D}\mat{A}^T\) the preconditioned CG method cannot compete with the Cholesky decomposition of \(\mat{A}\mat{D}\mat{A}^T\).
