@@ -1,9 +1,9 @@
 \chapter{Overview}\label{chap:introduction}
 
-Optimization problems are ubiquitous in science and industry.
-An important subclass of optimization problems are linear programs (LPs), where the objective function as well as the constraints on the variables are linear.
+Optimisation problems are ubiquitous in science and industry.
+An important subclass of optimisation problems are linear programs (LPs), where the objective function as well as the constraints on the variables are linear.
 They take a primary role because of the extensive research on them and the existence of efficient codes to solve them optimally.
-Many problems can be modelled or approximated in this way, for example \(\ell_1\)-regularized SVMs~\cite{ZhuRossetTibshiraniHastie-1normSupportVectorMachines} in Machine Learning, MAP inference of Markov random fields~\cite{MeshiGloberson-MapLpRelaxation} in statistics and linear netlength minimization~\cite{BrennerVygen-AnalyticalMethodsInVlsiPlacement} in Chip Design.
+Many problems can be modelled or approximated in this way, for example \(\ell_1\)-regularized SVMs~\cite{ZhuRossetTibshiraniHastie-1normSupportVectorMachines} in Machine Learning, MAP inference of Markov random fields~\cite{MeshiGloberson-MapLpRelaxation} in statistics and linear netlength minimisation~\cite{BrennerVygen-AnalyticalMethodsInVlsiPlacement} in Chip Design.
 As the problems grow more complex the number of variables increases and we need more efficient algorithms for solving ever larger linear programs.
 
 One of the first methods that came about for solving LPs was Dantzig's simplex method~\cite{Dantzig-Simplex}, which is still in use today.
@@ -38,7 +38,7 @@ In this work, we will assume that \(\mat{A}\) is a sparse \(m \times n\) matrix 
 This allows us to bound the total number of operations by bounding the runtime of each iteration given that we want a high success probability over all iterations.
 
 The same idea of preconditioning using a decomposition of a reduced matrix was previously successfully applied in Blendenpik~\cite{Avron-Blendenpik} and LSRN~\cite{MengSaundersMahoney-LSRN} to linear least squares problems.
-Blendenpik~\cite{Avron-Blendenpik} uses a dimensionality reduction technique based on randomly sampling rows of after applying a Walsh--Hadamard transform, a discrete cosine transform or a discrete Hartley transform, that aim to even out the importance of each row, and determines the preconditioner using a QR decomposition.
+Blendenpik~\cite{Avron-Blendenpik} uses a dimensionality reduction technique based on randomly sampling rows of after applying a Walsh--Hadamard transform, a discrete cosine transform or a discrete Hartley transform, that aim to even out the importance of each row, and determines the preconditioner using a QR decomposition.%chktex 8
 The authors of LSRN \textcite{MengSaundersMahoney-LSRN} decided to use a Gaussian sketch and an SVD of the sketched matrix as a preconditioner.
 Afterwards both methods use an iterative least-squares solver to find the solution to the preconditioned problem.
 Both papers report that the generated preconditioners bring the condition number down to a small constant and provide a great speedup compared to direct methods based on decompositions of the full-sized matrix.
