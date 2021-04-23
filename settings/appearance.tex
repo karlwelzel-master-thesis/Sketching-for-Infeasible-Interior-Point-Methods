@@ -24,7 +24,6 @@
 % Captions and subcaptions for figures/tables
 \usepackage[
  labelfont=bf,  % bold labels (eg. for "Figure 1")
- margin=3em,  % Reduce caption width by this margin on both sides
 ]{caption}
 \usepackage{subcaption}
 
@@ -32,6 +31,5 @@
 \usepackage{booktabs}  % Great tables
 \usepackage{multirow}
 \usepackage{array}  % fine grained control over tabular spacing
-
-\usepackage[Export]{adjustbox}  % improved includegraphics (ie. with frame options)
-\usepackage{rotating} % provides the sidewaysfigure environment
+\usepackage{makecell} % Line breaks inside cells
+\usepackage{siunitx} % Provides alignment at . for numerical columns using 's'
