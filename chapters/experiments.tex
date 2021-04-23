@@ -138,7 +138,7 @@ By \cref{thm:sparse-ose} we expect larger values of \(w\) and \(s\) to give bett
   \label{fig:condition_number}
 \end{figure}%
 
-\Cref{fig:condition_number_history} shows how the condition number of the condition numbers of unpreconditioned matrix \(\mat{A}\mat{D}\mat{A}^T\) and the preconditioned matrix \(\mat{R}^{-T}\mat{A}\mat{D}\mat{A}^T\mat{R}^{-1}\) evolves during a run of the IPM algorithm.
+\Cref{fig:condition_number_history} shows how the condition number of the condition numbers of the unpreconditioned matrix \(\mat{A}\mat{D}\mat{A}^T\) and the preconditioned matrix \(\mat{R}^{-T}\mat{A}\mat{D}\mat{A}^T\mat{R}^{-1}\) evolves during a run of the IPM algorithm.
 Here the sketching matrix was constructed using \(w=2m\) and \(s \in \{2, 3, 4, 5\}\).
 While the condition number of the unpreconditioned system steadily rises up to about \(10^{12}\) the values for the preconditioned systems look much better.
 For all but the \(s=2\) case the condition numbers consistently stay below \(100\).
@@ -162,7 +162,8 @@ While in this work the impact of the sparsity on the running time is negligible,
 The red line indicates the number of nonzero entries of \(\mat{A}^T\) itself, all other colors bear the same meaning as in \cref{fig:condition_number}.
 A simple upper bound to the number of nonzero entries is given by \(\nnz(\mat{W}\mat{D}\mat{A}^T) \leq s \nnz(\mat{A})\).
 Even though in reality the number of nonzero entries is lower, the graph reflects that \(s\) is the main influence on the number of nonzero entries while the value of \(w\) only plays a minor role.
-Note that for example, for \(w = 2m\) about \(25\%\) to \(40\%\) of the entries of the sketched matrix are nonzero which is not very sparse compared to the density of \(\mat{A}\) at around \(0.2\%\).
+Note that for example, for \(w = 2m\) about \(25\%\) to \(40\%\) of the entries of the sketched matrix are nonzero while the same value for \(\mat{A}\) is at around \(0.2\%\).
+This means that the absolute number of nonzero entries is only increased by a small factor, yet the relative density is increased to the point where the matrix is hardly considered sparse anymore.
 
 \begin{figure}[tbp]
   \centering
@@ -199,10 +200,10 @@ Note that for example, for \(w = 2m\) about \(25\%\) to \(40\%\) of the entries 
 
 \Cref{fig:generate_sketch_duration,fig:sketching_duration,fig:decomposition_duration} visualize the time spent in the different steps of sketching.
 First, consider generating the sketching matrix \(\mat{W}\).
-It turns out, that randomly drawing the row indices for all columns without replacement is much faster than drawing them with replacement for each column separately, so it was beneficial to generate slightly more row indices than needed and then discard those instance where collisions occured.
+It turns out, that randomly sampling the row indices from \(\{1, \ldots, m\}\) for all columns without replacement is much faster than drawing them with replacement for each column separately, so it was beneficial to generate slightly more row indices than needed and then discard those instance where collisions occured.
 This deletion process might explain the low dependence on \(w\) in \cref{fig:generate_sketch_duration} but in any case the time is negligibly small for our purposes.
 The time it takes to multiply the sketching matrix with \(\mat{D}\mat{A}^T\) is similarly small as shown by \cref{fig:sketching_duration}.
 Similarly to the number of nonzero entries of \(\mat{W}\mat{D}\mat{A}^T\) this duration mainly depends on the value of \(s\).
 The majority of the sketching process is actually spent determining a QR decomposition of \(\mat{W}\mat{D}\mat{A}^T\), see \cref{fig:decomposition_duration}.
-Because the available sparse QR implementation did not bring any performance gains a QR decomposition algorithm for dense matrices was used whose runtime, unsurprinsingly, mainly depends on the matrix dimension, i.e. on \(w\).
+Because the available sparse QR implementation did not bring any performance gains a QR decomposition algorithm for dense matrices was used whose runtime, unsurprinsingly, mainly depends on the matrix dimensions, i.e. on \(w\).
 As such the runtime of determining a preconditioner depends mainly on \(w\) so we chose a moderate value of \(w=2m\) and a large value of \(s=5\) for the following experiments.
