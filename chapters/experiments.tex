@@ -212,7 +212,7 @@ As such the runtime of determining a preconditioner depends mainly on \(w\) so w
 
 Any direct solver for a linear system takes a fixed amount of time to achieve a solution of very high accuracy.
 Iterative solvers come with the benefit that the solutions are refined in every iteration so that a tradeoff between running time and accuracy is possible.
-Due to numerical errors iterative solvers cannot achieve arbitrarily low errors and so it was easiest to fix the number of CG iterations at different values to see how they impact the solver accuracy and subsequently the course of the IPM.
+Due to numerical difficulties iterative solvers cannot achieve arbitrarily low errors and so it was easiest to fix the number of CG iterations at different values to see how they impact the solver accuracy and subsequently the course of the IPM.
 
 \begin{figure}[tbp]
   \centering%
@@ -224,6 +224,12 @@ Due to numerical errors iterative solvers cannot achieve arbitrarily low errors 
   \caption{Relative errors achieved by CG and Cholesky}%
   \label{fig:residual_norms}
 \end{figure}
+
+\Cref{fig:residual_norms} shows the impact of varying the number of CG iterations on the relative errors for the preconditioned system and, once transformed via \(\tilde{\vek{q}} = \mat{R}^{-1}\vek{q}\), for the normal equation.
+The figure also includes the relative error achieved by using a Cholesky decomposition of the normal equation.
+Evidently, the CG method applied to the preconditioning system fails to improve the residuals any further once the number of iterations reaches about roughly 100.
+At this point it stagnates at values between \(10^{-12}\) and \(10^{-15}\).
+Compared to the Cholesky decomposition the relative errors for solving the normal equation are slightly worse.
 
 \begin{figure}[tbp]
   \centering%
@@ -246,3 +252,12 @@ Due to numerical errors iterative solvers cannot achieve arbitrarily low errors 
   \caption{Solution accuracy vs. time per IPM iteration}%
   \label{fig:accuracy_vs_time}
 \end{figure}
+
+The effect on the accuracy of the IPM is exemplified in \cref{fig:accuracy_history}.
+Here, the solution accuracy as measured by \(\rho_{\mathrm{tol}}\) is tracked over the final iterations of the IPM for one of the randomly generated LP instance.
+It can be clearly seen that at some point during the optimisation process a breakdown occurs that leads to a sudden increase of \(\rho_{\mathrm{tol}}\).
+In our experiments this was always due to a increase in \(\rho_p\) which measures the primal feasibility which can occur because the IPM implementation does not include a bound on the primal and dual residuals in its neighbourhood definition. 
+It is not clear if adding this bound would help to minimize \(\rho_{\mathrm{tol}}\) further or just lead to miniscule step sizes \(\alpha\).
+For this IPM implementation as expected, the minimum value of \(\rho_{\mathrm{tol}}\) is lower the smaller the error in the solution of the normal equation.
+The tradeoff between solution accuracy and time spent per iteration can be more closely examined in \cref{fig:accuracy_vs_time}.
+One can conclude that more CG iterations lead to better solutions up to about 100 iterations and also that using a Cholesky factorisation consistently outperforms the iterative solver both in solution quality and in runtime.
