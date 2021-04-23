@@ -200,7 +200,7 @@ This means that the absolute number of nonzero entries is only increased by a sm
 
 \Cref{fig:generate_sketch_duration,fig:sketching_duration,fig:decomposition_duration} visualize the time spent in the different steps of sketching.
 First, consider generating the sketching matrix \(\mat{W}\).
-It turns out, that randomly sampling the row indices from \(\{1, \ldots, m\}\) for all columns without replacement is much faster than drawing them with replacement for each column separately, so it was beneficial to generate slightly more row indices than needed and then discard those instance where collisions occured.
+It turns out, that randomly sampling the row indices from \(\{1, \ldots, m\}\) for all columns without replacement is much faster than sampling them with replacement for each column separately, so it was beneficial to generate slightly more row indices than needed and then discard those instance where collisions occured.
 This deletion process might explain the low dependence on \(w\) in \cref{fig:generate_sketch_duration} but in any case the time is negligibly small for our purposes.
 The time it takes to multiply the sketching matrix with \(\mat{D}\mat{A}^T\) is similarly small as shown by \cref{fig:sketching_duration}.
 Similarly to the number of nonzero entries of \(\mat{W}\mat{D}\mat{A}^T\) this duration mainly depends on the value of \(s\).
