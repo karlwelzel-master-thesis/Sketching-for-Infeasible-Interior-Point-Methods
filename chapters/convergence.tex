@@ -7,7 +7,7 @@ The proofs in~\cite{Avron-FasterRandomizedInfeasibleIPMs} were often schematic, 
 The following section therefore tries to clearly lay out how the different lemmas imply \cref{thm:ipm-convergence,thm:approximate-newton-convergence} and how the runtimes for \cref{alg:ipm,alg:newton-direction} can be derived.
 The essential assumptions in the following proofs are that the algorithms work with exact arithmetic, that solutions of \labelcref{eqn:primal-lp,eqn:dual-lp} exist and that \(\mat{A}\) has full row rank.
 
-\section{Convergence Proof for the Infeasible IPM Algorithm}
+\section{Convergence Proof for the Infeasible IPM Algorithm}\label{sec:ipm-convergence-proof}
 
 Let \((\vek{x}, \vek{y}, \vek{s}) \in \mathcal{N}_{-\infty}(\gamma)\) denote a possible iterate during the course of \cref{alg:ipm}, \((\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}})\) the Newton direction determined in \cref{line:compute-approximate-newton} and 
 \begin{align}
@@ -72,7 +72,7 @@ These two lemmas are enough to show the convergence of \cref{alg:ipm}.
   Applying the exponential function on both sides gives \({(1 - \frac{C_3}{n^2})}^k \leq \e_\mu\) which shows that \(O(n^2 \log(1/\e_\mu))\) iterations suffice to get \(\mu^k \leq \e_\mu \mu^0\).
 \end{proof}
 
-\section{Convergence Proof for the Approximate Newton Direction Algorithm}
+\section{Convergence Proof for the Approximate Newton Direction Algorithm}\label{sec:newton-convergence-proof}
 
 Next, we turn to the correctness of \cref{alg:newton-direction} which is concerned with calculating a sufficiently good approximation of the Newton direction.
 As linear convergence of the CG method was already established in \cref{thm:cg-residual-bound}, our main goal is to bound the norm of the initial residual \(\mat{R}^{-T}\vek{p}\).
@@ -208,7 +208,7 @@ Equipped with this result, we can prove the main result regarding \cref{alg:newt
 %   A crucial observation at this point is that the QR decomposition of the sketched matrix \(\mat{W}\mat{D}\mat{A}^T\) needs \(O(wm^2)\) operations and is therefore asymptotically at least as expensive as a Cholesky decomposition of \(\mat{A}\mat{D}^2\mat{A}^T\) which takes \(O(m^3)\) operations.
 % \end{remark}
 
-\section{Runtime Bounds for the Combined Algorithm}
+\section{Runtime Bounds for the Combined Algorithm}\label{sec:combined-algorithm-proof}
 
 \Cref{thm:ipm-convergence,thm:approximate-newton-convergence} were the stepping stones towards the final result of this chapter.
 The combination of \cref{alg:ipm,alg:newton-direction} is an efficient algorithm for solving linear programs where \(\mat{A}\) is sparse and \(m \ll n\):
