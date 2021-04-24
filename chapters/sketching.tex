@@ -57,10 +57,10 @@ A probability distribution \(\Pi\) over matrices \(\mat{W} \in \R^{w \times n}\)
 
 Because we will later compute a decomposition of the sketched matrix \(\mat{W}\mat{B}\), we want \(w\) to be as small as possible.
 A classic result in sketching is that there are OSEs with \(w = O((m + \log(1/\delta))\e^{-2})\) without any dependence on \(n\).
-\Textcite[Theorem 6]{Woodruff-Sketching} shows how this follows from the so-called Johnson-Lindenstrauss Lemma and that it can be achieved by choosing the matrix entries to be properly normalized independent Gaussian random variables.
-As a matrix \(\mat{W}\) with Gaussian entries is dense, computing the matrix product \(\mat{W}\mat{B}\) takes \(O(w \nnz(\mat{B}))\) operations.
+\Textcite[Theorem 6]{Woodruff-Sketching} shows how this follows from the Johnson-Lindenstrauss Lemma and that it can be achieved by choosing the matrix entries to be properly normalized independent Gaussian random variables.
+Because a matrix \(\mat{W}\) with Gaussian entries is dense, computing the matrix product \(\mat{W}\mat{B}\) takes \(O(w \nnz(\mat{B}))\) operations, where \(\nnz(\mat{B})\) denotes the number of nonzero entries of \(\mat{B}\).
 A sparse OSE where all sampled matrices only have \(s\) nonzero entries per column can improve the cost of this product to \(O(s \nnz(\mat{B}))\).
-The following sparse OSE result is taken from~\cite{Cohen-NearlyTightObliviousSubspaceEmbeddings}.
+The following sparse OSE result is taken from~\cite{Cohen-NearlyTightObliviousSubspaceEmbeddings} and will not be proven here.
 \Textcite{Avron-FasterRandomizedInfeasibleIPMs} use the sketching result from~\cite{Cohen-OptimalApproximateMatrixProduct}, but we replaced it by a simpler one giving the same complexity guarantees in the end.
 
 \begin{definition}[\cite{CartisFialaShao-EfficientSparseSketchingForLargeScaleLinearLeastSquares}]\label{def:s-hashing-matrix}
@@ -89,7 +89,8 @@ We will first show how a decomposition of the sketched matrix \(\mat{W}\mat{B}\)
 
 \Textcite{Avron-FasterRandomizedInfeasibleIPMs} use an SVD of the sketched matrix \(\mat{W}\mat{B}\) to get a two-sided preconditioner, but we decided to construct it using the computationally cheaper QR decomposition \(\mat{Q}\mat{R} = \mat{W}\mat{B}\).
 Here \(\mat{R} \in \R^{m \times m}\) is upper triangular and \(\mat{Q} \in \R^{w \times m}\) has orthonormal columns.
-To ensure that the QR decomposition exists we need that \(\mat{B}\) has full column rank. Then, because \(\e < 1\) none of the elements in the column space of \(\mat{B}\) can be in the nullspace of \(\mat{W}\) so \(\rank(\mat{W}\mat{B}) = m\).
+To ensure that the QR decomposition exists we need that \(\mat{B}\) has full column rank.
+Then we directly get \(\rank(\mat{W}\mat{B}) = m\), because \(\e < 1\) implies none of the elements in the column space of \(\mat{B}\) can be in the nullspace of \(\mat{W}\).
 The proposed preconditioned matrix has the form
 \begin{equation}\label{eqn:preconditioned-matrix}
  \mat{R}^{-T} \mat{B}^T \mat{B} \mat{R}^{-1}.
@@ -163,7 +164,7 @@ by setting \(\mat{B} = \mat{D}\mat{A}^T\).
 
 \section{Choosing the Perturbation Vector}\label{sec:sektching-perturbation-vector}
 
-Now, as mentioned in \cref{chap:ipm} we need to define a perturbation vector \(\vek{v} \in \R^n\) to shift the error term in the Newton system.
+Now, as mentioned in \cref{sec:ipm-shifting-error-terms} we need to define a perturbation vector \(\vek{v} \in \R^n\) to shift the error term in the Newton system.
 Because the CG method is applied to \cref{eqn:preconditioned-normal-equation} an error term \(\vek{f} = \mat{R}^{-T}\mat{A}\mat{D}^2\mat{A}^T\mat{R}^{-1}\vek{q} - \mat{R}^{-T}\vek{p}\) propagates so that
 \begin{equation}
   \mat{A} \mat{D}^2 \mat{A}^T \hat{\Delta\vek{y}} = \vek{p} + \mat{R}^T\vek{f}
@@ -255,3 +256,5 @@ It is unclear whether there is an efficient way to recognize such a sketching fa
   \cref{alg:newton-direction} computes an approximation of the Newton direction that satisfies \cref{eqn:perturbed-search-direction} with \(\norm{\vek{v}}_2 \leq \e_{\vek{v}}\) with probability at least \(1 - \delta\).
   Moreover, if the algorithm does not fail, \cref{line:cg} only needs \(O(\log(n^2 \mu / \e_{\vek{v}}))\) CG iterations and the whole algorithm needs \(O(\log(m/\delta) (\nnz(\mat{A}) + m^3) + \log(n^2 \mu / \e_{\vek{v}})(\nnz(\mat{A}) + m^2))\) operations assuming \(n \leq \nnz(\mat{A})\).
 \end{theorem}
+
+This theorem will be proven along with the convergence of \cref{alg:ipm} in the next chapter.
