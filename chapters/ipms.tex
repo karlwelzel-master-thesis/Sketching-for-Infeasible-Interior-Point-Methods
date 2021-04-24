@@ -11,7 +11,7 @@ and its dual is
   \max \vek{b}^T \vek{y} \quad \text{subject to} \quad \mat{A}^T \vek{y} + \vek{s} = \vek{c}, \ \vek{s} \geq \vek{0} \tag{D}
 \end{equation}
 where \(\mat{A} \in \R^{m \times n}\), \(\vek{b} \in \R^m\) and \(\vek{c} \in \R^n\) are given and \(\vek{x}, \vek{s} \in \R^n\) and \(\vek{y} \in \R^m\) are the variables.
-A triple \((\vek{x}, \vek{y}, \vek{s})\) is called \emph{feasible} if it satisifies the constraints \(\mat{A}\vek{x} = \vek{b}\), \(\mat{A}^T \vek{y} + \vek{s} = \vek{c}\) and \(\vek{x}, \vek{s} \geq \vek{0}\).
+A triple \((\vek{x}, \vek{y}, \vek{s})\) is called \emph{feasible} if it satisfies the constraints \(\mat{A}\vek{x} = \vek{b}\), \(\mat{A}^T \vek{y} + \vek{s} = \vek{c}\) and \(\vek{x}, \vek{s} \geq \vek{0}\).
 The two linear programs \labelcref{eqn:primal-lp} and \labelcref{eqn:dual-lp} are closely connected.
 For feasible \((\vek{x}, \vek{y}, \vek{s})\) we always have \(\vek{c}^T \vek{x} \geq \vek{b}^T \vek{y}\) and the joint solutions satisfy \(\vek{c}^T \vek{x} = \vek{b}^T \vek{y}\).
 Therefore, if there are feasible points both linear programs are feasible and bounded and solutions exist.
@@ -47,7 +47,7 @@ Assume strictly feasible points exist, then the unique solutions \((\vek{x}_\tau
     \vek{x}_\tau \circ \vek{s}_\tau &= \tau \vek{1}.
   \end{align}
 \end{subequations}
-for \(\tau > 0\) form a continous path of strictly feasible points which is called the \emph{central path}, see~\cite[Theorem 2.8]{Wright-PrimalDualInteriorPointMethods}.
+for \(\tau > 0\) form a continuous path of strictly feasible points which is called the \emph{central path}, see~\cite[Theorem 2.8]{Wright-PrimalDualInteriorPointMethods}.
 Moreover, the elements of the central path converge towards a solution as \(\tau \to 0\).
 
 Primal-dual IPMs now try to follow this path towards a solution by maintaining iterates in some neighbourhood of the central path and computing the search direction in each step as a Newton direction towards an element of the central path.
@@ -60,7 +60,7 @@ where \(\mu = \vek{x}^T \vek{s}/n\), i.e.\ the average value of \(x_i s_i\), and
 The condition \((\vek{x}, \vek{y}, \vek{s}) \in \mathcal{G}\) is shared by all IPMs.
 It keeps the \(\vek{x}\) and \(\vek{s}\) components of the iterates in the interior of the nonnegative orthant.
 The second condition qualifies this IPM as a \emph{long-step} IPM as this one-sided \(\infty\)-norm bound allows for longer steps inside the neighbourhood compared to a two-sided 2-norm bound such as \(\norm{\vek{x} \circ \vek{s} - \mu \vek{1}}_2 \leq \gamma \mu\).
-Neighbourhoods involving those bounds are known as \emph{short-step} IPMs and give better theoretical guarantees while having worse pratical performance~\cite[Chapter 5]{Wright-PrimalDualInteriorPointMethods}.
+Neighbourhoods involving those bounds are known as \emph{short-step} IPMs and give better theoretical guarantees while having worse practical performance~\cite[Chapter 5]{Wright-PrimalDualInteriorPointMethods}.
 Lastly, the bound on the residuals (where \(\vek{r}^0\) and \(\mu^0\) are defined by the starting point \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \mathcal{G}\)) implies that we will allow infeasible iterates as long as their residuals decrease to zero at least as fast as \(\mu\) does.
 Any algorithm that maintains iterates inside \(\mathcal{N}_{-\infty}(\gamma)\) and is able to decrease the corresponding \(\mu\) values to zero produces iterates which become arbitrarily close to optimality because \(\norm{\vek{r}}_2\) and \(x_i s_i\) converge to zero.
 
@@ -88,7 +88,7 @@ The search direction \((\Delta\vek{x}, \Delta\vek{y}, \Delta\vek{s})\) is theref
   }_{-F(\vek{x}, \vek{y}, \vek{s})}
 \end{equation}
 where \(\mat{X} = \diag(\vek{x})\) and \(\mat{S} = \diag(\vek{s})\).
-Because \(\mat{X}\) and \(\mat{S}\) are diagonal they can be easily inverted and we can simplify the linear system into smaller ones and a series of matrix-vector products.
+Because \(\mat{X}\) and \(\mat{S}\) are diagonal they can be easily inverted, and we can simplify the linear system into smaller ones and a series of matrix-vector products.
 \Cref{eqn:newton-system} is equivalent to 
 \begin{subequations}\label{eqn:augmented-system-system}
   \begin{align}
@@ -118,7 +118,7 @@ in which the first equation is called the \emph{augmented system} and
 \end{subequations}
 in which the first equation is called the \emph{normal equation}, see~\cite[p. 16]{Wright-PrimalDualInteriorPointMethods}.
 Here, \(\mat{D}\) is defined as the diagonal matrix \(\mat{S}^{-1/2} \mat{X}^{1/2}\) to simplify the notation.
-\Cref{eqn:normal-equation} is called the normal equation because it can be written as the normal equation of a least squares system with coefficient matrix \(\mat{D}\mat{A}^T\) if \(\vek{r}_p = \vek{0}\).
+\Cref{eqn:normal-equation} is called the normal equation because it can be written as the normal equation of a least-squares system with coefficient matrix \(\mat{D}\mat{A}^T\) if \(\vek{r}_p = \vek{0}\).
 
 \section{Shifting Error Terms}\label{sec:ipm-shifting-error-terms}
 
@@ -185,7 +185,7 @@ The proof for \cref{thm:ipm-convergence} will be given in \cref{chap:convergence
     \(\gamma \in (0, 1)\),
     \(\sigma \in (0, 1)\),
     tolerance \(\e_\mu \in (0, 1)\) and
-    an intial point \((\vek{x}^0, \vek{y}^0, \vek{s}^0)\)
+    an initial point \((\vek{x}^0, \vek{y}^0, \vek{s}^0)\)
   }
   Initialize \(k = 0\) and \(\mu^0 = {(\vek{x}^0)}^T \vek{s}^0 /n\)\;
   \While{\(\mu^k = {(\vek{x}^k)}^T \vek{s}^k /n > \e_\mu \mu^0\)}{

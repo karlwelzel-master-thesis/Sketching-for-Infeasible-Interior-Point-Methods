@@ -8,3 +8,5 @@ preconditioner
 Blendenpik
 LSRN
 RLA
+nonnegative
+orthant
