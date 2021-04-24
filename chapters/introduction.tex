@@ -4,21 +4,21 @@ Optimisation problems are ubiquitous in science and industry.
 An important subclass of optimisation problems are linear programs (LPs), where the objective function as well as the constraints on the variables are linear.
 They take a primary role because of the extensive research on them and the existence of efficient codes to solve them optimally.
 Many problems can be modelled or approximated in this way, for example \(\ell_1\)-regularized SVMs~\cite{ZhuRossetTibshiraniHastie-1normSupportVectorMachines} in Machine Learning, MAP inference of Markov random fields~\cite{MeshiGloberson-MapLpRelaxation} in statistics and linear netlength minimisation~\cite{BrennerVygen-AnalyticalMethodsInVlsiPlacement} in Chip Design.
-As the problems grow more complex the number of variables increases and we need more efficient algorithms for solving ever larger linear programs.
+As the problems grow more complex the number of variables increases, and we need more efficient algorithms for solving ever larger linear programs.
 
 One of the first methods that came about for solving LPs was Dantzig's simplex method~\cite{Dantzig-Simplex}, which is still in use today.
 For LPs the set of feasible points is a polytope and the simplex method can be thought of as walking through the vertices of this polytope while reducing the objective function at every step until the minimum is reached.
 It was later shown that LPs in \(n\) dimensions exist whose polytope has \(2^n\) vertices and which are all visited by the simplex method so that the worst case complexity of the simplex method is exponential.
 After a theoretical breakthrough by Khachiyan's ellipsoid method~\cite{Khachiyan-Ellipsoid1,Khachiyan-Ellipsoid2}, a polynomial time algorithm for LPs, which unfortunately is not competitive in practice, the Interior-Point Method (IPM) developed by \textcite{Karmarkar-IPM} was shown to converge in polynomial time while also being competitive in practice.
-Since then many variants of IPMs have been developed some with better theoretical guarantees others better in practice.
+Since then, many variants of IPMs have been developed some with better theoretical guarantees others better in practice.
 
 The main bottleneck of IPMs is the solution of a linear system which determines the search direction in every step.
 Carefully reformulating this system, solving it can be broken down to solving the symmetric positive-definite linear system \(\mat{A} \mat{D}^2 \mat{A}^T \Delta \vek{y} = \vek{p}\) for some vector \(\vek{p}\).
 Here, \(\mat{A} \in \R^{m \times n}\) is the matrix of constraints, \(\mat{D} \in \R^{n \times n}\) is a diagonal matrix depending on the current iterates and the equation is called the \emph{normal equation}.
-Typically, this normal equation is solved via direct methods using a Cholesky decomposition of \(\mat{A} \mat{D}^2 \mat{A}^T\)~\cite[p. 17]{Wright-PrimalDualInteriorPointMethods} but this is exceedingly expensive if the matrix is large and dense.
+Typically, this normal equation is solved via direct methods using a Cholesky decomposition of \(\mat{A} \mat{D}^2 \mat{A}^T\)~\cite[p. 17]{Wright-PrimalDualInteriorPointMethods}, but this is exceedingly expensive if the matrix is large and dense.
 If the matrix is sparse one can speed up the process~\cite{NgPeyton-SparseCholesky} but \(\mat{A} \mat{D}^2 \mat{A}^T\) can be dense even if \(\mat{A}\) is sparse.
 Iterative methods that only rely on matrix-vector products can use the sparsity of \(\mat{A}\) but converge only very slowly because \(\mat{D}^2\) becomes more and more ill-conditioned as the algorithm progresses.
-Therefore good preconditioners are crucial for employing iterative methods.
+Therefore, good preconditioners are crucial for employing iterative methods.
 Based on the work by \textcite{Avron-FasterRandomizedInfeasibleIPMs} we will show a way to effectively precondition this linear system in the special case when \(\mat{A}\) is sparse and the number of constraints is much smaller than the number of variables, using tools from Randomized Linear Algebra (RLA).
 
 In the last decade many advances in numerical linear algebra where achieved by incorporating randomness.
@@ -38,12 +38,12 @@ In this work, we will assume that \(\mat{A}\) is a sparse \(m \times n\) matrix 
 This allows us to bound the total number of operations by bounding the runtime of each iteration given that we want a high success probability over all iterations.
 
 The same idea of preconditioning using a decomposition of a reduced matrix was previously successfully applied in Blendenpik~\cite{Avron-Blendenpik} and LSRN~\cite{MengSaundersMahoney-LSRN} to linear least squares problems.
-Blendenpik~\cite{Avron-Blendenpik} uses a dimensionality reduction technique based on randomly sampling rows of after applying a Walsh--Hadamard transform, a discrete cosine transform or a discrete Hartley transform, that aim to even out the importance of each row, and determines the preconditioner using a QR decomposition.%chktex 8
+Blendenpik~\cite{Avron-Blendenpik} uses a dimensionality reduction technique based on randomly sampling rows of after applying a Walsh--Hadamard transform, a discrete cosine transform or a discrete Hartley transform, that aim to even out the importance of each row, and determines the preconditioner using a QR decomposition. %chktex 8
 The authors of LSRN \textcite{MengSaundersMahoney-LSRN} decided to use a Gaussian sketch and an SVD of the sketched matrix as a preconditioner.
 Afterwards both methods use an iterative least-squares solver to find the solution to the preconditioned problem.
-Both papers report that the generated preconditioners bring the condition number down to a small constant and provide a great speedup compared to direct methods based on decompositions of the full-sized matrix.
+Both papers report that the generated preconditioners bring the condition number down to a small constant and provide a great speed-up compared to direct methods based on decompositions of the full-sized matrix.
 
-The special case of LPs with sparse constraint matrices \(\mat{A}\) and \(m \ll n\) considered in this thesis is not just convenient because of the RLA results but also comes up in pratice.
+The special case of LPs with sparse constraint matrices \(\mat{A}\) and \(m \ll n\) considered in this thesis is not just convenient because of the RLA results but also comes up in practice.
 In particular, optimizing \(\ell_1\)-regularized SVMs~\cite{ZhuRossetTibshiraniHastie-1normSupportVectorMachines} with more features than data points and recovering sparse vectors in compressed sensing~\cite{YangZhang-l1ProblemsInCompressiveSensing} produce LP instances with these properties.
 We want to highlight a few previous papers on LPs in this setting. \textcite{LondonVardiWiermanYi-PackingLinearPrograms} devised a black box algorithm that speeds up any given algorithm for solving packing LPs (where each variable is restricted to lie between 0 and 1) if the number of variables is much larger than the number of constraints.
 This is achieved by sampling a fraction of the variables randomly, solving the restricted problem optimally and setting each variable to 0 or 1 depending on the outcome.
@@ -52,10 +52,10 @@ The data structures, algorithms and proofs are all very technical and complicate
 Lastly, as already mentioned,~\cite{Avron-FasterRandomizedInfeasibleIPMs} is the basis of this thesis.
 Their main results are described above and will be presented in detail in the following chapters.
 In their paper they opted for a practical long-step infeasible IPM but focused mainly on the theoretical analysis of this algorithm assuming exact arithmetic.
-Their experiments were done using Gaussian sketching and they only recorded the number of IPM and CG iterations but did not report whether this leads to a reduction in running time.
+Their experiments were done using Gaussian sketching, and they only recorded the number of IPM and CG iterations but did not report whether this leads to a reduction in running time.
 This thesis improves the practicability of their algorithm by showing that a QR decomposition of the sketched matrix produces a preconditioner of the same quality as an SVD, simplifies the proofs by establishing the convergence result of the IPM and effectiveness of the preconditioner separately and extends the experiments by evaluating the preconditioning technique based on sparse sketching inside an existing IPM implementation.
 
 The notation for Interior Point Methods and the specific long-step infeasible IPM used in~\cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs} along with a convergence result will be presented in \cref{chap:ipm}.
 \cref{chap:sketching} will be concerned with the concepts of sketching that are useful for us and how its approximation guarantees lead to good preconditioners.
-Afterwards, \cref{chap:convergence} will lay out how to combine the two results and contains all of the proofs to show that under suitable conditions the Newton direction determined by the preconditioned system is good enough to ensure convergence in \(O(n^2 \log(n) (m^3 + \nnz(\mat{A})))\) operations.
+Afterwards, \cref{chap:convergence} will lay out how to combine the two results and contains all the proofs to show that under suitable conditions the Newton direction determined by the preconditioned system is good enough to ensure convergence in \(O(n^2 \log(n) (m^3 + \nnz(\mat{A})))\) operations.
 Lastly, we will incorporate the presented preconditioning technique into an existing IPM implementation based on~\cite{AndersenAndersen-MosekInteriorPointMethod} and evaluate its effectiveness in \cref{chap:experiments}.
