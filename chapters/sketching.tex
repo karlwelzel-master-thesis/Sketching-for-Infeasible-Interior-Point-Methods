@@ -14,7 +14,7 @@ for all \(\vek{z} \in \R^m\).
 \end{definition}
 Note that this definition does not depend on a particular basis for the representation of the column space of \(\mat{B}\).
 Nonetheless, we will often refer to \(\mat{W}\) as a \((1\pm\e)\) \(\ell_2\)-subspace embedding of \(\mat{B}\).
-Intuitively, a subspace embedding of some \(m\)-dimensional subspace of \(\R^n\) is a linear map from the (large) space \(\R^n\) to a (smaller) space \(\R^w\) that approximately preserves all of the distances of the subspace.
+Intuitively, a subspace embedding of some \(m\)-dimensional subspace of \(\R^n\) is a linear map from the (large) space \(\R^n\) to a (smaller) space \(\R^w\) that approximately preserves all the distances of the subspace.
 There are multiple equivalent characterisations of subspace embeddings used in the literature.
 
 \begin{theorem}
@@ -55,13 +55,13 @@ Let \(m, n, w \in \N\) and \(\delta, \e \in (0, 1)\) be given.
 A probability distribution \(\Pi\) over matrices \(\mat{W} \in \R^{w \times n}\) is an \emph{oblivious \(\ell_2\)-subspace embedding} (OSE) if, for any matrix \(\mat{B} \in \R^{n \times m}\) a matrix \(\mat{W}\) drawn from \(\Pi\) is a \((1\pm\e)\) \(\ell_2\)-subspace embedding with probability at least \(1 - \delta\).
 \end{definition}
 
-Because we will later compute a decomposition of the sketched matrix \(\mat{W}\mat{B}\) we want \(w\) to be as small as possible.
+Because we will later compute a decomposition of the sketched matrix \(\mat{W}\mat{B}\), we want \(w\) to be as small as possible.
 A classic result in sketching is that there are OSEs with \(w = O((m + \log(1/\delta))\e^{-2})\) without any dependence on \(n\).
 \Textcite[Theorem 6]{Woodruff-Sketching} shows how this follows from the so-called Johnson-Lindenstrauss Lemma and that it can be achieved by choosing the matrix entries to be properly normalized independent Gaussian random variables.
-As a matrix \(\mat{W}\) with Gaussian entries is dense computing the matrix product \(\mat{W}\mat{B}\) takes \(O(w \nnz(\mat{B}))\) operations.
+As a matrix \(\mat{W}\) with Gaussian entries is dense, computing the matrix product \(\mat{W}\mat{B}\) takes \(O(w \nnz(\mat{B}))\) operations.
 A sparse OSE where all sampled matrices only have \(s\) nonzero entries per column can improve the cost of this product to \(O(s \nnz(\mat{B}))\).
 The following sparse OSE result is taken from~\cite{Cohen-NearlyTightObliviousSubspaceEmbeddings}.
-\Textcite{Avron-FasterRandomizedInfeasibleIPMs} use the sketching result from~\cite{Cohen-OptimalApproximateMatrixProduct} but we replaced it by a simpler one giving the same complexity guarantees in the end.
+\Textcite{Avron-FasterRandomizedInfeasibleIPMs} use the sketching result from~\cite{Cohen-OptimalApproximateMatrixProduct}, but we replaced it by a simpler one giving the same complexity guarantees in the end.
 
 \begin{definition}[\cite{CartisFialaShao-EfficientSparseSketchingForLargeScaleLinearLeastSquares}]\label{def:s-hashing-matrix}
 An \emph{\(s\)-hashing matrix} \(\mat{W} \in \R^{w \times n}\) is constructed in the following way:
@@ -78,7 +78,7 @@ such that the \(s\)-hashing matrices form an oblivious \(\ell_2\)-subspace embed
 
 \section{Sketching-Based Preconditioning}\label{sec:sketching-preconditioning}
 
-To simplify the runtime bounds and the following discussion, we will from now on assume that \(\e < 1/2\) is fixed and furthermore assume that \(\mat{W} \in \R^{w \times n}\) is a \(s\)-hashing matrix and a \((1\pm\e)\) \(\ell_2\)-subspace embedding of the column space of \(\mat{B} \in \R^{n \times m}\).
+To simplify the runtime bounds and the following discussion, we will from now on assume that \(\e < 1/2\) is fixed and furthermore assume that \(\mat{W} \in \R^{w \times n}\) is an \(s\)-hashing matrix and a \((1\pm\e)\) \(\ell_2\)-subspace embedding of the column space of \(\mat{B} \in \R^{n \times m}\).
 By \cref{thm:sparse-ose} \(w\) and \(s\) can be chosen such that the latter assumption holds with probability at least \(1 - \delta\) and 
 \begin{equation} \label{eqn:sparse-ose-params}
   w = O \Paren{m \log(m/\delta)} \quad \text{and} \quad s = O \Paren{\log(m/\delta)}.
@@ -87,14 +87,14 @@ By \cref{thm:sparse-ose} \(w\) and \(s\) can be chosen such that the latter assu
 How can these sketching results help with our goal of solving \(\mat{A} \mat{D}^2 \mat{A}^T \Delta\vek{y} = \vek{p}\) with an iterative method?
 We will first show how a decomposition of the sketched matrix \(\mat{W}\mat{B}\) can be used to determine a two-sided preconditioner for \(\mat{B}^T \mat{B}\) which reduces the condition number down to a constant and then see how this can be applied to the equation above.
 
-\Textcite{Avron-FasterRandomizedInfeasibleIPMs} use an SVD of the sketched matrix \(\mat{W}\mat{B}\) to get a two-sided preconditioner but we decided to construct it using the computationally cheaper QR decomposition \(\mat{Q}\mat{R} = \mat{W}\mat{B}\).
+\Textcite{Avron-FasterRandomizedInfeasibleIPMs} use an SVD of the sketched matrix \(\mat{W}\mat{B}\) to get a two-sided preconditioner, but we decided to construct it using the computationally cheaper QR decomposition \(\mat{Q}\mat{R} = \mat{W}\mat{B}\).
 Here \(\mat{R} \in \R^{m \times m}\) is upper triangular and \(\mat{Q} \in \R^{w \times m}\) has orthonormal columns.
 To ensure that the QR decomposition exists we need that \(\mat{B}\) has full column rank. Then, because \(\e < 1\) none of the elements in the column space of \(\mat{B}\) can be in the nullspace of \(\mat{W}\) so \(\rank(\mat{W}\mat{B}) = m\).
 The proposed preconditioned matrix has the form
 \begin{equation}\label{eqn:preconditioned-matrix}
  \mat{R}^{-T} \mat{B}^T \mat{B} \mat{R}^{-1}.
 \end{equation}
-Note that applying the preconditioner from the left and from the right in this way ensures that the matrix stays symmetric positive definite and we can apply the CG algorithm to any linear system involving this matrix.
+Note that applying the preconditioner from the left and from the right in this way ensures that the matrix stays symmetric positive definite, and we can apply the CG algorithm to any linear system involving this matrix.
 Moreover, because \(\mat{R}\) is upper triangular multiplying \(\mat{R}^{-1}\) or \(\mat{R}^{-T}\) with a vector can be done efficiently in \(O(m^2)\) using a triangular solve.
 The following theorem shows that this preconditioner leads to bounds on the condition number of the matrix which can be used to bound the number of CG iterations needed to reach a certain error estimate.
 
@@ -107,7 +107,7 @@ which implies the following bound on the condition number of their product:
 \end{lemma}
 \begin{proof}
 The matrices \(\mat{R}^{-T}\mat{B}^T\) and \(\mat{B}\mat{R}^{-1}\) are transposes of each other and hence have the same singular values.
-By the Courant-Fisher minmax theorem (e.g.~\cite[Theorem 3.1.2]{HornJohnson-TopicsInMatrixAnalysis})
+By the Courant--Fisher min-max theorem (e.g.~\cite[Theorem 3.1.2]{HornJohnson-TopicsInMatrixAnalysis})
 the minimum and maximum squared singular values of \(\mat{B}\mat{R}^{-1}\) are the same as the minimum and maximum values of \( \norm{\mat{B}\mat{R}^{-1} \tilde{\vek{z}}}_2^2 / \norm{\tilde{\vek{z}}}_2^2\) over all \(\tilde{\vek{z}} \in \R^n\).
 By \cref{def:subspace-embedding} applied to \(\vek{z} = \mat{R}^{-1} \tilde{\vek{z}}\) we have
 \[
@@ -118,7 +118,7 @@ By \cref{def:subspace-embedding} applied to \(\vek{z} = \mat{R}^{-1} \tilde{\vek
   = \norm{\tilde{\vek{z}}}_2^2
 \]
 for all \(\tilde{\vek{z}} \in \R^m\) and similarly \((1+\e)\norm{\mat{B}\mat{R}^{-1} \tilde{\vek{z}}}_2^2 \geq \norm{\tilde{\vek{z}}}_2^2\).
-Therefore
+Therefore,
 \[ \frac{1}{1 + \e} \leq \frac{\norm{\mat{B}\mat{R}^{-1} \tilde{\vek{z}}}_2^2}{\norm{\tilde{\vek{z}}}_2^2} \leq \frac{1}{1 - \e} \]
 which proves the bounds on the singular values.
 The condition number of a matrix is defined as the largest singular value divided by the smallest singular value.
@@ -173,7 +173,7 @@ Similar to the method of \textcite{Avron-FasterRandomizedInfeasibleIPMs}, we cho
 This also allows us to bound the size of the perturbation vector by the size of \(\vek{f}\).
 
 \begin{lemma}\label{thm:perturbation-vector}
-Suppose \(\mat{W}\) is a \(s\)-hashing matrix and \(\mat{Q}\mat{R}\) is the QR decomposition of \(\mat{W}\mat{D}\mat{A}^T\).
+Suppose \(\mat{W}\) is an \(s\)-hashing matrix and \(\mat{Q}\mat{R}\) is the QR decomposition of \(\mat{W}\mat{D}\mat{A}^T\).
 Given a vector \(\vek{f} \in \R^m\) the vector
 \[ \vek{v} = {(\mat{S}\mat{X})}^{1/2} \mat{W}^T \mat{Q} \vek{f} \]
 satisfies \( \mat{A}\mat{S}^{-1}\vek{v} = \mat{R}^T \vek{f} \) and \(\norm{\vek{v}}_2 \leq n \sqrt{\mu} \norm{\vek{f}}_2\).
@@ -216,13 +216,13 @@ Combining these results,
 as claimed.
 \end{proof}
 
-Note that compared to the corresponding result in Lemma 4 of~\cite{Avron-FasterRandomizedInfeasibleIPMs} the bound \(\norm{\vek{v}}_2 \leq n \sqrt{\mu} \norm{\vek{f}}_2\) is worse by a factor of \(\sqrt{n}\) but the proof does not introduce any additional randomness and this change does not affect any asymptotic runtime bounds.
+Note that compared to the corresponding result in Lemma 4 of~\cite{Avron-FasterRandomizedInfeasibleIPMs} the bound \(\norm{\vek{v}}_2 \leq n \sqrt{\mu} \norm{\vek{f}}_2\) is worse by a factor of \(\sqrt{n}\), but the proof does not introduce any additional randomness and this change does not affect any asymptotic runtime bounds.
 
 \section{Computing an Approximate Newton Direction}\label{sec:sketching-approximate-newton}
 
 The previous considerations give rise to \cref{alg:newton-direction} that tries to determine an approximate Newton direction as in \cref{eqn:perturbed-search-direction} with \(\norm{\vek{v}}_2 \leq \e_{\vek{v}}\).
-The behavior of this algorithm in the case that \(\mat{W}\) is not a subspace embedding for \(\mat{D}\mat{A}^T\) will not be analysed, may not be well-defined and will be referred to as a \emph{failure case}.
-It is unclear whether there is an efficient way to recognize such a sketching failure but in any case choosing \(\delta\) appropriately later ensures that this will be an exceptionally rare occurence.
+The behaviour of this algorithm in the case that \(\mat{W}\) is not a subspace embedding for \(\mat{D}\mat{A}^T\) will not be analysed, may not be well-defined and will be referred to as a \emph{failure case}.
+It is unclear whether there is an efficient way to recognize such a sketching failure but in any case choosing \(\delta\) appropriately later ensures that this will be an exceptionally rare occurrence.
 
 \begin{algorithm}
   \SetKwInOut{Input}{Input}
