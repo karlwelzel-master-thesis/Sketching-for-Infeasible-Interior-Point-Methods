@@ -16,3 +16,11 @@ nonzero
 OSEs
 nullspace
 Courant
+scipy
+MOSEK
+Mehrotra
+nonnegativity
+numpy
+OpenBLAS
+unpreconditioned
+unsketched

@@ -47,10 +47,10 @@ The Newton system that would correspond to \cref{eqn:newton-system} is now given
   \end{pmatrix}
 \end{equation}
 where \(\mu = (\vek{x}^T \vek{s} + \tau \kappa)/(n+1)\).
-In the implementation the right hand side is modified to balance out the ambitiousness of reducing the infeasibility and the complementarity gap using heuristics.
-Optionally, one can also enable an adaptation of Mehrotra's predictor-corrector approach first proposed in \cite{Mehrotra-PredictorCorrector} which first solves \cref{eqn:homogeneous-newton-system} for \(\sigma = 0\) and then solves the same system with a modified right hand side to determine the search direction.
+In the implementation the right-hand side is modified to balance out the ambitiousness of reducing the infeasibility and the complementarity gap using heuristics.
+Optionally, one can also enable an adaptation of Mehrotra's predictor-corrector approach first proposed in \cite{Mehrotra-PredictorCorrector} which first solves \cref{eqn:homogeneous-newton-system} for \(\sigma = 0\) and then solves the same system with a modified right-hand side to determine the search direction.
 
-In any case, it is necessary to solve \cref{eqn:homogeneous-newton-system} for various right hand sides.
+In any case, it is necessary to solve \cref{eqn:homogeneous-newton-system} for various right-hand sides.
 The problem can be simplified as in \cref{chap:ipm} by exploiting that \(\mat{X}\) and \(\mat{S}\) are easily invertible.
 The remaining linear system involves the matrix
 \begin{equation}
@@ -63,7 +63,7 @@ The remaining linear system involves the matrix
 and can be transformed into two linear systems using the matrix from the augmented system \cref{eqn:augmented-system}.
 Each of these can now be solved using the normal equation \(\mat{A}\mat{D}^2\mat{A}^T\vek{v} = \vek{p}\) for some vector \(\vek{p}\).
 The details of this transformation process can be found in section 5 of \cite{AndersenAndersen-MosekInteriorPointMethod}.
-The important takeaway is that solving \cref{eqn:homogeneous-newton-system} can be done by solving the normal equation twice for different right hand sides and some cheap matrix-vector products.
+The important takeaway is that solving \cref{eqn:homogeneous-newton-system} can be done by solving the normal equation twice for different right-hand sides and some cheap matrix-vector products.
 This allows us to use the sketching based preconditioning explained in \cref{chap:sketching} inside this IPM implementation.
 Moreover, because the two linear systems involve the same matrix the preconditioner only needs to be determined once for both systems.
 
@@ -90,7 +90,7 @@ To evaluate the performance of the IPM, random LP instances
 \begin{equation}\label{eqn:primal-lp-instance}
   \min \vek{c}^T \vek{x} \quad \text{subject to} \quad \mat{A}\vek{x} = \vek{b}, \ \vek{x} \geq \vek{0} \tag{P}
  \end{equation}
-with \(\mat{A} \in \R^{m \times n}\), \(\vek{b} \in \R^m\), \(\vek{c} \in \R^n\) were generated that fit all of the desired characteristics: \(m \ll n\), \(\mat{A}\) is sparse, \(\rank(\mat{A}) = m\) and the LP is feasible and bounded.
+with \(\mat{A} \in \R^{m \times n}\), \(\vek{b} \in \R^m\), \(\vek{c} \in \R^n\) were generated that fit all the desired characteristics: \(m \ll n\), \(\mat{A}\) is sparse, \(\rank(\mat{A}) = m\) and the LP is feasible and bounded.
 To that end, we chose \(m = 1\,000\), \(n = 100\,000\) and constructed \(\mat{A}\) by randomly choosing two nonzero entries per column which were filled with values drawn from a standard normal distribution and also adding normally distributed values on the diagonal.
 This ensures that \(\mat{A}\) is a sparse rectangular matrix with full row rank.
 In order to obtain an LP that is feasible and bounded it is easiest to generate it a way that both the primal and dual problem are feasible.
@@ -108,8 +108,8 @@ The code for the homogeneous IPM algorithm described above was taken from the \t
 To avoid inconsistent results the routines for eliminating unnecessary constraints and automatically rescaling the instances were disabled as were the use of the predictor-corrector method and the initial point heuristic.
 Each parameter combination in the following experiments were run twice on the same four randomly generated instances.
 This way we have hopefully captured the typical behaviour of the algorithm without giving some parameter setting an unfair advantage based on luck.
-To visualize the range of recorded values the following graphs all include errorbars.
-The height of the line or bar indicates the median value while the errorbars indicate the range from the 5th percentile to the 95th percentile.
+To visualize the range of recorded values the following graphs all include error bars.
+The height of the line or bar indicates the median value while the error bars indicate the range from the 5th percentile to the 95th percentile.
 
 \section{Impact of the Sketching Parameters}
 
@@ -159,7 +159,7 @@ Interestingly, the lower end of the error bars line up for every fixed value of 
 
 Next, \cref{fig:sparsity} shows the sparsity of \(\mat{W}\mat{D}\mat{A}^T\) by plotting the number of nonzero entries of the matrix.
 While in this work the impact of the sparsity on the running time is negligible, as we will see, for other applications the sparsity preservation that is achieved by sketching with a sparse matrix may be of great importance.
-The red line indicates the number of nonzero entries of \(\mat{A}^T\) itself, all other colors bear the same meaning as in \cref{fig:condition_number}.
+The red line indicates the number of nonzero entries of \(\mat{A}^T\) itself, all other colours bear the same meaning as in \cref{fig:condition_number}.
 A simple upper bound to the number of nonzero entries is given by \(\nnz(\mat{W}\mat{D}\mat{A}^T) \leq s \nnz(\mat{A})\).
 Even though in reality the number of nonzero entries is lower, the graph reflects that \(s\) is the main influence on the number of nonzero entries while the value of \(w\) only plays a minor role.
 Note that for example, for \(w = 2m\) about \(25\%\) to \(40\%\) of the entries of the sketched matrix are nonzero while the same value for \(\mat{A}\) is at around \(0.2\%\).
@@ -200,18 +200,18 @@ This means that the absolute number of nonzero entries is only increased by a sm
 
 \Cref{fig:generate_sketch_duration,fig:sketching_duration,fig:decomposition_duration} visualize the time spent in the different steps of sketching.
 First, consider generating the sketching matrix \(\mat{W}\).
-It turns out, that randomly sampling the row indices from \(\{1, \ldots, m\}\) for all columns without replacement is much faster than sampling them with replacement for each column separately, so it was beneficial to generate slightly more row indices than needed and then discard those instance where collisions occured.
+It turns out, that randomly sampling the row indices from \(\{1, \ldots, m\}\) for all columns without replacement is much faster than sampling them with replacement for each column separately, so it was beneficial to generate slightly more row indices than needed and then discard those instance where collisions occurred.
 This deletion process might explain the low dependence on \(w\) in \cref{fig:generate_sketch_duration} but in any case the time is negligibly small for our purposes.
 The time it takes to multiply the sketching matrix with \(\mat{D}\mat{A}^T\) is similarly small as shown by \cref{fig:sketching_duration}.
 Similarly to the number of nonzero entries of \(\mat{W}\mat{D}\mat{A}^T\) this duration mainly depends on the value of \(s\).
 The majority of the sketching process is actually spent determining a QR decomposition of \(\mat{W}\mat{D}\mat{A}^T\), see \cref{fig:decomposition_duration}.
-Because the available sparse QR implementation did not bring any performance gains a QR decomposition algorithm for dense matrices was used whose runtime, unsurprinsingly, mainly depends on the matrix dimensions, i.e. on \(w\).
-As such the runtime of determining a preconditioner depends mainly on \(w\) so we chose a moderate value of \(w=2m\) and a large value of \(s=5\) for the following experiments.
+Because the available sparse QR implementation did not bring any performance gains a QR decomposition algorithm for dense matrices was used whose runtime, unsurprisingly, mainly depends on the matrix dimensions, i.e. on \(w\).
+As such the runtime of determining a preconditioner depends mainly on \(w\), so we chose a moderate value of \(w=2m\) and a large value of \(s=5\) for the following experiments.
 
 \section{Impact of the CG Tolerance}
 
 Any direct solver for a linear system takes a fixed amount of time to achieve a solution of very high accuracy.
-Iterative solvers come with the benefit that the solutions are refined in every iteration so that a tradeoff between running time and accuracy is possible.
+Iterative solvers come with the benefit that the solutions are refined in every iteration so that a trade-off between running time and accuracy is possible.
 Due to numerical difficulties iterative solvers cannot achieve arbitrarily low errors and so it was easiest to fix the number of CG iterations at different values to see how they impact the solver accuracy and subsequently the course of the IPM.
 
 \begin{figure}[tbp]
@@ -256,10 +256,10 @@ Compared to the Cholesky decomposition the relative errors for solving the norma
 The effect on the accuracy of the IPM is exemplified in \cref{fig:accuracy_history}.
 Here, the solution accuracy as measured by \(\rho_{\mathrm{tol}}\) is tracked over the final iterations of the IPM for one of the randomly generated LP instance.
 It can be clearly seen that at some point during the optimisation process a breakdown occurs that leads to a sudden increase of \(\rho_{\mathrm{tol}}\).
-In our experiments this was always due to a increase in \(\rho_p\) which measures the primal feasibility which can occur because the IPM implementation does not include a bound on the primal and dual residuals in its neighbourhood definition. 
+In our experiments this was always due to an increase in \(\rho_p\) which measures the primal feasibility which can occur because the IPM implementation does not include a bound on the primal and dual residuals in its neighbourhood definition. 
 It is not clear if adding this bound would help to minimize \(\rho_{\mathrm{tol}}\) further or just lead to miniscule step sizes \(\alpha\).
 For this IPM implementation as expected, the minimum value of \(\rho_{\mathrm{tol}}\) is lower the smaller the error in the solution of the normal equation.
-The tradeoff between solution accuracy and time spent per iteration can be more closely examined in \cref{fig:accuracy_vs_time}.
+The trade-off between solution accuracy and time spent per iteration can be more closely examined in \cref{fig:accuracy_vs_time}.
 One can conclude that more CG iterations lead to better solutions up to about 100 iterations and also that using a Cholesky factorisation consistently outperforms the iterative solver both in solution quality and in runtime.
 
 The time per IPM iteration as recorded in \cref{fig:accuracy_vs_time} includes both the time to compute the preconditioner \(\mat{R}\) and the time it takes the CG solver to perform a fixed amount of iterations.
@@ -273,7 +273,7 @@ To finish this chapter, a direct comparison between our iterative approach and d
 The two direct methods we will compare it with are a Cholesky decomposition of \(\mat{A}\mat{D}^2\mat{A}^T\) and a QR decomposition of the unsketched matrix \(\mat{D}\mat{A}^T\).
 The parameters for preconditioning were chosen to be \(w=2m\) and \(s=5\) and 100 CG iterations were performed.
 \Cref{table:runtime_comparison} shows that while computing the QR decomposition of the sketched matrix \(\mat{W}\mat{D}\mat{A}^T\) is much faster than computing the QR decomposition of the full matrix \(\mat{D}\mat{A}^T\) the preconditioned CG method cannot compete with the speed of the Cholesky decomposition.
-Aditionally, \cref{table:accuracy_comparison} demonstrates that the direct approach generates more accurate solutions as the iterative approach can.
+Additionally, \cref{table:accuracy_comparison} demonstrates that the direct approach generates more accurate solutions as the iterative approach can.
 
 \begin{table}[htbp]
   \centering
@@ -288,8 +288,8 @@ Aditionally, \cref{table:accuracy_comparison} demonstrates that the direct appro
     Method & {\makecell{Computing \\ \(\mat{W}\mat{D}\mat{A}^T\)}} & {\makecell{QR/Cholesky \\ decomposition}} & {\makecell{Solving \\ \(\mat{A}\mat{D}^2\mat{A}^T\tilde{\vek{q}} = \vek{p}\)}} & {Total} \\
     \midrule
     Preconditioned CG      & 0.052411 &  0.382210 & 0.686770 &  1.121391 \\
-    Cholesky decomposition & {-}      &  0.042749 & 0.003998 &  0.046747 \\
-    QR decomposition       & {-}      & 24.074416 & 0.004848 & 24.079265 \\
+    Cholesky decomposition & {---}      &  0.042749 & 0.003998 &  0.046747 \\
+    QR decomposition       & {---}      & 24.074416 & 0.004848 & 24.079265 \\
     \bottomrule
   \end{tabular}
   \caption{Runtime comparison: Average time per IPM iteration in seconds}
@@ -323,6 +323,6 @@ Aditionally, \cref{table:accuracy_comparison} demonstrates that the direct appro
 \section{Summary}
 
 The experiments in this chapter showed that indeed the QR decomposition of \(\mat{W}\mat{D}\mat{A}^T\), where \(\mat{W}\) is a sparse sketching matrix, produces good preconditioners that are able to reduce the condition number of \(\mat{A}\mat{D}^2\mat{A}^T\) by multiple orders of magnitude.
-The quality of the linear solver for the normal equation directly affects the solution accuracy of the IPM algorithm as a whole so that the time-accuracy tradeoff of the iterative solver can be directly transferred to a time-accuracy tradeoff for the IPM algorithm.
+The quality of the linear solver for the normal equation directly affects the solution accuracy of the IPM algorithm as a whole so that the time-accuracy trade-off of the iterative solver can be directly transferred to a time-accuracy trade-off for the IPM algorithm.
 Unfortunately, even if only very few CG iterations are performed solving the normal equation using the Cholesky decomposition is much faster because computing the QR decomposition of \(\mat{W}\mat{D}\mat{A}^T\) already takes about ten times as long as computing the Cholesky decomposition of \(\mat{A}\mat{D}^2\mat{A}^T\).
 Whether there is a parameter regime regarding matrix dimensions and the sparsity of \(\mat{A}\) where the preconditioned CG method can outperform the Cholesky decomposition is still an open question.
