@@ -1,19 +1,27 @@
 % arara: latexmk
 
-\documentclass[a4paper, 12pt, egregdoesnotlikesansseriftitles]{scrreprt}
+\documentclass[a4paper, 12pt, egregdoesnotlikesansseriftitles, notitlepage, abstract]{scrreprt}
 
 \usepackage{import}
 \subimport{settings/}{_all.tex}
 \addbibresource{citations.bib}
 
 \title{Sketching for Infeasible Interior-Point Methods}
-\author{Candidate Number: 1054613 \\[1em] MSc in Mathematical Sciences \\ University of Oxford}
+\author{Candidate Number: 1054613 \\ MSc in Mathematical Sciences \\ University of Oxford}
 \date{Trinity Term 2021}
 
 \begin{document}
 
 \hypersetup{pageanchor=false}
+
 \maketitle
+
+\begin{abstract}
+    At the heart of interior-point methods for linear programming is the solution of a least-squares type linear system in every iteration.
+    A recently proposed preconditioning technique based on sketching allows to employ iterative methods for the solution of this linear system.
+    We simplified the original proofs on how this technique can be combined with an infeasible interior-point method to guarantee convergence and conducted novel experiments to verify the effectiveness of the preconditioners and compare the performance with classical direct solvers.
+\end{abstract}
+
 \hypersetup{pageanchor=true}
 
 \tableofcontents
