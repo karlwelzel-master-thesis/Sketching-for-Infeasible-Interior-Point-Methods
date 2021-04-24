@@ -2,7 +2,7 @@
 
 Optimisation problems are ubiquitous in science and industry.
 An important subclass of optimisation problems are linear programs (LPs), where the objective function as well as the constraints on the variables are linear.
-They take a primary role because of the extensive research on them and the existence of efficient codes to solve them optimally.
+They take a primary role because of the extensive research on them and the existence of efficient programs to solve them optimally.
 Many problems can be modelled or approximated in this way, for example \(\ell_1\)-regularized SVMs~\cite{ZhuRossetTibshiraniHastie-1normSupportVectorMachines} in Machine Learning, MAP inference of Markov random fields~\cite{MeshiGloberson-MapLpRelaxation} in statistics and linear netlength minimisation~\cite{BrennerVygen-AnalyticalMethodsInVlsiPlacement} in Chip Design.
 As the problems grow more complex the number of variables increases, and we need more efficient algorithms for solving ever larger linear programs.
 
@@ -10,7 +10,8 @@ One of the first methods that came about for solving LPs was Dantzig's simplex m
 For LPs the set of feasible points is a polytope and the simplex method can be thought of as walking through the vertices of this polytope while reducing the objective function at every step until the minimum is reached.
 It was later shown that LPs in \(n\) dimensions exist whose polytope has \(2^n\) vertices and which are all visited by the simplex method so that the worst case complexity of the simplex method is exponential.
 After a theoretical breakthrough by Khachiyan's ellipsoid method~\cite{Khachiyan-Ellipsoid1,Khachiyan-Ellipsoid2}, a polynomial time algorithm for LPs, which unfortunately is not competitive in practice, the Interior-Point Method (IPM) developed by \textcite{Karmarkar-IPM} was shown to converge in polynomial time while also being competitive in practice.
-Since then, many variants of IPMs have been developed some with better theoretical guarantees others better in practice.
+Since then, many variants of IPMs have been developed.
+Some of them have better theoretical guarantees others are faster in practice.
 
 The main bottleneck of IPMs is the solution of a linear system which determines the search direction in every step.
 Carefully reformulating this system, solving it can be broken down to solving the symmetric positive-definite linear system \(\mat{A} \mat{D}^2 \mat{A}^T \Delta \vek{y} = \vek{p}\) for some vector \(\vek{p}\).
@@ -23,23 +24,23 @@ Based on the work by \textcite{Avron-FasterRandomizedInfeasibleIPMs} we will sho
 
 In the last decade many advances in numerical linear algebra where achieved by incorporating randomness.
 We will focus on a RLA tool called sketching which is relevant for our work.
-\textcite{Woodruff-Sketching} gives an overview on how sketching matrices lead to dimensionality reductions that can be applied to least squares problems, low-rank approximation and graph-sparsification.
+\textcite{Woodruff-Sketching} gives an overview on how sketching matrices lead to dimensionality reductions that can be applied to least-squares problems, low-rank approximation and graph-sparsification.
 The key idea is that a matrix \(\mat{B} \in \R^{n \times m}\) with \(m \ll n\) has an \(m\)-dimensional column space that forms a subspace of \(\R^n\).
 This ambient dimension of \(n\) is unnecessarily large.
-There are random \(w \times n\) matrices describing linear maps which approximately preserve the geometry of any fixed \(m\)-dimensional subspace of \(\R^n\) with high probability.
-These are called \emph{oblivious subspace embeddings}.
-The size of \(w\) depends on \(m\), the approximation tolerance and on the failure probability but not on \(n\), so we can significantly reduce dimensions at the cost of some approximation error and a failure probability.
+For \(w \in \N\) large enough there are ensembles of random \(\R^n \to \R^w\) linear maps such that for any fixed \(m\)-dimensional subspace of \(\R^n\) its geometry is preserved by a randomly chosen map with high probability.
+These ensembles are called \emph{oblivious subspace embeddings}.
+The size of \(w\) depends on \(m\), the approximation tolerance and the failure probability but not on \(n\), so we can significantly reduce dimensions at the cost of some approximation error and a failure probability.
 While matrices with properly normalized Gaussian entries form oblivious subspace embeddings~\cite[Theorem 6]{Woodruff-Sketching}, applying them to a vector in \(\R^n\) is expensive as these matrices are dense.
 \textcite{AilonChazelle-FastJohnsonLindenstraussTransform} developed so-called Fast-Johnson-Lindenstrauss-Transforms which enable fast matrix-vector multiplications. For sparse matrices \(\mat{B}\) there exist sparse embedding matrices~\cite{Achlioptas-SparseSketching,Cohen-NearlyTightObliviousSubspaceEmbeddings} to speed up forming the product.
 
 In this work, we will assume that \(\mat{A}\) is a sparse \(m \times n\) matrix with \(m \ll n\) and show that a decomposition of the product of a sparse embedding matrix and \(\mat{D}\mat{A}^T\) can serve as a preconditioner for the \(\mat{A}\mat{D}^2\mat{A}^T\).
 \Textcite{Avron-FasterRandomizedInfeasibleIPMs} combined this idea for preconditioning with an iterative method to solve the normal equation and the convergence proof of \textcite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs}.
-\Textcite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs} showed that a long-step infeasible primal-dual IPM converges in \(O(n^2 \log(1/\e))\) iterations if the Newton direction is determined sufficiently accurate in every iteration.
-This allows us to bound the total number of operations by bounding the runtime of each iteration given that we want a high success probability over all iterations.
+\Textcite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs} showed that a long-step infeasible primal-dual IPM converges in \(O(n^2 \log(1/\e))\) iterations, where \(\e\) is the required accuracy, if the Newton direction is determined sufficiently accurate in every iteration.
+This allows us to bound the total number of operations by bounding the runtime of each iteration given that we want a high overall success probability.
 
-The same idea of preconditioning using a decomposition of a reduced matrix was previously successfully applied in Blendenpik~\cite{Avron-Blendenpik} and LSRN~\cite{MengSaundersMahoney-LSRN} to linear least squares problems.
-Blendenpik~\cite{Avron-Blendenpik} uses a dimensionality reduction technique based on randomly sampling rows of after applying a Walsh--Hadamard transform, a discrete cosine transform or a discrete Hartley transform, that aim to even out the importance of each row, and determines the preconditioner using a QR decomposition. %chktex 8
-The authors of LSRN \textcite{MengSaundersMahoney-LSRN} decided to use a Gaussian sketch and an SVD of the sketched matrix as a preconditioner.
+The same idea of preconditioning using a decomposition of a reduced matrix was previously successfully applied in Blendenpik~\cite{Avron-Blendenpik} and LSRN~\cite{MengSaundersMahoney-LSRN} to linear least-squares problems.
+Blendenpik~\cite{Avron-Blendenpik} uses a dimensionality reduction technique based on random row sampling after applying a transformation that aims to even out the importance of each row, and determines the preconditioner using a QR decomposition.
+The authors of LSRN~\cite{MengSaundersMahoney-LSRN} decided to use a Gaussian sketch and an SVD of the sketched matrix as a preconditioner.
 Afterwards both methods use an iterative least-squares solver to find the solution to the preconditioned problem.
 Both papers report that the generated preconditioners bring the condition number down to a small constant and provide a great speed-up compared to direct methods based on decompositions of the full-sized matrix.
 
@@ -51,11 +52,12 @@ This is achieved by sampling a fraction of the variables randomly, solving the r
 The data structures, algorithms and proofs are all very technical and complicated, as such it is not established if efficient implementations of their ideas exist.
 Lastly, as already mentioned,~\cite{Avron-FasterRandomizedInfeasibleIPMs} is the basis of this thesis.
 Their main results are described above and will be presented in detail in the following chapters.
-In their paper they opted for a practical long-step infeasible IPM but focused mainly on the theoretical analysis of this algorithm assuming exact arithmetic.
-Their experiments were done using Gaussian sketching, and they only recorded the number of IPM and CG iterations but did not report whether this leads to a reduction in running time.
-This thesis improves the practicability of their algorithm by showing that a QR decomposition of the sketched matrix produces a preconditioner of the same quality as an SVD, simplifies the proofs by establishing the convergence result of the IPM and effectiveness of the preconditioner separately and extends the experiments by evaluating the preconditioning technique based on sparse sketching inside an existing IPM implementation.
 
-The notation for Interior Point Methods and the specific long-step infeasible IPM used in~\cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs} along with a convergence result will be presented in \cref{chap:ipm}.
+This thesis is structured as follows.
+The notation for Interior-Point Methods and the specific long-step infeasible IPM used in~\cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs} along with a convergence result will be presented in \cref{chap:ipm}.
 \cref{chap:sketching} will be concerned with the concepts of sketching that are useful for us and how its approximation guarantees lead to good preconditioners.
-Afterwards, \cref{chap:convergence} will lay out how to combine the two results and contains all the proofs to show that under suitable conditions the Newton direction determined by the preconditioned system is good enough to ensure convergence in \(O(n^2 \log(n) (m^3 + \nnz(\mat{A})))\) operations.
+Compared to~\cite{Avron-FasterRandomizedInfeasibleIPMs} we will show that a QR decomposition of the sketched matrix produces a preconditioner of the same quality as an SVD.
+\cref{chap:convergence} will contain all the proofs to show that under suitable conditions the preconditioning technique can be used to obtain a high accuracy LP solution using \(O(n^2 \log(n) (m^3 + \nnz(\mat{A})))\) operations with only a small failure probability.
+The proofs are adapted from \textcite{Avron-FasterRandomizedInfeasibleIPMs} and simplified to first establish the effectiveness of the preconditioner and the convergence result for the IPM separately and combine them afterwards.
+This way, the preconditioning technique can be integrated into convergence proofs for other IPMs more easily in the future.
 Lastly, we will incorporate the presented preconditioning technique into an existing IPM implementation based on~\cite{AndersenAndersen-MosekInteriorPointMethod} and evaluate its effectiveness in \cref{chap:experiments}.
