@@ -15,16 +15,16 @@ Let \((\vek{x}, \vek{y}, \vek{s}) \in \mathcal{N}_{-\infty}(\gamma)\) denote a p
   \mu(\alpha) &\coloneqq {\vek{x}(\alpha)}^T \vek{s}(\alpha) \\
   \vek{r}(\alpha) &\coloneqq (\mat{A}\vek{x}(\alpha) - \vek{b}, \mat{A}^T \vek{y}(\alpha) + \vek{s}(\alpha) - \vek{c}).
 \end{align}
-Using this notation~\textcite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs} showed that the stepsize \(\bar{\alpha}\) determined in \cref{alg:ipm} is bounded from below.
+Using this notation~\textcite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs} showed that the step size \(\bar{\alpha}\) determined in \cref{alg:ipm} is bounded from below.
 
 \begin{lemma}[Lemma 3.6 in~\cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs}]\label{thm:alpha-bar-bound}
   Assume that 
   \begin{itemize}
     \item \(\gamma \in (0, 1)\), \(\sigma \in (0, \frac{4}{5})\),
     \item \((\vek{x}, \vek{y}, \vek{s}) \in \mathcal{N}_{-\infty}(\gamma)\) and
-    \item \((\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}})\) satifies \cref{eqn:perturbed-search-direction} such that \(\norm{\vek{v}}_\infty \leq \gamma \sigma \mu / 4\).
+    \item \((\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}})\) satisfies \cref{eqn:perturbed-search-direction} such that \(\norm{\vek{v}}_\infty \leq \gamma \sigma \mu / 4\).
   \end{itemize}
-  Then the stepsize \(\bar{\alpha}\) determined in \cref{line:alpha-tilde,line:alpha-bar} satifies
+  Then the step size \(\bar{\alpha}\) determined in \cref{line:alpha-tilde,line:alpha-bar} satisfies
   \[ \bar{\alpha} \geq \min \Set{1, \frac{\min \Set{\gamma \sigma, 1 - \frac{5}{4}\sigma} \mu}{4 \norm{\hat{\Delta\vek{x}} \circ \hat{\Delta\vek{s}}}_\infty}} \]
   and
   \[ \mu(\bar{\alpha}) \leq \Paren{1 - \Paren{1 - \frac{5}{4}\sigma} \frac{\bar{\alpha}}{2}} \mu. \]
@@ -44,7 +44,7 @@ In other words, \(\vek{r} = \eta \vek{r}^0\) with \(\eta \in [0, 1]\) for every 
     \item \(\gamma \in (0, 1)\), \(\sigma \in (0, 1)\), 
     \item \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \mathcal{G}\) satisfies \((\vek{x}^0, \vek{s}^0) \geq (\vek{x}^*, \vek{s}^*)\) for some \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\), 
     \item \((\vek{x}, \vek{y}, \vek{s}) \in \mathcal{N}_{-\infty}(\gamma)\) with \(\vek{r} = \eta \vek{r}^0\) for some \(\eta \in [0, 1]\) and
-    \item \((\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}})\) satifies \cref{eqn:perturbed-search-direction} such that \(\norm{\vek{v}}_2 \leq \gamma \sigma \mu / 4\).
+    \item \((\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}})\) satisfies \cref{eqn:perturbed-search-direction} such that \(\norm{\vek{v}}_2 \leq \gamma \sigma \mu / 4\).
   \end{itemize}
   Then
   \[ \norm{\mat{D}^{-1}\hat{\Delta\vek{x}}}_2, \norm{\mat{D}\hat{\Delta\vek{s}}}_2 \leq \Paren{1 + \frac{\sigma^2}{1- \gamma} - 2\sigma}^{1/2} \sqrt{n \mu} + \frac{6}{\sqrt{1 - \gamma}} n\sqrt{\mu} + \frac{\gamma \sigma}{4 \sqrt{1 - \gamma}}\sqrt{\mu}\]
@@ -55,7 +55,7 @@ These two lemmas are enough to show the convergence of \cref{alg:ipm}.
 
 \begin{proof}[Proof of \cref{thm:ipm-convergence}]
   By the choice of the initial point \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \mathcal{N}_{-\infty}(\gamma)\) and \(\bar{\alpha}\) in \cref{line:alpha-tilde,line:alpha-bar} every iterate \((\vek{x}^k, \vek{y}^k, \vek{s}^k)\) is inside the specified neighbourhood \(\mathcal{N}_{-\infty}(\gamma)\).
-  Therefore, \(\mu^k \leq \e_\mu \mu^0\) implies \(\norm{\vek{r}^k} \leq \e_\mu \norm{\vek{r}^0}\) and it suffices to show the former for some \(k = O(n^2 \log(1/\e_\mu))\).
+  Therefore, \(\mu^k \leq \e_\mu \mu^0\) implies \(\norm{\vek{r}^k} \leq \e_\mu \norm{\vek{r}^0}\), and it suffices to show the former for some \(k = O(n^2 \log(1/\e_\mu))\).
 
   By \cref{thm:delta-x-s-bound} and the fact that \(\mat{D}\) and \(\mat{D}^{-1}\) are diagonal matrices the search direction determined in \cref{line:compute-approximate-newton} satisfies
   \[ \norm{\hat{\Delta\vek{x}} \circ \hat{\Delta\vek{s}}}_\infty \leq \norm{\hat{\Delta\vek{x}} \circ \hat{\Delta\vek{s}}}_2 \leq \norm{\mat{D}^{-1}\hat{\Delta\vek{x}}}_2 \norm{\mat{D}\hat{\Delta\vek{s}}}_2 \leq C_1 n^2 \mu^k\]
@@ -75,14 +75,14 @@ These two lemmas are enough to show the convergence of \cref{alg:ipm}.
 \section{Convergence Proof for the Approximate Newton Direction Algorithm}
 
 Next, we turn to the correctness of \cref{alg:newton-direction} which is concerned with calculating a sufficiently good approximation of the Newton direction.
-As linear convergence of the CG method was already established in \cref{thm:cg-residual-bound} our main goal is to bound the norm of the initial residual \(\mat{R}^{-T}\vek{p}\).
+As linear convergence of the CG method was already established in \cref{thm:cg-residual-bound}, our main goal is to bound the norm of the initial residual \(\mat{R}^{-T}\vek{p}\).
 To this end, we introduce the following bound that can already be found in~\cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs}.
 
 \begin{lemma}[Lemma 3.2 in~\cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs}, Lemma 11 in~\cite{Avron-FasterRandomizedInfeasibleIPMs}]\label{thm:eta-bound}
   Assume that
   \begin{itemize}
     \item \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \mathcal{G}\) satisfies \((\vek{x}^0, \vek{s}^0) \geq (\vek{x}^*, \vek{s}^*)\) for some \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\) and
-    \item \((\vek{x}, \vek{y}, \vek{s}) \in \mathcal{G}\) satifies \(\vek{r} = \eta \vek{r}^0\) for some \(\eta \in [0, 1]\).
+    \item \((\vek{x}, \vek{y}, \vek{s}) \in \mathcal{G}\) satisfies \(\vek{r} = \eta \vek{r}^0\) for some \(\eta \in [0, 1]\).
   \end{itemize}
   Then \(\eta \leq \vek{x}^T \vek{s} / {\vek{x}^0}^T \vek{s}^0\) implies \(\eta ({\vek{x}^0}^T \vek{s} + \vek{x}^T {\vek{s}^0}) \leq 3 n \mu\).
   % Assume that the point \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \mathcal{G}\) satisfies \((\vek{x}^0, \vek{s}^0) \geq (\vek{x}^*, \vek{s}^*)\) for some \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\).
@@ -91,7 +91,7 @@ To this end, we introduce the following bound that can already be found in~\cite
 \end{lemma}
 
 Again, this makes use of the observation that the residual \(\vek{r}\) of any iterate lies on the line segment between \(\vek{r}^0\) and \(\vek{0}\).
-Note that additionally, by the definition of the neighbourhood \(\mathcal{N}_{-\infty}(\gamma)\), any point in it with \(\vek{r} = \eta \vek{r}^0\) also satisifies \(\eta \leq \mu^k / \mu^0 = {\vek{x}^k}^T \vek{s}^k / {\vek{x}^0}^T \vek{s}^0\).
+Note that additionally, by the definition of the neighbourhood \(\mathcal{N}_{-\infty}(\gamma)\), any point in it with \(\vek{r} = \eta \vek{r}^0\) also satisfies \(\eta \leq \mu^k / \mu^0 = {\vek{x}^k}^T \vek{s}^k / {\vek{x}^0}^T \vek{s}^0\).
 
 \begin{lemma}[Lemma 12 in~\cite{Avron-FasterRandomizedInfeasibleIPMs} (simplified)]\label{thm:initial-residual-bound}
   Assume that
@@ -99,7 +99,7 @@ Note that additionally, by the definition of the neighbourhood \(\mathcal{N}_{-\
     \item \(\gamma \in (0, 1)\), \(\sigma \in (0, 1)\), \((\vek{x}^*, \vek{y}^*, \vek{s}^*) \in \mathcal{F}^*\),
     \item \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \mathcal{G}\) satisfies \(\vek{x}^0 \geq \vek{x}^*\) and \(\vek{s}^0 \geq \max\set{\vek{s}^*, \abs{\mat{A}^T\vek{y}^0 - \vek{c}}}\)
     \item \((\vek{x}, \vek{y}, \vek{s}) \in \mathcal{N}_{-\infty}(\gamma)\) satisfies \(\vek{r} = \eta \vek{r}^0\) for some \(\eta \in [0, 1]\) and
-    \item \(\mat{R}^{-T} \in \R^{m \times m}\) satisifies \(\norm{\mat{R}^{-T}\mat{A}\mat{D}}_2 \leq \sqrt{2}\).
+    \item \(\mat{R}^{-T} \in \R^{m \times m}\) satisfies \(\norm{\mat{R}^{-T}\mat{A}\mat{D}}_2 \leq \sqrt{2}\).
   \end{itemize}
   Then
   \[ \norm{\mat{R}^{-T} \vek{p}}_2 \leq \sqrt{\frac{2 \mu}{1 - \gamma}} \Paren{7n + \sigma \sqrt{n}} \leq 8 \sqrt{\frac{2}{1 - \gamma}} n \sqrt{\mu} \]
@@ -156,7 +156,7 @@ Note that additionally, by the definition of the neighbourhood \(\mathcal{N}_{-\
 Equipped with this result, we can prove the main result regarding \cref{alg:newton-direction}.
 
 \begin{proof}[Proof of \cref{thm:approximate-newton-convergence}]
-  By \cref{thm:sparse-ose} the matrix \(\mat{W}\) selected in \cref{line:draw-sketching-matrix} of \cref{alg:newton-direction} is a subspace embedding for \(\mat{D}\mat{A}^T\) with probability at least \(1 - \delta\), so it suffices to show all of the claims for this case.
+  By \cref{thm:sparse-ose} the matrix \(\mat{W}\) selected in \cref{line:draw-sketching-matrix} of \cref{alg:newton-direction} is a subspace embedding for \(\mat{D}\mat{A}^T\) with probability at least \(1 - \delta\), so it suffices to show all the claims for this case.
   Therefore, assume that \(\mat{W}\) is indeed a \((1 \pm \e)\) \(\ell_2\)-subspace embedding for \(\mat{D}\mat{A}^T\) from now on.
   In this case the QR decomposition \(\mat{Q}\mat{R} = \mat{W}\mat{D}\mat{A}^T\) exists and by \cref{thm:condition-number-bound} we have
   \[\norm{\mat{R}^{-T}\mat{A}\mat{D}}_2 \leq \sqrt{\frac{1}{1 - \e}} \leq \sqrt{2}\]
@@ -191,7 +191,7 @@ Equipped with this result, we can prove the main result regarding \cref{alg:newt
 
   After showing that the algorithm works correctly, we need to bound the running time.
   Multiplication with \(\mat{X}, \mat{X}^{1/2}, \mat{S}, \mat{S}^{1/2}\) and their inverses can be done in \(O(n)\), multiplication with \(\mat{A}\) and \(\mat{A}^T\) in \(O(\nnz(\mat{A}))\) and multiplication with \(\mat{R}^{-1}\) and \(\mat{R}^{-T}\) in \(O(m^2)\) using triangular solves.
-  Because \(m \leq n \leq \nnz(\mat{A})\) we can thus conclude that \cref{line:compute-residuals,line:compute-p,line:compute-delta-x,line:compute-delta-y,line:compute-delta-s} run in \(O(\nnz(\mat{A}) + m^2)\) operations.
+  Because \(m \leq n \leq \nnz(\mat{A})\), we can thus conclude that \cref{line:compute-residuals,line:compute-p,line:compute-delta-x,line:compute-delta-y,line:compute-delta-s} run in \(O(\nnz(\mat{A}) + m^2)\) operations.
   Constructing the random \(s\)-hashing matrix in \cref{line:draw-sketching-matrix} requires us to choose \(n \cdot s\) random nonzero entries and therefore needs \(O(n s)\) time.
   Computing \(\mat{W}\mat{D}\mat{A}^T\) in \cref{line:compute-qr} can be done in \(O(s \nnz(\mat{A}))\) by taking the product of each nonzero entry of \(\mat{D}\mat{A}^T\) with each nonzero entry in the appropriate column of \(\mat{W}\) and adding the result to the appropriate entry in the matrix product.
   Computing the QR decomposition of a \(w \times m\) matrix takes \(O(w m^2)\) operations.
@@ -252,7 +252,7 @@ The combination of \cref{alg:ipm,alg:newton-direction} is an efficient algorithm
   and their dependence on \(\alpha\).
   As \(\vek{x}^k(\alpha)\), \(\vek{y}^k(\alpha)\) and \(\vek{s}^k(\alpha)\) are linear in \(\alpha\), \(\mu^k(\alpha)\) and \(\vek{x}^k(\alpha) \circ \vek{s}^k(\alpha)\) are quadratic functions in alpha in each component.
   Because the search direction satisfies \cref{eqn:perturbed-search-direction}, \(\vek{r}^k(\alpha) = (1 - \alpha)\vek{r}^k(0)\) and so \(\norm{\vek{r}^k(\alpha)}_2 / \norm{\vek{r}^0}_2\) is linear in \(\alpha\).
-  Therefore all terms of interest are either linear or quadratic in \(\alpha\) and we will assume that all polynomial coefficients for these functions are determined at the start which can be done in \(O(n)\).
+  Therefore, all terms of interest are either linear or quadratic in \(\alpha\), and we will assume that all polynomial coefficients for these functions are determined at the start which can be done in \(O(n)\).
 
   We begin in \cref{line:alpha-tilde} in which the maximum \(\tilde{\alpha} \in [0, 1]\) is determined such that for all \(\alpha \in [0, \tilde{\alpha}]\) we have \((\vek{x}^k, \vek{y}^k, \vek{s}^k) + \alpha (\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}}) \in \mathcal{N}_{-\infty}(\gamma)\).
   Define
@@ -268,7 +268,7 @@ The combination of \cref{alg:ipm,alg:newton-direction} is an efficient algorithm
   because \((\vek{x}^k(0), \vek{y}^k(0), \vek{s}^k(0)) \in \mathcal{N}_{-\infty}(\gamma)\).
   Using the second characterisation \(\tilde{\alpha}_1\) can be determined in \(O(n)\) by solving \(n\) quadratic equations and \(\tilde{\alpha}_2\) can be determined in \(O(1)\) by solving one quadratic equation.
 
-  At this point \(\tilde{\alpha} = \min\{\tilde{\alpha}_1, \tilde{\alpha}_2\}\) even though the condition \(\vek{x}^k(\alpha), \vek{s}^k(\alpha) > \vek{0}\) which is part of the defintion of \(\mathcal{N}_{-\infty}(\gamma)\) is missing:
+  At this point \(\tilde{\alpha} = \min\{\tilde{\alpha}_1, \tilde{\alpha}_2\}\) even though the condition \(\vek{x}^k(\alpha), \vek{s}^k(\alpha) > \vek{0}\) which is part of the definition of \(\mathcal{N}_{-\infty}(\gamma)\) is missing:
   Any negative value of \(x_i(\alpha)\) or \(s_i(\alpha)\) is preceded by a zero of \(x_i(\alpha) s_i(\alpha) - (1 - \gamma)\mu(\alpha)\), so because \(\tilde{\alpha} \geq \tilde{\alpha}_1\) all entries of \(\vek{x}^k(\tilde{\alpha})\) and \(\vek{s}^k(\tilde{\alpha})\) are nonnegative.
   If \(x_i(\tilde{\alpha}) = 0\) or \(s_i(\tilde{\alpha}) = 0\) for some \(i\) then \(\vek{x}(\tilde{\alpha}) \circ \vek{s}(\tilde{\alpha}) \geq (1 - \gamma)\mu(\tilde{\alpha}) \vek{1}\) implies \(\mu(\tilde{\alpha}) = 0\) in which case we also have \(\vek{r}(\tilde{\alpha}) = 0\).
   This means that the only case where \(\vek{x}(\tilde{\alpha}), \vek{s}(\tilde{\alpha}) > \vek{0}\) might be violated is when a solution was determined and in this case the algorithm will terminate.
@@ -277,7 +277,7 @@ The combination of \cref{alg:ipm,alg:newton-direction} is an efficient algorithm
   Computing the stationary point of the quadratic function \(\mu(\alpha)\) takes \(O(1)\) and determining whether the minimum is attained at the boundary of \([0, \tilde{\alpha}]\) or at the stationary point can also be done in \(O(1)\).
 
   Lastly, \cref{line:compute-next-iterate} takes \(O(n)\) and \cref{line:increment-k} \(O(1)\) operations.
-  We can conclude that all computations outside of \cref{line:prepare-approximate-newton,line:compute-approximate-newton} can be completed in \(O(n)\) and therefore the worst-case complexity per iteration is still bounded by \( O \Paren{\log(n) \Paren{\nnz(\mat{A}) + m^3}} \).
+  We can conclude that all computations outside \cref{line:prepare-approximate-newton,line:compute-approximate-newton} can be completed in \(O(n)\) and therefore the worst-case complexity per iteration is still bounded by \( O \Paren{\log(n) \Paren{\nnz(\mat{A}) + m^3}} \).
   Because \(O(n^2)\) iterations need to be performed the total complexity is
   \[ O \Paren{n^2 \log(n) \Paren{\nnz(\mat{A}) + m^3}} \]
   as claimed.
