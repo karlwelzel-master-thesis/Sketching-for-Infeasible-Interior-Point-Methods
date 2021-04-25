@@ -121,25 +121,6 @@ While the condition number of the unpreconditioned system steadily rises up to a
 As predicted by the theory the condition numbers are effectively bounded by a constant which decreases as \(w\) and \(s\) increase.
 Interestingly, the lower end of the error bars line up for every fixed value of \(w\), suggesting that the value of \(w\) is the decisive factor for how low the condition number can become while \(s\) mainly influences the range of the distribution.
 
-\begin{figure}[tbp]%
-  \centering%
-  \ifdraft{%
-    \includegraphics[width=6.1in, height=3.97in]{example-image-a}%
-  }{%
-    \import{plots/}{sketching_parameters_sparsity.pgf}%
-  }
-  \caption{Sparsity of \(\mat{W}\mat{D}\mat{A}^T\) depending on \(w\) and \(s\)}%
-  \label{fig:sparsity}
-\end{figure}%
-
-Next, \cref{fig:sparsity} shows the sparsity of \(\mat{W}\mat{D}\mat{A}^T\) by plotting the number of nonzero entries of the matrix.
-While we will see that in this work the impact of the sparsity on the running time is negligible, for other applications the sparsity preservation that is achieved by sketching with a sparse matrix may be of great importance.
-The red line indicates the number of nonzero entries of \(\mat{A}^T\) itself while all other colours bear the same meaning as in \cref{fig:condition_number}.
-A simple upper bound to the number of nonzero entries is given by \(\nnz(\mat{W}\mat{D}\mat{A}^T) \leq s \nnz(\mat{A})\).
-Even though in reality the number of nonzero entries is lower, the graph reflects that \(s\) is the main influence on the number of nonzero entries while the value of \(w\) only plays a minor role.
-Note that for example for \(w = 2m\) about \(25\%\) to \(40\%\) of the entries of the sketched matrix are nonzero while the same value for \(\mat{A}\) is at around \(0.2\%\).
-This means that the absolute number of nonzero entries is only increased by a small factor, yet the relative density is increased to the point where the matrix is hardly considered sparse anymore.
-
 \begin{figure}[tbp]
   \centering
   \ifdraft{%
@@ -177,8 +158,7 @@ This means that the absolute number of nonzero entries is only increased by a sm
 First, consider generating the sketching matrix \(\mat{W}\).
 It turns out, that randomly sampling the row indices from \(\{1, \ldots, m\}\) for all columns without replacement is much faster than sampling them with replacement for each column separately, so it was beneficial to generate slightly more row indices than needed and then discard those instance where collisions occurred.
 This deletion process might explain the low dependence on \(w\) in \cref{fig:generate_sketch_duration} but in any case the time is negligibly small for our purposes.
-The time it takes to multiply the sketching matrix with \(\mat{D}\mat{A}^T\) is similarly small as shown by \cref{fig:sketching_duration}.
-Similarly to the number of nonzero entries of \(\mat{W}\mat{D}\mat{A}^T\) this duration mainly depends on the value of \(s\).
+The time it takes to multiply the sketching matrix with \(\mat{D}\mat{A}^T\) is similarly small as shown by \cref{fig:sketching_duration} and mainly depends on the value of \(s\) as predicted by the theory.
 The majority of the sketching process is actually spent determining a QR decomposition of \(\mat{W}\mat{D}\mat{A}^T\), see \cref{fig:decomposition_duration}.
 Because the available sparse QR implementation did not bring any performance gains, a QR decomposition algorithm for dense matrices was used whose runtime, unsurprisingly, mainly depends on the matrix dimensions, i.e. on \(w\).
 As such the runtime of determining a preconditioner depends mainly on \(w\), so we chose a moderate value of \(w=2m\) and a large value of \(s=5\) for the following experiments.
