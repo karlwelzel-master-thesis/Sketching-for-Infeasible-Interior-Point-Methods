@@ -65,8 +65,7 @@ Third, the stopping criterion used is based on
   \rho_A \coloneqq \frac{\abs{\vek{c}^T\vek{x} - \vek{b}^T \vek{y}}}{\tau + \abs{\vek{b}^T\vek{y}}}
 \end{equation}
 measuring the size of the primal and dual residuals and of the duality gap.
-As long as no infeasibility of the original LP is detected, the algorithm stops once the maximum of these three values drops below a user-specified tolerance.
-For our purposes let \(\rho_{\mathrm{tol}} = \max(\rho_p, \rho_d, \rho_A)\) measure the smallest tolerance for which the algorithm would terminate at a certain point during the algorithm.
+Let \(\rho_{\mathrm{tol}} = \max(\rho_p, \rho_d, \rho_A)\) then the algorithm stops once \(\rho_{\mathrm{tol}}\) drops below a user-specified tolerance or when infeasibility or unboundedness is detected.
 Lastly, the starting point of the algorithm is chosen to be \((\vek{x}, \tau, \vek{y}, \vek{s}, \kappa) = (\vek{1}, 1, \vek{0}, \vek{1}, 1)\) as \textcite{AndersenAndersen-MosekInteriorPointMethod} report that it works well for most problems.
 
 \section{Problem Instances}
