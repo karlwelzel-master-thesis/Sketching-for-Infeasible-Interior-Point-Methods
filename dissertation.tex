@@ -20,6 +20,10 @@
 % 4. Ignore abstract
 %TC:envir abstract [ignore] ignore 
 
+\immediate\write18{texcount -q -inc -sum=1,1,1 -total -template="Word count: {sum}" \jobname.tex > /tmp/wordcount.tex} %chktex 18
+\newcommand{\wordcount}{\input{/tmp/wordcount.tex}}
+
+
 \title{Sketching for Infeasible Interior-Point Methods}
 \author{Candidate Number: 1054613 \\ M.Sc.\ in Mathematical Sciences \\ University of Oxford}
 \date{Trinity Term 2021}
@@ -33,6 +37,9 @@
     A recently proposed preconditioning technique based on sketching allows employing iterative methods for the solution of this linear system.
     We simplified the original proofs on how this technique can be combined with an infeasible interior-point method to guarantee convergence and conducted novel experiments to verify the effectiveness of the preconditioners and compare the performance with classical direct solvers.
 \end{abstract}
+
+\vfill
+\wordcount{}
 
 \tableofcontents
 
