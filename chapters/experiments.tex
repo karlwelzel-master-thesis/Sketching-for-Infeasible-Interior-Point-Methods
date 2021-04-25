@@ -48,6 +48,7 @@ The Newton system that would correspond to \cref{eqn:newton-system} is now given
 \end{equation}
 where \(\mu = (\vek{x}^T \vek{s} + \tau \kappa)/(n+1)\).
 In the implementation the right-hand side is modified to balance out the ambitiousness of reducing the infeasibility and the complementarity gap using heuristics.
+Optionally, one can also enable an adaptation of Mehrotra's predictor-corrector approach first proposed in \cite{Mehrotra-PredictorCorrector} which first solves \cref{eqn:homogeneous-newton-system} for \(\sigma = 0\) and then solves the same system with a modified right-hand side to determine the search direction.
 To solve \cref{eqn:homogeneous-newton-system} for arbitrary right-hand sides it is transformed into two linear systems \(\mat{A}\mat{D}^2\mat{A}^T\vek{u} = \vek{p}\) for different vectors \(\vek{p}\) as detailed in section 5 of \cite{AndersenAndersen-MosekInteriorPointMethod}.
 This allows us to use the sketching based preconditioning explained in \cref{sec:sketching-preconditioning} inside this IPM implementation.
 Moreover, because the two linear systems involve the same matrix the preconditioner only needs to be determined once for both systems.
@@ -83,13 +84,14 @@ Next, a random feasible point \((\vek{x}, \vek{y}, \vek{s})\) was generated usin
 The experiments were all run on an Intel® Core™ i7-1165G7 using \texttt{scipy} version 1.6.2 and \texttt{numpy} version 1.20.2 with OpenBLAS version 0.3.8.
 The code for the homogeneous IPM algorithm described above was taken from the \texttt{scipy.optimize} package\footnote{\url{https://github.com/scipy/scipy/blob/v1.6.2/scipy/optimize/_linprog_ip.py}} and adapted to incorporate iterative solvers and sketching based preconditioning.
 To avoid inconsistent results the routines for eliminating unnecessary constraints and automatically rescaling the instances were disabled as were the use of the predictor-corrector method and the initial point heuristic.
-Each parameter combination in the following experiments were run twice on the same four randomly generated instances.
+Each parameter combination in the following experiments was run twice on the same four randomly generated instances.
 To visualize the range of recorded values the following graphs all include error bars.
 The height of the line or bar indicates the median value while the error bars indicate the range from the 5th percentile to the 95th percentile.
 
 \section{Impact of the Sketching Parameters}
 
 The first question we want to tackle is how good the preconditioners are, how fast they can be computed and how the answers to these questions are influenced by the sketching parameters \(w\) and \(s\) as defined in \cref{def:s-hashing-matrix}.
+Remember that \(w\) controls the number of columns of the sparse sketching matrix, while \(s\) determines the number of nonzero entries per column.
 By \cref{thm:sparse-ose} we expect larger values of \(w\) and \(s\) to give better preconditioners while also increasing the runtime of computing \(\mat{W}\mat{D}\mat{A}^T\) and its QR decomposition.
 
 \begin{figure}[tbp]
