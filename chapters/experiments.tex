@@ -6,7 +6,7 @@ In this chapter we evaluate the preconditioning technique introduced in \cref{ch
 
 The interior-point method implemented in \texttt{scipy} is based on the MOSEK interior-point optimizer as published by \textcite{AndersenAndersen-MosekInteriorPointMethod}.
 The most important difference to the general infeasible IPM described in \cref{alg:ipm} is its use of the homogeneous model presented in~\cite{XuHungYe-SimplifiedHomogeneousAlgorithm}.
-While in \cref{chap:ipm} the original LP \cref{eqn:primal-lp} was solved by considering the primal and dual LP at the same time and adding a complimentary condition, the homogeneous algorithm replaces this primal-dual formulation by the self-dual LP
+While in \cref{chap:ipm} the original LP \cref{eqn:primal-lp} was solved by considering the primal and dual LP at the same time and adding a complementary condition, the homogeneous algorithm replaces this primal-dual formulation by the self-dual LP
 \begin{subequations}
   \begin{align}
     \vek{r}_p \coloneqq \mat{A}\vek{x} - \vek{b} \tau &= \vek{0} \\
@@ -18,7 +18,7 @@ While in \cref{chap:ipm} the original LP \cref{eqn:primal-lp} was solved by cons
 \end{subequations}
 where \(\tau\) and \(\kappa\) are additional variables.
 Observe that setting \(\vek{x}\), \(\vek{y}\), \(\vek{s}\), \(\tau\) and \(\kappa\) to zero gives a solution, so the LP above is always feasible.
-The crucial advantage of using this homogeneous model is that there is always a solution where \((\vek{x}, \tau)\) and \((\vek{s}, \kappa)\) are strictly complimentary and every such solution can be transformed into either a solution of the original LP (if \(\tau > 0\)) or a certificate that the original LP is infeasible or unbounded (if \(\kappa > 0\)).
+The crucial advantage of using this homogeneous model is that there is always a solution where \((\vek{x}, \tau)\) and \((\vek{s}, \kappa)\) are strictly complementary and every such solution can be transformed into either a solution of the original LP (if \(\tau > 0\)) or a certificate that the original LP is infeasible or unbounded (if \(\kappa > 0\)).
 In other words, adding two additional variables the interior-point method can also handle infeasible and unbounded LPs.
 
 The Newton system that would correspond to \cref{eqn:newton-system} is now given by
@@ -82,7 +82,7 @@ Third, the stopping criterion used is based on
 measuring the size of the primal and dual residuals and of the duality gap.
 As long as no infeasibility of the original LP is detected, the algorithm stops once the maximum of these three values drops below a user-specified tolerance.
 For our purposes let \(\rho_{\mathrm{tol}} = \max(\rho_p, \rho_d, \rho_A)\) measure the smallest tolerance for which the algorithm would terminate at a certain point during the algorithm.
-Lastly, the starting point of the algorithm is typically chosen as \((\vek{x}, \tau, \vek{y}, \vek{s}, \kappa) = (\vek{1}, 1, \vek{0}, \vek{1}, 1)\) but with an option to instead use a heuristic at the same cost as one additional IPM iteration.
+Lastly, the starting point of the algorithm is chosen to be \((\vek{x}, \tau, \vek{y}, \vek{s}, \kappa) = (\vek{1}, 1, \vek{0}, \vek{1}, 1)\) as \textcite{AndersenAndersen-MosekInteriorPointMethod} report that it works well for most problems.
 
 \section{Problem Instances}
 
@@ -140,8 +140,8 @@ By \cref{thm:sparse-ose} we expect larger values of \(w\) and \(s\) to give bett
 
 \Cref{fig:condition_number_history} shows how the condition number of the condition numbers of the unpreconditioned matrix \(\mat{A}\mat{D}^2\mat{A}^T\) and the preconditioned matrix \(\mat{R}^{-T}\mat{A}\mat{D}^2\mat{A}^T\mat{R}^{-1}\) evolves during a run of the IPM algorithm.
 Here the sketching matrix was constructed using \(w=2m\) and \(s \in \{2, 3, 4, 5\}\).
-While the condition number of the unpreconditioned system steadily rises up to about \(10^{12}\) the values for the preconditioned systems look much better.
-For all but the \(s=2\) case the condition numbers consistently stay below \(100\).
+While the condition number of the unpreconditioned system steadily rises up to about \(10^{12}\), the values for the preconditioned systems look much better.
+For all cases but \(s=2\) the condition numbers consistently stay below \(100\).
 \cref{fig:condition_number} shows the same condition numbers for all combinations of \(s \in \{3,4,5\}\) and \(w \in \{1.5m, 2m, 2.5m, 3m\}\).
 As predicted by the theory the condition numbers are effectively bounded by a constant which decreases as \(w\) and \(s\) increase.
 Interestingly, the lower end of the error bars line up for every fixed value of \(w\), suggesting that the value of \(w\) is the decisive factor for how low the condition number can become while \(s\) mainly influences the range of the distribution.
@@ -158,11 +158,11 @@ Interestingly, the lower end of the error bars line up for every fixed value of 
 \end{figure}%
 
 Next, \cref{fig:sparsity} shows the sparsity of \(\mat{W}\mat{D}\mat{A}^T\) by plotting the number of nonzero entries of the matrix.
-While in this work the impact of the sparsity on the running time is negligible, as we will see, for other applications the sparsity preservation that is achieved by sketching with a sparse matrix may be of great importance.
-The red line indicates the number of nonzero entries of \(\mat{A}^T\) itself, all other colours bear the same meaning as in \cref{fig:condition_number}.
+While we will see that in this work the impact of the sparsity on the running time is negligible, for other applications the sparsity preservation that is achieved by sketching with a sparse matrix may be of great importance.
+The red line indicates the number of nonzero entries of \(\mat{A}^T\) itself while all other colours bear the same meaning as in \cref{fig:condition_number}.
 A simple upper bound to the number of nonzero entries is given by \(\nnz(\mat{W}\mat{D}\mat{A}^T) \leq s \nnz(\mat{A})\).
 Even though in reality the number of nonzero entries is lower, the graph reflects that \(s\) is the main influence on the number of nonzero entries while the value of \(w\) only plays a minor role.
-Note that for example, for \(w = 2m\) about \(25\%\) to \(40\%\) of the entries of the sketched matrix are nonzero while the same value for \(\mat{A}\) is at around \(0.2\%\).
+Note that for example for \(w = 2m\) about \(25\%\) to \(40\%\) of the entries of the sketched matrix are nonzero while the same value for \(\mat{A}\) is at around \(0.2\%\).
 This means that the absolute number of nonzero entries is only increased by a small factor, yet the relative density is increased to the point where the matrix is hardly considered sparse anymore.
 
 \begin{figure}[tbp]
@@ -205,7 +205,7 @@ This deletion process might explain the low dependence on \(w\) in \cref{fig:gen
 The time it takes to multiply the sketching matrix with \(\mat{D}\mat{A}^T\) is similarly small as shown by \cref{fig:sketching_duration}.
 Similarly to the number of nonzero entries of \(\mat{W}\mat{D}\mat{A}^T\) this duration mainly depends on the value of \(s\).
 The majority of the sketching process is actually spent determining a QR decomposition of \(\mat{W}\mat{D}\mat{A}^T\), see \cref{fig:decomposition_duration}.
-Because the available sparse QR implementation did not bring any performance gains a QR decomposition algorithm for dense matrices was used whose runtime, unsurprisingly, mainly depends on the matrix dimensions, i.e. on \(w\).
+Because the available sparse QR implementation did not bring any performance gains, a QR decomposition algorithm for dense matrices was used whose runtime, unsurprisingly, mainly depends on the matrix dimensions, i.e. on \(w\).
 As such the runtime of determining a preconditioner depends mainly on \(w\), so we chose a moderate value of \(w=2m\) and a large value of \(s=5\) for the following experiments.
 
 \section{Impact of the CG Tolerance}
@@ -227,7 +227,7 @@ Due to numerical difficulties iterative solvers cannot achieve arbitrarily low e
 
 \Cref{fig:residual_norms} shows the impact of varying the number of CG iterations on the relative errors for the preconditioned system and, once transformed via \(\tilde{\vek{q}} = \mat{R}^{-1}\vek{q}\), for the normal equation.
 The figure also includes the relative error achieved by using a Cholesky decomposition of the normal equation.
-Evidently, the CG method applied to the preconditioning system fails to improve the residuals any further once the number of iterations reaches about roughly 100.
+Evidently, the CG method applied to the preconditioned system fails to improve the residuals any further once the number of iterations reaches roughly 100.
 At this point it stagnates at values between \(10^{-12}\) and \(10^{-15}\).
 Compared to the Cholesky decomposition the relative errors for solving the normal equation are slightly worse.
 
@@ -263,9 +263,9 @@ The trade-off between solution accuracy and time spent per iteration can be more
 One can conclude that more CG iterations lead to better solutions up to about 100 iterations and also that using a Cholesky factorisation consistently outperforms the iterative solver both in solution quality and in runtime.
 
 The time per IPM iteration as recorded in \cref{fig:accuracy_vs_time} includes both the time to compute the preconditioner \(\mat{R}\) and the time it takes the CG solver to perform a fixed amount of iterations.
-The latter is very much influenced by the way the matrix vector products required for the CG algorithm are implemented.
-For these experiments all products were evaluated lazily in the sense that the matrix \(\mat{R}^{-T}\mat{A}\mat{D}^2\mat{A}^T\mat{R}^{-1}\) was not formed explicitly but every time a vector was to be multiplied with it, three matrix vector products and two triangular solves were performed.
-Preliminary experiments indicate that due to very efficient routines for matrix inversion and matrix matrix multiplication explicitly forming the product is similarly fast for 100 CG iterations and outperforms our implementation if more iterations are performed.
+The latter is very much influenced by the way the matrix-vector products required for the CG algorithm are implemented.
+For these experiments all products were evaluated lazily in the sense that the matrix \(\mat{R}^{-T}\mat{A}\mat{D}^2\mat{A}^T\mat{R}^{-1}\) was not formed explicitly but every time a vector was to be multiplied with it, three matrix-vector products and two triangular solves were performed.
+Preliminary experiments indicate that due to very efficient routines for matrix inversion and matrix-matrix multiplication explicitly forming the product is similarly fast for 100 CG iterations and outperforms our implementation if more iterations are performed.
 
 \section{Comparison with Direct Solvers}
 
