@@ -7,17 +7,11 @@
 \addbibresource{citations.bib}
 
 % Additional TeXcount settings
-% 1. Handle \texcite and \Textcite as \cite
-%TC:macro \textcite [ignore]
-%TC:macro \Textcite [ignore]
-% 2. Handle \cref and \Cref as \ref
-%TC:macro \cref [ignore]
-%TC:macro \Cref [ignore]
-% 3. Ignore weird math macros
+% 1. Ignore weird math macros
 %TC:macro \SetSymbolFont 6
 %TC:macro \DeclareMathOperator 2
 %TC:macro \theoremstyle 1
-% 4. Ignore abstract
+% 2. Ignore abstract
 %TC:envir abstract [ignore] ignore 
 
 \immediate\write18{texcount -q -inc -sum=1,1,1 -total -template="Word count: {sum}" \jobname.tex > /tmp/wordcount.tex} %chktex 18
