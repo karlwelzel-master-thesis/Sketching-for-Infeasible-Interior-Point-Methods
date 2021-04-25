@@ -89,7 +89,7 @@ The height of the line or bar indicates the median value while the error bars in
 
 \section{Impact of the Sketching Parameters}
 
-The first question we want to tackle is how good the preconditioners are, how fast they can be computed and how the answers to these questions are influenced by the sketching parameters \(w\) and \(s\) as defined in \cref{def:s-hashing-matrix}. \(w\) controls the number of columns of the sparse sketching matrix while \(s\) determines the number of nonzero entries per column.
+The first question we want to tackle is how good the preconditioners are, how fast they can be computed and how the answers to these questions are influenced by the sketching parameters \(w\) and \(s\) as defined in \cref{def:s-hashing-matrix}.
 By \cref{thm:sparse-ose} we expect larger values of \(w\) and \(s\) to give better preconditioners while also increasing the runtime of computing \(\mat{W}\mat{D}\mat{A}^T\) and its QR decomposition.
 
 \begin{figure}[tbp]
@@ -117,7 +117,6 @@ By \cref{thm:sparse-ose} we expect larger values of \(w\) and \(s\) to give bett
 \Cref{fig:condition_number_history} shows how the condition number of the condition numbers of the unpreconditioned matrix \(\mat{A}\mat{D}^2\mat{A}^T\) and the preconditioned matrix \(\mat{R}^{-T}\mat{A}\mat{D}^2\mat{A}^T\mat{R}^{-1}\) evolves during a run of the IPM algorithm.
 Here the sketching matrix was constructed using \(w=2m\) and \(s \in \{2, 3, 4, 5\}\).
 While the condition number of the unpreconditioned system steadily rises up to about \(10^{12}\), the values for the preconditioned systems look much better.
-For all cases but \(s=2\) the condition numbers consistently stay below \(100\).
 \cref{fig:condition_number} shows the same condition numbers for all combinations of \(s \in \{3,4,5\}\) and \(w \in \{1.5m, 2m, 2.5m, 3m\}\).
 As predicted by the theory the condition numbers are effectively bounded by a constant which decreases as \(w\) and \(s\) increase.
 Interestingly, the lower end of the error bars line up for every fixed value of \(w\), suggesting that the value of \(w\) is the decisive factor for how low the condition number can become while \(s\) mainly influences the range of the distribution.
