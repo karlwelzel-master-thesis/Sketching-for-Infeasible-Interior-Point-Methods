@@ -1,0 +1,226 @@
+\chapter{Source Code}
+%TODO: Rename this chapter
+
+This appendix contains the key elements of the implementation concerned with generating the sketching matrix and the preconditioning process.
+
+\begin{minted}[breaklines]{python}
+import numpy as np
+import scipy
+
+...
+
+default_rng = np.random.default_rng()
+
+def _construct_sketching_matrix(
+    w, n, s=3, sparse=True, rng=default_rng
+):
+    """
+    Randomly construct a sketching matrix of size (w, n) where w is
+    assumed to be smaller than n. If sparse is True, each column
+    contains s nonzero entries randomly drawn from +-1/sqrt(s).
+    Otherwise all matrix entries are drawn from a normal distribution.
+
+    Parameters
+    ----------
+    w : int
+        Number of rows of the sketching matrix
+    n : int
+        Number columns of the sketching matrix
+    s : int
+        Number of nonzero entries in each row if ``sparse = True``
+    sparse : bool
+        True if the sketching matrix should be sparse.
+    rng : np.random.Generator (default = np.random.default_rng())
+        A random number generator used to construct the random matrix
+
+    Returns
+    -------
+    A random sketching matrix
+
+    """
+    if sparse:
+        # The matrix is constructed in the COO format:
+        # data[i] is the entry at (row_indices[i], column_indices[i])
+        # for each index i
+
+        # 1. Generate the entries: randomly chosen from +- 1/sqrt(s)
+        data = rng.choice(
+            [-1 / np.sqrt(s), 1 / np.sqrt(s)], size=s * n
+        )
+
+        # 2. Generate the row indices: Draw s elements from
+        # {1, ..., w} without replacement 1.1*n times. Delete all
+        # groups of s elements where the same element was chosen twice
+        # and take the first n of the remaining groups to be the
+        # row_indices.
+        row_indices = rng.choice(w, size=(int(n * 1.1), s))
+        row_indices.sort()
+        row_indices = row_indices[
+            (row_indices[..., 1:] != row_indices[..., :-1]).all(
+                axis=-1
+            )
+        ]
+        row_indices = row_indices[:n]
+        row_indices.shape = (n * s,)
+
+        # 3. Generate the column indices by repeating each i from
+        # {1, ..., n} s times: [1, 1, 1, 2, 2, 2, ..., n, n, n] for
+        # s = 3 for example
+        column_indices = np.repeat(np.arange(n), s)
+
+        # 4. Construct the matrix as described and convert it to the
+        # CSR sparse matrix format before returning to allow fast
+        # matrix multiplication
+        mat = scipy.sparse.coo_matrix(
+            (data, (row_indices, column_indices)), shape=(w, n)
+        )
+        return mat.tocsr()
+    else:
+        # Return a Gaussian sketch
+        return rng.normal(size=(w, n)) / np.sqrt(w)
+
+
+# This function is called once for every IPM iteration to get a method
+# for solving the normal equation for arbitrary right-hand sides. Note
+# that the notation for the matrices in the paper by Andersen and
+# Andersen is different the one used in this work. The matrix "Dinv"
+# thus corresponds to D^2, "Dinv_half" corresponds to D and "M"
+# corresponds to A D^2 A^T. The diagonal matrix "Dinv" is passed to
+# this function as a 1-D vector of its diagonal elements.
+def _get_solver(A, Dinv, options):
+    """
+    Given ``A`` and `` Dinv`` return a handle to a linear system
+    solver for the matrix ``M = A @ Dinv @ A.T``, i.e. a function that
+    takes in an arbitrary right-hand side ``r`` and returns
+    ``M^{-1} r``
+
+    Parameters
+    ----------
+    A : 2-D array
+    Dinv : 1-D array
+        As defined in [4] Equation 8.31
+    options : AllOptions
+        Provides the options to choose the linear solver.
+
+    Returns
+    -------
+    solve : function
+        Handle to the appropriate solver function
+
+    References
+    ----------
+    .. [4] Andersen, Erling D., and Knud D. Andersen. "The MOSEK
+           interior point optimizer for linear programming: an
+           implementation of the homogeneous algorithm." High
+           performance optimization. Springer US, 2000. 197-232.
+    """
+    method = options.linear_solver.solver
+
+    if method is Solver.CHOLESKY:
+        # The function scipy.sparse.diags turns a 1-D vector into a
+        # sparse diagonal matrix where the vector entries are on the
+        # diagonal
+        M = A @ scipy.sparse.diags(Dinv, 0, format="csc") @ A.T
+
+        # The matrix L is the Cholesky factor of M: LL^T = M
+        L = scipy.linalg.cho_factor(M.toarray())
+
+        def solve(r):
+            return scipy.linalg.cho_solve(L, r)
+
+        return solve
+
+    elif method is Solver.QR:
+        Dinv_half = np.sqrt(Dinv)
+        M_half = scipy.sparse.diags(Dinv_half, format="csc") @ A.T
+
+        # Find the QR decomposition of DA^T. The toarray() method
+        # converts the sparse matrix to a dense one so that a dense QR
+        # solver can be used.
+        R = np.linalg.qr(M_half.toarray(), mode="r")
+
+        def solve(r):
+            r2 = scipy.linalg.solve_triangular(
+                R, r, trans="T"
+            )  # r2 = R^{-T} r
+            x = scipy.linalg.solve_triangular(
+                R, r2, trans="N"
+            )  # x = R^{-1} r2
+            return x
+
+        return solve
+
+    elif method is Solver.PRECONDITIONED_CG:
+        Dinv_half = np.sqrt(Dinv)
+
+        # Construct the sketching matrix according to the chosen
+        # options:
+        # - sketching_factor determines the w/m factor
+        # - sketching_sparsity determines the value of s
+        sketching_matrix = _construct_sketching_matrix(
+            w=int(
+                options.preconditioning.sketching_factor * A.shape[0]
+            ),
+            n=A.shape[1],
+            s=options.preconditioning.sketching_sparsity,
+            sparse=True,
+        )
+
+        # Explicitly construct the sketched matrix WDA^T ...
+        sketched_matrix = (
+            sketching_matrix
+            @ scipy.sparse.diags(Dinv_half, format="csc")
+            @ A.T
+        )
+
+        # ... and find its QR decomposition
+        R = np.linalg.qr(sketched_matrix.toarray(), mode="r")
+
+        # scipy.sparse.linalg.aslinearoperator turns matrices into
+        # linear operators. They can be chained together using matrix
+        # multiplication syntax without forming the product
+        # explicitly. Taking the product with a vector afterwards
+        # applies all of the matrices in the right order.
+        A_op = scipy.sparse.linalg.aslinearoperator(A)
+        Dinv_op = scipy.sparse.linalg.aslinearoperator(
+            scipy.sparse.diags(Dinv, 0, format="csc")
+        )
+        # The linear operator of R^{-1} is constructed by defining
+        # that multiplication with R^{-1} and R^{-T} can be performed
+        # using triangular solves
+        Rinv_op = scipy.sparse.linalg.LinearOperator(
+            R.shape,  # R is square
+            matvec=lambda x: scipy.linalg.solve_triangular(
+                R, x, trans="N"
+            ),
+            rmatvec=lambda x: scipy.linalg.solve_triangular(
+                R, x, trans="T"
+            ),
+        )
+        # The preconditioned matrix is now given by the correct chain
+        # of matrix-vector multiplications
+        preconditioned_matrix = (
+            Rinv_op.T @ A_op @ Dinv_op @ A_op.T @ Rinv_op
+        )
+
+        def solve(r):
+            # Solve the preconditioned linear system with the CG
+            # method:
+            # - maxiter bounds the number of CG iterations
+            # - tol is the required relative tolerance (2-norm)
+            # - atol is the required absolute tolerance (2-norm)
+            # We used tol = atol = 0; maxiter = 50, 75, 100, 125
+            x, info = scipy.sparse.linalg.cg(
+                A=preconditioned_matrix,
+                b=Rinv_op.T @ r,
+                maxiter=options.linear_solver.solver_maxiter,
+                tol=options.linear_solver.solver_rtol,
+                atol=options.linear_solver.solver_atol,
+            )
+            # info < 0 indicates a numerical failure
+            if info < 0:
+                raise scipy.linalg.LinAlgError(f"CG failed ({info})!")
+            return Rinv_op @ x
+
+        return solve
+\end{minted}
