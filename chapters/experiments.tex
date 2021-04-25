@@ -183,7 +183,6 @@ Due to numerical difficulties iterative solvers cannot achieve arbitrarily low e
 \Cref{fig:residual_norms} shows the impact of varying the number of CG iterations on the relative errors for the preconditioned system and, once transformed via \(\tilde{\vek{q}} = \mat{R}^{-1}\vek{q}\), for the normal equation.
 The figure also includes the relative error achieved by using a Cholesky decomposition of the normal equation.
 Evidently, the CG method applied to the preconditioned system fails to improve the residuals any further once the number of iterations reaches roughly 100.
-At this point it stagnates at values between \(10^{-12}\) and \(10^{-15}\).
 Compared to the Cholesky decomposition the relative errors for solving the normal equation are slightly worse.
 
 \begin{figure}[tbp]
