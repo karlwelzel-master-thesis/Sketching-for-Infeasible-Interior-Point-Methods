@@ -19,7 +19,7 @@ While in \cref{chap:ipm} the original LP \cref{eqn:primal-lp} was solved by cons
 where \(\tau\) and \(\kappa\) are additional variables.
 Observe that setting \(\vek{x}\), \(\vek{y}\), \(\vek{s}\), \(\tau\) and \(\kappa\) to zero gives a solution, so the LP above is always feasible.
 The crucial advantage of using this homogeneous model is that there is always a solution where \((\vek{x}, \tau)\) and \((\vek{s}, \kappa)\) are strictly complementary and every such solution can be transformed into either a solution of the original LP (if \(\tau > 0\)) or a certificate that the original LP is infeasible or unbounded (if \(\kappa > 0\)).
-In other words, adding two additional variables the interior-point method can also handle infeasible and unbounded LPs.
+In other words, by adding two additional variables the interior-point method becomes able to handle infeasible and unbounded LPs.
 
 The Newton system that would correspond to \cref{eqn:newton-system} is now given by
 \begin{equation}\label{eqn:homogeneous-newton-system}
@@ -58,7 +58,7 @@ First, the neighbourhood used in this algorithm also includes a one-sided \(\inf
 \begin{equation}
   \mathcal{N}(\gamma) = \Set{ \vek{x}, \vek{y}, \vek{s}, \tau, \kappa | \vek{x}, \vek{s} \geq \vek{0}, \ \tau, \kappa \geq 0, \ (\vek{x}, \tau) \circ (\vek{s}, \kappa) \geq (1-\gamma) \mu \vek{1} }
 \end{equation}
-Second, the step size \(\alpha\) is chosen to be slightly smaller than the largest possible step inside the neighbourhood.
+Second, the step size \(\alpha\) is essentially chosen to be the largest possible step inside the neighbourhood without any line search minimizing \(\mu\).
 Third, the stopping criterion used is based on 
 \begin{equation}
   \rho_p \coloneqq \frac{\norm{\vek{r}_p}_2}{\max(1, \norm{\vek{r}^0_p}_2)}, \ 
@@ -77,7 +77,8 @@ To evaluate the performance of the IPM, random LP instances
  \end{equation}
 with \(\mat{A} \in \R^{m \times n}\), \(\vek{b} \in \R^m\), \(\vek{c} \in \R^n\) were generated that fit all the desired characteristics: \(m \ll n\), \(\mat{A}\) is sparse, \(\rank(\mat{A}) = m\) and the LP is feasible and bounded.
 To that end, we chose \(m = 1\,000\), \(n = 100\,000\) and constructed \(\mat{A}\) by randomly choosing two nonzero entries per column which were filled with values drawn from a standard normal distribution and also adding normally distributed values on the diagonal.
-Next, a random feasible point \((\vek{x}, \vek{y}, \vek{s})\) was generated using standard normal and uniform \([0, 1]\) distributions for the entries and \(\vek{b}\) and \(\vek{c}\) were set to \(\vek{b} = \mat{A} \vek{x}\) and \(\vek{c} = \mat{A}^T \vek{y} + \vek{s}\) to ensure feasibility and boundedness of \cref{eqn:primal-lp-instance}.
+Next, a random feasible point \((\vek{x}, \vek{y}, \vek{s})\) was generated where the entries of \(\vek{x}\) and \(\vek{s}\) where drawn from a uniform distribution on \([0, 1]\) and the entries of \(\vek{y}\) from a standard normal distribution.
+Setting \(\vek{b} = \mat{A} \vek{x}\) and \(\vek{c} = \mat{A}^T \vek{y} + \vek{s}\) ensures feasibility and boundedness of \cref{eqn:primal-lp-instance}.
 
 \section{Experiment Configuration}
 
@@ -117,9 +118,10 @@ By \cref{thm:sparse-ose} we expect larger values of \(w\) and \(s\) to give bett
 \end{figure}%
 
 \Cref{fig:condition_number_history} shows how the condition number of the condition numbers of the unpreconditioned matrix \(\mat{A}\mat{D}^2\mat{A}^T\) and the preconditioned matrix \(\mat{R}^{-T}\mat{A}\mat{D}^2\mat{A}^T\mat{R}^{-1}\) evolves during a run of the IPM algorithm.
-Here the sketching matrix was constructed using \(w=2m\) and \(s \in \{2, 3, 4, 5\}\).
+Here, the sketching matrix is constructed using \(w=2m\) and \(s \in \{2, 3, 4, 5\}\).
 While the condition number of the unpreconditioned system steadily rises up to about \(10^{12}\), the values for the preconditioned systems look much better.
-\cref{fig:condition_number} shows the same condition numbers for all combinations of \(s \in \{3,4,5\}\) and \(w \in \{1.5m, 2m, 2.5m, 3m\}\).
+For all cases except \(s = 2\) the condition numbers stay below 100.
+\cref{fig:condition_number} shows the same condition numbers for all combinations of \(s \in \{3,4,5\}\) and \(w \in \{1.5m, 2m, 2.5m, 3m\}\) and includes values from all iterations.
 As predicted by the theory the condition numbers are effectively bounded by a constant which decreases as \(w\) and \(s\) increase.
 Interestingly, the lower end of the error bars line up for every fixed value of \(w\), suggesting that the value of \(w\) is the decisive factor for how low the condition number can become while \(s\) mainly influences the range of the distribution.
 
@@ -136,11 +138,11 @@ Interestingly, the lower end of the error bars line up for every fixed value of 
 
 Next, \cref{fig:sparsity} shows the sparsity of \(\mat{W}\mat{D}\mat{A}^T\) by plotting the number of nonzero entries of the matrix.
 While we will see that in this work the impact of the sparsity on the running time is negligible, for other applications the sparsity preservation that is achieved by sketching with a sparse matrix may be of great importance.
-The red line indicates the number of nonzero entries of \(\mat{A}^T\) itself while all other colours bear the same meaning as in \cref{fig:condition_number}.
+The red line indicates the number of nonzero entries of \(\mat{A}\) itself while all other colours bear the same meaning as in \cref{fig:condition_number}.
 A simple upper bound to the number of nonzero entries is given by \(\nnz(\mat{W}\mat{D}\mat{A}^T) \leq s \nnz(\mat{A})\).
 Even though in reality the number of nonzero entries is lower, the graph reflects that \(s\) is the main influence on the number of nonzero entries while the value of \(w\) only plays a minor role.
-Note that for example for \(w = 2m\) about \(25\%\) to \(40\%\) of the entries of the sketched matrix are nonzero while the same value for \(\mat{A}\) is at around \(0.2\%\).
-This means that the absolute number of nonzero entries is only increased by a small factor, yet the relative density is increased to the point where the matrix is hardly considered sparse anymore.
+Interestingly, for example for \(w = 2m\) about \(25\%\) to \(40\%\) of the entries of the sketched matrix are nonzero while the same value for \(\mat{A}\) is at around \(0.2\%\).
+This means that the absolute number of nonzero entries is only increased by a small factor, yet the relative density is increased to the point where the matrix is not very sparse anymore.
 
 \begin{figure}[tbp]
   \centering
@@ -188,7 +190,7 @@ As such the runtime of determining a preconditioner depends mainly on \(w\), so 
 
 Any direct solver for a linear system takes a fixed amount of time to achieve a solution of very high accuracy.
 Iterative solvers come with the benefit that the solutions are refined in every iteration so that a trade-off between running time and accuracy is possible.
-Due to numerical difficulties iterative solvers cannot achieve arbitrarily low errors and so it was easiest to fix the number of CG iterations at different values to see how they impact the solver accuracy and subsequently the course of the IPM.
+Due to numerical difficulties iterative solvers cannot achieve arbitrarily low errors, so we decided to fix the number of CG iterations at different values to see how they influence the solver accuracy and subsequently the course of the IPM.
 
 \begin{figure}[tbp]
   \centering%
@@ -201,9 +203,9 @@ Due to numerical difficulties iterative solvers cannot achieve arbitrarily low e
   \label{fig:residual_norms}
 \end{figure}
 
-\Cref{fig:residual_norms} shows the impact of varying the number of CG iterations on the relative errors for the preconditioned system and, once transformed by multiplication with \(\mat{R}^{-1}\), for the normal equation.
+\Cref{fig:residual_norms} shows the impact of varying the number of CG iterations on the relative errors for the preconditioned system and for the normal equation using data from all iterations.
 The figure also includes the relative error achieved by using a Cholesky decomposition of the normal equation.
-Evidently, the CG method applied to the preconditioned system fails to improve the residuals any further once the number of iterations reaches roughly 100 and the relative errors remain slightly worse compared to the Cholesky decomposition.
+Evidently, the CG method applied to the preconditioned system fails to improve the residuals any further once the number of iterations reaches roughly 100 and the relative errors remain worse compared to the Cholesky decomposition.
 
 \begin{figure}[tbp]
   \centering%
@@ -228,13 +230,15 @@ Evidently, the CG method applied to the preconditioned system fails to improve t
 \end{figure}
 
 The effect on the accuracy of the IPM is exemplified in \cref{fig:accuracy_history}.
-Here, the solution accuracy as measured by \(\rho_{\mathrm{tol}}\) is tracked over the final iterations of the IPM for one of the randomly generated LP instance.
+Here, the solution accuracy as measured by \(\rho_{\mathrm{tol}}\) is tracked over the final iterations of the IPM for one of the randomly generated LP instances.
 It can be clearly seen that at some point during the optimisation process a breakdown occurs that leads to a sudden increase of \(\rho_{\mathrm{tol}}\).
 In our experiments this was always due to an increase in \(\rho_p\) which measures the primal feasibility.
+Even though the minimum \(\rho_{\mathrm{tol}}\) value is achieved at different IPM iterations for the different parameter settings the average number of iterations it took for \(\rho_{\mathrm{tol}}\) to reach its minimum across multiple LP instances was around 125 independently of the number of CG iterations.
 As expected, the minimum value of \(\rho_{\mathrm{tol}}\) is lower the smaller the error in the solution of the normal equation.
 The trade-off between solution accuracy and time spent per IPM iteration can be more closely examined in \cref{fig:accuracy_vs_time}.
+Here, the best value of \(\rho_{\mathrm{tol}}\) that was achieved during each run of the algorithm is plotted against the average time each iteration took.
 
-The time per IPM iteration as recorded in \cref{fig:accuracy_vs_time} includes both the time to compute the preconditioner \(\mat{R}\) and the time it takes the CG solver to perform a fixed amount of iterations.
+This time per iteration includes both the time to compute the preconditioner \(\mat{R}\) and the time it takes the CG solver to perform a fixed amount of iterations.
 The latter is very much influenced by the way the matrix-vector products required for the CG algorithm are implemented.
 For these experiments all products were evaluated lazily in the sense that the matrix \(\mat{R}^{-T}\mat{A}\mat{D}^2\mat{A}^T\mat{R}^{-1}\) was not formed explicitly but every time a vector was to be multiplied with it, three matrix-vector products and two triangular solves were performed.
 Preliminary experiments indicate that due to very efficient routines for matrix inversion and matrix-matrix multiplication explicitly forming the product is similarly fast for 100 CG iterations and outperforms our implementation if more iterations are performed.
@@ -244,8 +248,8 @@ Preliminary experiments indicate that due to very efficient routines for matrix 
 To finish this chapter, a direct comparison between our iterative approach and direct solvers is due.
 The two direct methods we will compare it with are a Cholesky decomposition of \(\mat{A}\mat{D}^2\mat{A}^T\) and a QR decomposition of the unsketched matrix \(\mat{D}\mat{A}^T\).
 The parameters for preconditioning were chosen to be \(w=2m\) and \(s=5\) and 100 CG iterations were performed.
-\Cref{table:runtime_comparison} shows that while computing the QR decomposition of the sketched matrix \(\mat{W}\mat{D}\mat{A}^T\) is much faster than computing the QR decomposition of the full matrix \(\mat{D}\mat{A}^T\) the preconditioned CG method cannot compete with the speed of the Cholesky decomposition.
-Additionally, \cref{table:accuracy_comparison} demonstrates that the direct approach generates more accurate solutions as the iterative approach can.
+\Cref{table:runtime_comparison} shows that, while computing the QR decomposition of the sketched matrix \(\mat{W}\mat{D}\mat{A}^T\) is much faster than computing the QR decomposition of the full matrix \(\mat{D}\mat{A}^T\), the preconditioned CG method cannot compete with the speed of the Cholesky decomposition.
+Additionally, \cref{table:accuracy_comparison} demonstrates that the direct solvers generate more accurate solutions as the iterative approach can.
 
 \begin{table}[htbp]
   \centering
@@ -257,7 +261,7 @@ Additionally, \cref{table:accuracy_comparison} demonstrates that the direct appr
   }
   \begin{tabular}{cSSSS}
     \toprule
-    Method & {\makecell{Computing \\ \(\mat{W}\mat{D}\mat{A}^T\)}} & {\makecell{QR/Cholesky \\ decomposition}} & {\makecell{Solving \\ \(\mat{A}\mat{D}^2\mat{A}^T\tilde{\vek{q}} = \vek{p}\)}} & {Total} \\
+    Method & {\makecell{Computing \\ \(\mat{W}\mat{D}\mat{A}^T\)}} & {\makecell{QR/Cholesky \\ decomposition}} & {\makecell{Solving \\ \(\mat{A}\mat{D}^2\mat{A}^T\vek{u} = \vek{p}\)}} & {Total} \\
     \midrule
     Preconditioned CG      & 0.052411 &  0.382210 & 0.686770 &  1.121391 \\
     Cholesky decomposition & {---}      &  0.042749 & 0.003998 &  0.046747 \\
@@ -294,7 +298,7 @@ Additionally, \cref{table:accuracy_comparison} demonstrates that the direct appr
 
 \section{Summary}
 
-The experiments in this chapter showed that indeed the QR decomposition of \(\mat{W}\mat{D}\mat{A}^T\), where \(\mat{W}\) is a sparse sketching matrix, produces good preconditioners that are able to reduce the condition number of \(\mat{A}\mat{D}^2\mat{A}^T\) by multiple orders of magnitude.
-The quality of the linear solver for the normal equation directly affects the solution accuracy of the IPM algorithm as a whole so that the time-accuracy trade-off of the iterative solver can be directly transferred to a time-accuracy trade-off for the IPM algorithm.
+The experiments in this chapter showed that indeed the QR decomposition of \(\mat{W}\mat{D}\mat{A}^T\) produces good preconditioners that are able to reduce the condition number of \(\mat{A}\mat{D}^2\mat{A}^T\) by multiple orders of magnitude.
+The quality of the linear solver for the normal equation directly affects the solution accuracy of the IPM algorithm as a whole so that the time-accuracy trade-off of the iterative solver can be transferred to a time-accuracy trade-off for the IPM algorithm.
 Unfortunately, even if only very few CG iterations are performed solving the normal equation using the Cholesky decomposition is much faster because computing the QR decomposition of \(\mat{W}\mat{D}\mat{A}^T\) already takes about ten times as long as computing the Cholesky decomposition of \(\mat{A}\mat{D}^2\mat{A}^T\).
 Whether there is a parameter regime regarding matrix dimensions and the sparsity of \(\mat{A}\), where the preconditioned CG method can outperform the Cholesky decomposition, is still an open question.
