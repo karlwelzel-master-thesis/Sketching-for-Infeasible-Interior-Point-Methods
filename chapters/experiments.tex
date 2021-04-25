@@ -210,11 +210,9 @@ Compared to the Cholesky decomposition the relative errors for solving the norma
 The effect on the accuracy of the IPM is exemplified in \cref{fig:accuracy_history}.
 Here, the solution accuracy as measured by \(\rho_{\mathrm{tol}}\) is tracked over the final iterations of the IPM for one of the randomly generated LP instance.
 It can be clearly seen that at some point during the optimisation process a breakdown occurs that leads to a sudden increase of \(\rho_{\mathrm{tol}}\).
-In our experiments this was always due to an increase in \(\rho_p\) which measures the primal feasibility which can occur because the IPM implementation does not include a bound on the primal and dual residuals in its neighbourhood definition. 
-It is not clear if adding this bound would help to minimize \(\rho_{\mathrm{tol}}\) further or just lead to miniscule step sizes \(\alpha\).
-For this IPM implementation as expected, the minimum value of \(\rho_{\mathrm{tol}}\) is lower the smaller the error in the solution of the normal equation.
-The trade-off between solution accuracy and time spent per iteration can be more closely examined in \cref{fig:accuracy_vs_time}.
-One can conclude that more CG iterations lead to better solutions up to about 100 iterations and also that using a Cholesky factorisation consistently outperforms the iterative solver both in solution quality and in runtime.
+In our experiments this was always due to an increase in \(\rho_p\) which measures the primal feasibility.
+As expected, the minimum value of \(\rho_{\mathrm{tol}}\) is lower the smaller the error in the solution of the normal equation.
+The trade-off between solution accuracy and time spent per IPM iteration can be more closely examined in \cref{fig:accuracy_vs_time}.
 
 The time per IPM iteration as recorded in \cref{fig:accuracy_vs_time} includes both the time to compute the preconditioner \(\mat{R}\) and the time it takes the CG solver to perform a fixed amount of iterations.
 The latter is very much influenced by the way the matrix-vector products required for the CG algorithm are implemented.
