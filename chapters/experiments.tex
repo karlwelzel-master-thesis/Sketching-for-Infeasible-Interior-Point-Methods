@@ -48,23 +48,8 @@ The Newton system that would correspond to \cref{eqn:newton-system} is now given
 \end{equation}
 where \(\mu = (\vek{x}^T \vek{s} + \tau \kappa)/(n+1)\).
 In the implementation the right-hand side is modified to balance out the ambitiousness of reducing the infeasibility and the complementarity gap using heuristics.
-Optionally, one can also enable an adaptation of Mehrotra's predictor-corrector approach first proposed in \cite{Mehrotra-PredictorCorrector} which first solves \cref{eqn:homogeneous-newton-system} for \(\sigma = 0\) and then solves the same system with a modified right-hand side to determine the search direction.
-
-In any case, it is necessary to solve \cref{eqn:homogeneous-newton-system} for various right-hand sides.
-The problem can be simplified as in \cref{chap:ipm} by exploiting that \(\mat{X}\) and \(\mat{S}\) are easily invertible.
-The remaining linear system involves the matrix
-\begin{equation}
-  \begin{pmatrix}
-    -\mat{X}^{-1}\mat{S} & \mat{A}^T & -\vek{c} \\
-    \mat{A}              &           & -\vek{b} \\
-    -\vek{c}^T           & \vek{b}^T & \tau^{-1}\kappa 
-  \end{pmatrix}
-\end{equation}
-and can be transformed into two linear systems using the matrix from the augmented system \cref{eqn:augmented-system}.
-Each of these can now be solved using the normal equation \(\mat{A}\mat{D}^2\mat{A}^T\vek{v} = \vek{p}\) for some vector \(\vek{p}\).
-The details of this transformation process can be found in section 5 of \cite{AndersenAndersen-MosekInteriorPointMethod}.
-The important takeaway is that solving \cref{eqn:homogeneous-newton-system} can be done by solving the normal equation twice for different right-hand sides and some cheap matrix-vector products.
-This allows us to use the sketching based preconditioning explained in \cref{chap:sketching} inside this IPM implementation.
+To solve \cref{eqn:homogeneous-newton-system} for arbitrary right-hand sides it is transformed into two linear systems \(\mat{A}\mat{D}^2\mat{A}^T\vek{v} = \vek{p}\) for different vectors \(\vek{p}\) as detailed in section 5 of \cite{AndersenAndersen-MosekInteriorPointMethod}.
+This allows us to use the sketching based preconditioning explained in \cref{sec:sketching-preconditioning} inside this IPM implementation.
 Moreover, because the two linear systems involve the same matrix the preconditioner only needs to be determined once for both systems.
 
 Some more differences between \cref{alg:ipm} and this implementation need to be addressed.
