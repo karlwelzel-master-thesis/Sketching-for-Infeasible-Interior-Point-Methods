@@ -48,7 +48,7 @@ The Newton system that would correspond to \cref{eqn:newton-system} is now given
 \end{equation}
 where \(\mu = (\vek{x}^T \vek{s} + \tau \kappa)/(n+1)\).
 In the implementation the right-hand side is modified to balance out the ambitiousness of reducing the infeasibility and the complementarity gap using heuristics.
-To solve \cref{eqn:homogeneous-newton-system} for arbitrary right-hand sides it is transformed into two linear systems \(\mat{A}\mat{D}^2\mat{A}^T\vek{v} = \vek{p}\) for different vectors \(\vek{p}\) as detailed in section 5 of \cite{AndersenAndersen-MosekInteriorPointMethod}.
+To solve \cref{eqn:homogeneous-newton-system} for arbitrary right-hand sides it is transformed into two linear systems \(\mat{A}\mat{D}^2\mat{A}^T\vek{u} = \vek{p}\) for different vectors \(\vek{p}\) as detailed in section 5 of \cite{AndersenAndersen-MosekInteriorPointMethod}.
 This allows us to use the sketching based preconditioning explained in \cref{sec:sketching-preconditioning} inside this IPM implementation.
 Moreover, because the two linear systems involve the same matrix the preconditioner only needs to be determined once for both systems.
 
@@ -180,10 +180,9 @@ Due to numerical difficulties iterative solvers cannot achieve arbitrarily low e
   \label{fig:residual_norms}
 \end{figure}
 
-\Cref{fig:residual_norms} shows the impact of varying the number of CG iterations on the relative errors for the preconditioned system and, once transformed via \(\tilde{\vek{q}} = \mat{R}^{-1}\vek{q}\), for the normal equation.
+\Cref{fig:residual_norms} shows the impact of varying the number of CG iterations on the relative errors for the preconditioned system and, once transformed by multiplication with \(\mat{R}^{-1}\), for the normal equation.
 The figure also includes the relative error achieved by using a Cholesky decomposition of the normal equation.
-Evidently, the CG method applied to the preconditioned system fails to improve the residuals any further once the number of iterations reaches roughly 100.
-Compared to the Cholesky decomposition the relative errors for solving the normal equation are slightly worse.
+Evidently, the CG method applied to the preconditioned system fails to improve the residuals any further once the number of iterations reaches roughly 100 and the relative errors remain slightly worse compared to the Cholesky decomposition.
 
 \begin{figure}[tbp]
   \centering%

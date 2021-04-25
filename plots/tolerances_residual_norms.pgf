@@ -58,13 +58,13 @@
 \definecolor{textcolor}{rgb}{0.150000,0.150000,0.150000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=1.944375in,y=0.320872in,,top]{\color{textcolor}\rmfamily\fontsize{8.800000}{10.560000}\selectfont \(\displaystyle \mathbf{R}^{-T}\mathbf{A}\mathbf{D}^2\mathbf{A}^T\mathbf{R}^{-1} \mathbf{q} = \mathbf{R}^{-T} \mathbf{p}\)}%
+\pgftext[x=1.944375in,y=0.320872in,,top]{\color{textcolor}\rmfamily\fontsize{8.800000}{10.560000}\selectfont \(\displaystyle \mathbf{R}^{-T}\mathbf{A}\mathbf{D}^2\mathbf{A}^T\mathbf{R}^{-1} \tilde{\mathbf{u}} = \mathbf{R}^{-T} \mathbf{p}\)}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \definecolor{textcolor}{rgb}{0.150000,0.150000,0.150000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=4.308125in,y=0.320872in,,top]{\color{textcolor}\rmfamily\fontsize{8.800000}{10.560000}\selectfont \(\displaystyle \mathbf{A}\mathbf{D}^2\mathbf{A}^T \tilde{\mathbf{q}} = \mathbf{p}\)}%
+\pgftext[x=4.308125in,y=0.320872in,,top]{\color{textcolor}\rmfamily\fontsize{8.800000}{10.560000}\selectfont \(\displaystyle \mathbf{A}\mathbf{D}^2\mathbf{A}^T \mathbf{u} = \mathbf{p}\)}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \pgfpathrectangle{\pgfqpoint{0.762500in}{0.436150in}}{\pgfqpoint{4.727500in}{3.053050in}}%
