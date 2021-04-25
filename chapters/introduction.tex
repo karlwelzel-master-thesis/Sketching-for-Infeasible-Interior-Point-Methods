@@ -17,13 +17,13 @@ The main bottleneck of IPMs is the solution of a linear system which determines 
 Carefully reformulating this system, solving it can be broken down to solving the symmetric positive-definite linear system \(\mat{A} \mat{D}^2 \mat{A}^T \Delta \vek{y} = \vek{p}\) for some vector \(\vek{p}\).
 Here, \(\mat{A} \in \R^{m \times n}\) is the matrix of constraints, \(\mat{D} \in \R^{n \times n}\) is a diagonal matrix depending on the current iterates and the equation is called the \emph{normal equation}.
 Typically, this normal equation is solved via direct methods using a Cholesky decomposition of \(\mat{A} \mat{D}^2 \mat{A}^T\)~\cite[p. 17]{Wright-PrimalDualInteriorPointMethods}, but this is exceedingly expensive if the matrix is large and dense.
-If the matrix is sparse one can speed up the process~\cite{NgPeyton-SparseCholesky} but \(\mat{A} \mat{D}^2 \mat{A}^T\) can be dense even if \(\mat{A}\) is sparse.
+If the matrix is sparse, one can speed up the process~\cite{NgPeyton-SparseCholesky} but \(\mat{A} \mat{D}^2 \mat{A}^T\) can be dense even if \(\mat{A}\) is sparse.
 Iterative methods that only rely on matrix-vector products can use the sparsity of \(\mat{A}\) but converge only very slowly because \(\mat{D}^2\) becomes more and more ill-conditioned as the algorithm progresses.
 Therefore, good preconditioners are crucial for employing iterative methods.
 Based on the work by \textcite{Avron-FasterRandomizedInfeasibleIPMs} we will show a way to effectively precondition this linear system in the special case when \(\mat{A}\) is sparse and the number of constraints is much smaller than the number of variables, using tools from Randomized Linear Algebra (RLA).
 
 In the last decade many advances in numerical linear algebra where achieved by incorporating randomness.
-We will focus on a RLA tool called sketching which is relevant for our work.
+We will focus on a RLA tool called sketching.
 \textcite{Woodruff-Sketching} gives an overview on how sketching matrices lead to dimensionality reductions that can be applied to least-squares problems, low-rank approximation and graph-sparsification.
 The key idea is that a matrix \(\mat{B} \in \R^{n \times m}\) with \(m \ll n\) has an \(m\)-dimensional column space that forms a subspace of \(\R^n\).
 This ambient dimension of \(n\) is unnecessarily large.
@@ -41,7 +41,7 @@ This allows us to bound the total number of operations by bounding the runtime o
 The same idea of preconditioning using a decomposition of a reduced matrix was previously successfully applied in Blendenpik~\cite{Avron-Blendenpik} and LSRN~\cite{MengSaundersMahoney-LSRN} to linear least-squares problems.
 Blendenpik~\cite{Avron-Blendenpik} uses a dimensionality reduction technique based on random row sampling after applying a transformation that aims to even out the importance of each row, and determines the preconditioner using a QR decomposition.
 The authors of LSRN~\cite{MengSaundersMahoney-LSRN} decided to use a Gaussian sketch and an SVD of the sketched matrix as a preconditioner.
-Afterwards both methods use an iterative least-squares solver to find the solution to the preconditioned problem.
+Afterwards, both methods use an iterative least-squares solver to find the solution to the preconditioned problem.
 Both papers report that the generated preconditioners bring the condition number down to a small constant and provide a great speed-up compared to direct methods based on decompositions of the full-sized matrix.
 
 The special case of LPs with sparse constraint matrices \(\mat{A}\) and \(m \ll n\) considered in this thesis is not just convenient because of the RLA results but also comes up in practice.
@@ -49,7 +49,7 @@ In particular, optimizing \(\ell_1\)-regularized SVMs~\cite{ZhuRossetTibshiraniH
 We want to highlight a few previous papers on LPs in this setting. \textcite{LondonVardiWiermanYi-PackingLinearPrograms} devised a black box algorithm that speeds up any given algorithm for solving packing LPs (where each variable is restricted to lie between 0 and 1) if the number of variables is much larger than the number of constraints.
 This is achieved by sampling a fraction of the variables randomly, solving the restricted problem optimally and setting each variable to 0 or 1 depending on the outcome.
 \textcite{Sidford-TallDenseLinearPrograms} employed RLA ideas and inverse maintenance in a very sophisticated way to achieve a theoretical running time of \(\tilde{O}(nm + m^2)\) without assuming that \(\mat{A}\) is sparse.
-The data structures, algorithms and proofs are all very technical and complicated, as such it is not established if efficient implementations of their ideas exist.
+Since the data structures, algorithms and proofs are all very technical and complicated, it is not established if efficient implementations of their ideas exist.
 Lastly, as already mentioned,~\cite{Avron-FasterRandomizedInfeasibleIPMs} is the basis of this thesis.
 Their main results are described above and will be presented in detail in the following chapters.
 

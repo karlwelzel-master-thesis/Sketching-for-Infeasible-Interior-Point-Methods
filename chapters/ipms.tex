@@ -14,12 +14,12 @@ where \(\mat{A} \in \R^{m \times n}\), \(\vek{b} \in \R^m\) and \(\vek{c} \in \R
 A triple \((\vek{x}, \vek{y}, \vek{s})\) is called \emph{feasible} if it satisfies the constraints \(\mat{A}\vek{x} = \vek{b}\), \(\mat{A}^T \vek{y} + \vek{s} = \vek{c}\) and \(\vek{x}, \vek{s} \geq \vek{0}\).
 The two linear programs \labelcref{eqn:primal-lp} and \labelcref{eqn:dual-lp} are closely connected.
 For feasible \((\vek{x}, \vek{y}, \vek{s})\) we always have \(\vek{c}^T \vek{x} \geq \vek{b}^T \vek{y}\) and the joint solutions satisfy \(\vek{c}^T \vek{x} = \vek{b}^T \vek{y}\).
-Therefore, if there are feasible points both linear programs are feasible and bounded and solutions exist.
+Therefore, if there are feasible points, both linear programs are feasible and bounded and solutions exist.
 Furthermore, as the optimal value of the objective function for both LPs is the same, it is upper bounded by \(\vek{c}^T \vek{x}\) and lower bounded by \(\vek{b}^T \vek{y}\) at any feasible point.
 \(\vek{x}^T \vek{s} = \vek{c}^T \vek{x} - \vek{b}^T \vek{y}\) can thus be interpreted as a measure of how close to optimality a given feasible point is.
 
 As already seen, necessary and sufficient optimality conditions are given by the feasibility conditions and \(\vek{x}^T \vek{s} = \vek{c}^T \vek{x} - \vek{b}^T \vek{y} = 0\).
-Because the entries of \(\vek{x}\) and \(\vek{s}\) are both nonnegative this is equivalent to the complementarity condition \(\vek{x} \circ \vek{s} = \vek{0}\) requiring that for each \(1 \leq i \leq n\) at least one of \(x_i\) and \(s_i\) is zero.
+Because the entries of \(\vek{x}\) and \(\vek{s}\) are both nonnegative, this is equivalent to the complementarity condition \(\vek{x} \circ \vek{s} = \vek{0}\) requiring that for each \(1 \leq i \leq n\) at least one of \(x_i\) and \(s_i\) is zero.
 Necessary and sufficient optimality conditions for both problems are therefore given by
 \begin{subequations}\label{eqn:optimality-conditions}
   \begin{align}
