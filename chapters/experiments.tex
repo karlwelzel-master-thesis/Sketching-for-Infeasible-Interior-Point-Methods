@@ -76,10 +76,7 @@ To evaluate the performance of the IPM, random LP instances
  \end{equation}
 with \(\mat{A} \in \R^{m \times n}\), \(\vek{b} \in \R^m\), \(\vek{c} \in \R^n\) were generated that fit all the desired characteristics: \(m \ll n\), \(\mat{A}\) is sparse, \(\rank(\mat{A}) = m\) and the LP is feasible and bounded.
 To that end, we chose \(m = 1\,000\), \(n = 100\,000\) and constructed \(\mat{A}\) by randomly choosing two nonzero entries per column which were filled with values drawn from a standard normal distribution and also adding normally distributed values on the diagonal.
-Next, a random feasible point \((\vek{x}, \vek{y}, \vek{s})\) was generated using standard normal and uniform distributions for the entries and \(\vek{b}\) and \(\vek{c}\) were set accordingly to ensure feasibility and boundedness of \cref{eqn:primal-lp-instance}:
-\begin{equation}
-  \vek{b} = \mat{A} \vek{x} \quad \text{and} \quad \vek{c} = \mat{A}^T \vek{y} + \vek{s}
-\end{equation}
+Next, a random feasible point \((\vek{x}, \vek{y}, \vek{s})\) was generated using standard normal and uniform \([0, 1]\) distributions for the entries and \(\vek{b}\) and \(\vek{c}\) were set to \(\vek{b} = \mat{A} \vek{x}\) and \(\vek{c} = \mat{A}^T \vek{y} + \vek{s}\) to ensure feasibility and boundedness of \cref{eqn:primal-lp-instance}.
 
 \section{Experiment Configuration}
 
