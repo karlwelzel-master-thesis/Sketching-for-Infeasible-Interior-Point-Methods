@@ -57,7 +57,7 @@ First, the neighbourhood used in this algorithm also includes a one-sided \(\inf
 \begin{equation}
   \mathcal{N}(\gamma) = \Set{ \vek{x}, \vek{y}, \vek{s}, \tau, \kappa | \vek{x}, \vek{s} \geq \vek{0}, \ \tau, \kappa \geq 0, \ (\vek{x}, \tau) \circ (\vek{s}, \kappa) \geq (1-\gamma) \mu \vek{1} }
 \end{equation}
-Second, the step size \(\alpha\) is chosen to be the largest possible step that does not violate the nonnegativity constraint, multiplied by a constant slightly smaller than 1 and then reduced until the new iterate is inside the neighbourhood.
+Second, the step size \(\alpha\) is chosen to be slightly smaller than the largest possible step inside the neighbourhood.
 Third, the stopping criterion used is based on 
 \begin{equation}
   \rho_p \coloneqq \frac{\norm{\vek{r}_p}_2}{\max(1, \norm{\vek{r}^0_p}_2)}, \ 
