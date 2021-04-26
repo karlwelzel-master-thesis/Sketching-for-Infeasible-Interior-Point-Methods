@@ -13,6 +13,8 @@
 %TC:macro \theoremstyle 1
 % 2. Ignore abstract
 %TC:envir abstract [ignore] ignore 
+% 3. Ignore source code
+%TC:envir minted [ignore] ignore
 
 \immediate\write18{texcount -q -inc -sum=1,1,1 -total -template="Word count: {sum}" \jobname.tex > /tmp/wordcount.tex} %chktex 18
 \newcommand{\wordcount}{\input{/tmp/wordcount.tex}}
