@@ -27,7 +27,7 @@ We will focus on a RLA tool called sketching.
 \textcite{Woodruff-Sketching} gives an overview on how sketching matrices lead to dimensionality reductions that can be applied to least-squares problems, low-rank approximation and graph-sparsification.
 The key idea is that a matrix \(\mat{B} \in \R^{n \times m}\) with \(m \ll n\) has an \(m\)-dimensional column space that forms a subspace of \(\R^n\).
 This ambient dimension of \(n\) is unnecessarily large.
-For \(w \in \N\) large enough there are ensembles of random \(\R^n \to \R^w\) linear maps such that for any fixed \(m\)-dimensional subspace of \(\R^n\) its geometry is preserved by a randomly chosen map with high probability.
+For \(w \in \N\) large enough there are ensembles of random \(\R^n \to \R^w\) linear maps such that for any fixed \(m\)-dimensional subspace of \(\R^n\) its geometry is approximately preserved by a randomly chosen map with high probability.
 These ensembles are called \emph{oblivious subspace embeddings}.
 The size of \(w\) depends on \(m\), the approximation tolerance and the failure probability but not on \(n\), so we can significantly reduce dimensions at the cost of some approximation error and a failure probability.
 While matrices with properly normalized Gaussian entries form oblivious subspace embeddings~\cite[Theorem 6]{Woodruff-Sketching}, applying them to a vector in \(\R^n\) is expensive as these matrices are dense.

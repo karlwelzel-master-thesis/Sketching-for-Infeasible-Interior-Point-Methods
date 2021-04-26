@@ -54,7 +54,7 @@ In other words, \(\vek{r} = \eta \vek{r}^0\) with \(\eta \in [0, 1]\) for every 
 The proofs for these two lemmas can be found in the stated references and their combination is enough to show the convergence of \cref{alg:ipm}.
 
 \begin{proof}[Proof of \cref{thm:ipm-convergence}]
-  By the choice of the initial point \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \mathcal{N}_{-\infty}(\gamma)\) and \(\bar{\alpha}\) in \cref{line:alpha-tilde,line:alpha-bar} every iterate \((\vek{x}^k, \vek{y}^k, \vek{s}^k)\) is inside the specified neighbourhood \(\mathcal{N}_{-\infty}(\gamma)\).
+  By the choice of the initial point \((\vek{x}^0, \vek{y}^0, \vek{s}^0) \in \mathcal{N}_{-\infty}(\gamma)\) and \(\bar{\alpha}\) in \cref{line:alpha-tilde,line:alpha-bar}, every iterate \((\vek{x}^k, \vek{y}^k, \vek{s}^k)\) is inside the specified neighbourhood \(\mathcal{N}_{-\infty}(\gamma)\).
   Therefore, \(\mu^k \leq \e_\mu \mu^0\) implies \(\norm{\vek{r}^k} \leq \e_\mu \norm{\vek{r}^0}\), and it suffices to show the former for some \(k = O(n^2 \log(1/\e_\mu))\).
 
   By \cref{thm:delta-x-s-bound} and the fact that \(\mat{D}\) and \(\mat{D}^{-1}\) are diagonal matrices the search direction determined in \cref{line:compute-approximate-newton} satisfies
@@ -239,9 +239,7 @@ The combination of \cref{alg:ipm,alg:newton-direction} is an efficient algorithm
 
   To show that the remaining operations in \cref{line:alpha-tilde,line:alpha-bar,line:compute-next-iterate,line:increment-k} do not change the asymptotic runtime bound for each IPM iteration, first consider
   \begin{align*}
-    \vek{x}^k(\alpha) &\coloneqq \vek{x}^k + \alpha \hat{\Delta\vek{x}} \\
-    \vek{y}^k(\alpha) &\coloneqq \vek{y}^k + \alpha \hat{\Delta\vek{y}} \\
-    \vek{s}^k(\alpha) &\coloneqq \vek{s}^k + \alpha \hat{\Delta\vek{s}} \\
+    (\vek{x}^k(\alpha), \vek{y}^k(\alpha), \vek{s}^k(\alpha)) &\coloneqq (\vek{x}^k, \vek{y}^k, \vek{s}^k) + \alpha (\hat{\Delta\vek{x}}, \hat{\Delta\vek{y}}, \hat{\Delta\vek{s}}) \\
     \mu^k(\alpha) &\coloneqq {\vek{x}^k(\alpha)}^T \vek{s}^k(\alpha) \\
     \vek{r}^k(\alpha) &\coloneqq (\mat{A}\vek{x}^k(\alpha) - \vek{b}, \mat{A}^T \vek{y}^k(\alpha) + \vek{s}^k(\alpha) - \vek{c}).
   \end{align*}

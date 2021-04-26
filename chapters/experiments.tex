@@ -1,12 +1,12 @@
 \chapter{Experiments}\label{chap:experiments}
 
-In this chapter we evaluate the preconditioning technique introduced in \cref{chap:sketching} inside the implementation of the IPM algorithm of \textcite{AndersenAndersen-MosekInteriorPointMethod} provided by the open source Python-based scientific computing library \texttt{scipy}~\cite{Scipy}.
+In this chapter we evaluate the preconditioning technique introduced in \cref{sec:sketching-preconditioning} inside the implementation of the IPM algorithm of \textcite{AndersenAndersen-MosekInteriorPointMethod} provided by the open source Python-based scientific computing library \texttt{scipy}~\cite{Scipy}.
 
 \section{The Homogeneous Algorithm}\label{sec:homogeneous-algorithm}
 
 The interior-point method implemented in \texttt{scipy} is based on the MOSEK interior-point optimizer as published by \textcite{AndersenAndersen-MosekInteriorPointMethod}.
 The most important difference to the general infeasible IPM described in \cref{alg:ipm} is its use of the homogeneous model presented in~\cite{XuHungYe-SimplifiedHomogeneousAlgorithm}.
-While in \cref{chap:ipm} the original LP \cref{eqn:primal-lp} was solved by considering the primal and dual LP at the same time and adding a complementary condition, the homogeneous algorithm replaces this primal-dual formulation by the self-dual LP
+While in \cref{chap:ipm} the original LP \labelcref{eqn:primal-lp} was solved by considering the primal and dual LP at the same time and adding a complementary condition, the homogeneous algorithm replaces this primal-dual formulation by the self-dual LP
 \begin{subequations}
   \begin{align}
     \vek{r}_p \coloneqq \mat{A}\vek{x} - \vek{b} \tau &= \vek{0} \\
@@ -54,9 +54,9 @@ This allows us to use the sketching-based preconditioning explained in \cref{sec
 Moreover, because the two linear systems involve the same matrix the preconditioner only needs to be determined once for both systems.
 
 Some more differences between \cref{alg:ipm} and this implementation need to be addressed.
-First, the neighbourhood used in this algorithm also includes a one-sided \(\infty\)-norm bound but drops the bound on the residual norms:
+First, the neighbourhood used in this algorithm drops both the one-sided \(\infty\)-norm bound and the bound on the residual norms:
 \begin{equation}
-  \mathcal{N}(\gamma) = \Set{ \vek{x}, \vek{y}, \vek{s}, \tau, \kappa | \vek{x}, \vek{s} \geq \vek{0}, \ \tau, \kappa \geq 0, \ (\vek{x}, \tau) \circ (\vek{s}, \kappa) \geq (1-\gamma) \mu \vek{1} }
+  \mathcal{N} = \Set{ \vek{x}, \vek{y}, \vek{s}, \tau, \kappa | \vek{x}, \vek{s} \geq \vek{0}, \ \tau, \kappa \geq 0 }
 \end{equation}
 Second, the step size \(\alpha\) is essentially chosen to be the largest possible step inside the neighbourhood without any line search minimizing \(\mu\).
 Third, the stopping criterion used is based on 
@@ -78,7 +78,7 @@ To evaluate the performance of the IPM, random LP instances
 with \(\mat{A} \in \R^{m \times n}\), \(\vek{b} \in \R^m\), \(\vek{c} \in \R^n\) were generated that fit all the desired characteristics: \(m \ll n\), \(\mat{A}\) is sparse, \(\rank(\mat{A}) = m\) and the LP is feasible and bounded.
 To that end, we chose \(m = 1\,000\), \(n = 100\,000\) and constructed \(\mat{A}\) by randomly choosing two nonzero entries per column which were filled with values drawn from a standard normal distribution and also adding normally distributed values on the diagonal.
 Next, a random feasible point \((\vek{x}, \vek{y}, \vek{s})\) was generated where the entries of \(\vek{x}\) and \(\vek{s}\) where drawn from a uniform distribution on \([0, 1]\) and the entries of \(\vek{y}\) from a standard normal distribution.
-Setting \(\vek{b} = \mat{A} \vek{x}\) and \(\vek{c} = \mat{A}^T \vek{y} + \vek{s}\) ensures feasibility and boundedness of \cref{eqn:primal-lp-instance}.
+Setting \(\vek{b} = \mat{A} \vek{x}\) and \(\vek{c} = \mat{A}^T \vek{y} + \vek{s}\) ensures feasibility and boundedness of \labelcref{eqn:primal-lp-instance}.
 
 \section{Experiment Configuration}\label{sec:experiment-configuration}
 
@@ -121,7 +121,7 @@ By \cref{thm:sparse-ose} we expect larger values of \(w\) and \(s\) to give bett
 Here, the sketching matrix is constructed using \(w=2m\) and \(s \in \{2, 3, 4, 5\}\).
 While the condition number of the unpreconditioned system steadily rises up to about \(10^{12}\), the values for the preconditioned systems look much better.
 For all cases except \(s = 2\) the condition numbers stay below 100.
-\cref{fig:condition_number} shows the same condition numbers for all combinations of \(s \in \{3,4,5\}\) and \(w \in \{1.5m, 2m, 2.5m, 3m\}\) and includes values from all iterations.
+\cref{fig:condition_number} shows those condition numbers for all combinations of \(s \in \{3,4,5\}\) and \(w \in \{1.5m, 2m, 2.5m, 3m\}\) and includes values from all iterations.
 As predicted by the theory the condition numbers are effectively bounded by a constant which decreases as \(w\) and \(s\) increase.
 Interestingly, the lower end of the error bars line up for every fixed value of \(w\), suggesting that the value of \(w\) is the decisive factor for how low the condition number can become while \(s\) mainly influences the range of the distribution.
 
