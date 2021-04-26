@@ -1,7 +1,9 @@
-\chapter{Source Code}
-%TODO: Rename this chapter
+\chapter{Source Code Excerpt}
 
-This appendix contains the key elements of the implementation concerned with generating the sketching matrix and the preconditioning process.
+This appendix contains the two key elements of the implementation:
+The function \mintinline{python}{_construct_sketching_matrix} is concerned with generating the sketching matrix.
+It is capable of generating sparse sketching matrices and Gaussian sketches but only sparse sketches were used in our experiments.
+The function \mintinline{python}{_get_solver} determines how the normal equation is solved and is capable of handling the three methods discussed in \cref{sec:experiment-direct-comparison}.
 
 \begin{minted}[breaklines]{python}
 import numpy as np
@@ -83,8 +85,8 @@ def _construct_sketching_matrix(
 # This function is called once for every IPM iteration to get a method
 # for solving the normal equation for arbitrary right-hand sides. Note
 # that the notation for the matrices in the paper by Andersen and
-# Andersen is different the one used in this work. The matrix "Dinv"
-# thus corresponds to D^2, "Dinv_half" corresponds to D and "M"
+# Andersen is different to the one used in this work. The matrix
+# "Dinv" thus corresponds to D^2, "Dinv_half" corresponds to D and "M"
 # corresponds to A D^2 A^T. The diagonal matrix "Dinv" is passed to
 # this function as a 1-D vector of its diagonal elements.
 def _get_solver(A, Dinv, options):
@@ -119,10 +121,13 @@ def _get_solver(A, Dinv, options):
     if method is Solver.CHOLESKY:
         # The function scipy.sparse.diags turns a 1-D vector into a
         # sparse diagonal matrix where the vector entries are on the
-        # diagonal
+        # diagonal, "@" is they Python operator for matrix
+        # multiplication
         M = A @ scipy.sparse.diags(Dinv, 0, format="csc") @ A.T
 
         # The matrix L is the Cholesky factor of M: LL^T = M
+        # The toarray() method converts the sparse matrix to a dense
+        # one, so that a dense Cholesky solver can be used.
         L = scipy.linalg.cho_factor(M.toarray())
 
         def solve(r):
@@ -134,9 +139,7 @@ def _get_solver(A, Dinv, options):
         Dinv_half = np.sqrt(Dinv)
         M_half = scipy.sparse.diags(Dinv_half, format="csc") @ A.T
 
-        # Find the QR decomposition of DA^T. The toarray() method
-        # converts the sparse matrix to a dense one so that a dense QR
-        # solver can be used.
+        # Find the QR decomposition of DA^T.
         R = np.linalg.qr(M_half.toarray(), mode="r")
 
         def solve(r):
