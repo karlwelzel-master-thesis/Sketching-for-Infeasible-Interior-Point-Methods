@@ -2,7 +2,7 @@
 
 In this chapter we evaluate the preconditioning technique introduced in \cref{chap:sketching} inside the implementation of the IPM algorithm of \textcite{AndersenAndersen-MosekInteriorPointMethod} provided by the open source Python-based scientific computing library \texttt{scipy}~\cite{Scipy}.
 
-\section{The Homogeneous Algorithm}
+\section{The Homogeneous Algorithm}\label{sec:homogeneous-algorithm}
 
 The interior-point method implemented in \texttt{scipy} is based on the MOSEK interior-point optimizer as published by \textcite{AndersenAndersen-MosekInteriorPointMethod}.
 The most important difference to the general infeasible IPM described in \cref{alg:ipm} is its use of the homogeneous model presented in~\cite{XuHungYe-SimplifiedHomogeneousAlgorithm}.
@@ -69,7 +69,7 @@ measuring the size of the primal and dual residuals and of the duality gap.
 Let \(\rho_{\mathrm{tol}} = \max(\rho_p, \rho_d, \rho_A)\) then the algorithm stops once \(\rho_{\mathrm{tol}}\) drops below a user-specified tolerance or when infeasibility or unboundedness is detected.
 Lastly, the starting point of the algorithm is chosen to be \((\vek{x}, \tau, \vek{y}, \vek{s}, \kappa) = (\vek{1}, 1, \vek{0}, \vek{1}, 1)\) as \textcite{AndersenAndersen-MosekInteriorPointMethod} report that it works well for most problems.
 
-\section{Problem Instances}
+\section{Problem Instances}\label{sec:problem-instance}
 
 To evaluate the performance of the IPM, random LP instances 
 \begin{equation}\label{eqn:primal-lp-instance}
@@ -80,7 +80,7 @@ To that end, we chose \(m = 1\,000\), \(n = 100\,000\) and constructed \(\mat{A}
 Next, a random feasible point \((\vek{x}, \vek{y}, \vek{s})\) was generated where the entries of \(\vek{x}\) and \(\vek{s}\) where drawn from a uniform distribution on \([0, 1]\) and the entries of \(\vek{y}\) from a standard normal distribution.
 Setting \(\vek{b} = \mat{A} \vek{x}\) and \(\vek{c} = \mat{A}^T \vek{y} + \vek{s}\) ensures feasibility and boundedness of \cref{eqn:primal-lp-instance}.
 
-\section{Experiment Configuration}
+\section{Experiment Configuration}\label{sec:experiment-configuration}
 
 The experiments were all run on an Intel® Core™ i7-1165G7 using \texttt{scipy} version 1.6.2 and \texttt{numpy} version 1.20.2 with OpenBLAS version 0.3.8.
 The code for the homogeneous IPM algorithm described above was taken from the \texttt{scipy.optimize} package\footnote{\url{https://github.com/scipy/scipy/blob/v1.6.2/scipy/optimize/_linprog_ip.py}} and adapted to incorporate iterative solvers and sketching-based preconditioning.
@@ -89,7 +89,7 @@ Each parameter combination in the following experiments was run twice on the sam
 To visualize the range of recorded values the following graphs all include error bars.
 The height of the line or bar indicates the median value while the error bars indicate the range from the 5th percentile to the 95th percentile.
 
-\section{Impact of the Sketching Parameters}
+\section{Impact of the Sketching Parameters}\label{sec:experiment-sketching-parameters}
 
 The first question we want to tackle is how good the preconditioners are, how fast they can be computed and how the answers to these questions are influenced by the sketching parameters \(w\) and \(s\) as defined in \cref{def:s-hashing-matrix}.
 Remember that \(w\) controls the number of columns of the sparse sketching matrix, while \(s\) determines the number of nonzero entries per column.
@@ -186,7 +186,7 @@ The majority of the sketching process is actually spent determining a QR decompo
 Because the available sparse QR implementation did not bring any performance gains, a QR decomposition algorithm for dense matrices was used whose runtime, unsurprisingly, mainly depends on the matrix dimensions, i.e. on \(w\).
 As such the runtime of determining a preconditioner depends mainly on \(w\), so we chose a moderate value of \(w=2m\) and a large value of \(s=5\) for the following experiments.
 
-\section{Impact of the CG Tolerance}
+\section{Impact of the CG Tolerance}\label{sec:experiment-cg-tolerance}
 
 Any direct solver for a linear system takes a fixed amount of time to achieve a solution of very high accuracy.
 Iterative solvers come with the benefit that the solutions are refined in every iteration so that a trade-off between running time and accuracy is possible.
@@ -243,7 +243,7 @@ The latter is very much influenced by the way the matrix-vector products require
 For these experiments all products were evaluated lazily in the sense that the matrix \(\mat{R}^{-T}\mat{A}\mat{D}^2\mat{A}^T\mat{R}^{-1}\) was not formed explicitly but every time a vector was to be multiplied with it, three matrix-vector products and two triangular solves were performed.
 Preliminary experiments indicate that due to very efficient routines for matrix inversion and matrix-matrix multiplication explicitly forming the product is similarly fast for 100 CG iterations and outperforms our implementation if more iterations are performed.
 
-\section{Comparison with Direct Solvers}
+\section{Comparison with Direct Solvers}\label{sec:experiment-direct-comparison}
 
 To finish this chapter, a direct comparison between our iterative approach and direct solvers is due.
 The two direct methods we will compare it with are a Cholesky decomposition of \(\mat{A}\mat{D}^2\mat{A}^T\) and a QR decomposition of the unsketched matrix \(\mat{D}\mat{A}^T\).
@@ -296,7 +296,7 @@ Additionally, \cref{table:accuracy_comparison} demonstrates that the direct solv
   \label{table:accuracy_comparison}
 \end{table}
 
-\section{Summary}
+\section{Summary}\label{sec:experiment-summary}
 
 The experiments in this chapter showed that indeed the QR decomposition of \(\mat{W}\mat{D}\mat{A}^T\) produces good preconditioners that are able to reduce the condition number of \(\mat{A}\mat{D}^2\mat{A}^T\) by multiple orders of magnitude.
 The quality of the linear solver for the normal equation directly affects the solution accuracy of the IPM algorithm as a whole so that the time-accuracy trade-off of the iterative solver can be transferred to a time-accuracy trade-off for the IPM algorithm.
