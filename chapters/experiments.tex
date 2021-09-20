@@ -48,8 +48,8 @@ The Newton system that would correspond to \cref{eqn:newton-system} is now given
 \end{equation}
 where \(\mu = (\vek{x}^T \vek{s} + \tau \kappa)/(n+1)\).
 In the implementation the right-hand side is modified to balance out the ambitiousness of reducing the infeasibility and the complementarity gap using heuristics.
-Optionally, one can also enable an adaptation of Mehrotra's predictor-corrector approach first proposed in \cite{Mehrotra-PredictorCorrector} which first solves \cref{eqn:homogeneous-newton-system} for \(\sigma = 0\) and then solves the same system with a modified right-hand side to determine the search direction.
-To solve \cref{eqn:homogeneous-newton-system} for arbitrary right-hand sides it is transformed into two linear systems \(\mat{A}\mat{D}^2\mat{A}^T\vek{u} = \vek{p}\) for different vectors \(\vek{p}\) as detailed in section 5 of \cite{AndersenAndersen-MosekInteriorPointMethod}.
+Optionally, one can also enable an adaptation of Mehrotra's predictor-corrector approach first proposed in~\cite{Mehrotra-PredictorCorrector} which first solves \cref{eqn:homogeneous-newton-system} for \(\sigma = 0\) and then solves the same system with a modified right-hand side to determine the search direction.
+To solve \cref{eqn:homogeneous-newton-system} for arbitrary right-hand sides it is transformed into two linear systems \(\mat{A}\mat{D}^2\mat{A}^T\vek{u} = \vek{p}\) for different vectors \(\vek{p}\) as detailed in section 5 of~\cite{AndersenAndersen-MosekInteriorPointMethod}.
 This allows us to use the sketching-based preconditioning explained in \cref{sec:sketching-preconditioning} inside this IPM implementation.
 Moreover, because the two linear systems involve the same matrix the preconditioner only needs to be determined once for both systems.
 
@@ -82,7 +82,7 @@ Setting \(\vek{b} = \mat{A} \vek{x}\) and \(\vek{c} = \mat{A}^T \vek{y} + \vek{s
 
 \section{Experiment Configuration}\label{sec:experiment-configuration}
 
-The experiments were all run on an Intel® Core™ i7-1165G7 using \texttt{scipy} version 1.6.2 and \texttt{numpy} version 1.20.2 with OpenBLAS version 0.3.8.
+The experiments were all run on an Intel® Core™ i7--1165G7 using \texttt{scipy} version 1.6.2 and \texttt{numpy} version 1.20.2 with OpenBLAS version 0.3.8.
 The code for the homogeneous IPM algorithm described above was taken from the \texttt{scipy.optimize} package\footnote{\url{https://github.com/scipy/scipy/blob/v1.6.2/scipy/optimize/_linprog_ip.py}} and adapted to incorporate iterative solvers and sketching-based preconditioning.
 To avoid inconsistent results the routines for eliminating unnecessary constraints and automatically rescaling the instances were disabled as were the use of the predictor-corrector method and the initial point heuristic.
 Each parameter combination in the following experiments was run twice on the same four randomly generated instances.
@@ -183,14 +183,14 @@ It turns out, that randomly sampling the row indices from \(\{1, \ldots, m\}\) f
 This deletion process might explain the low dependence on \(w\) in \cref{fig:generate_sketch_duration} but in any case the time is negligibly small for our purposes.
 The time it takes to multiply the sketching matrix with \(\mat{D}\mat{A}^T\) is similarly small as shown by \cref{fig:sketching_duration} and mainly depends on the value of \(s\) as predicted by the theory.
 The majority of the sketching process is actually spent determining a QR decomposition of \(\mat{W}\mat{D}\mat{A}^T\), see \cref{fig:decomposition_duration}.
-Because the available sparse QR implementation did not bring any performance gains, a QR decomposition algorithm for dense matrices was used whose runtime, unsurprisingly, mainly depends on the matrix dimensions, i.e. on \(w\).
+Because the available sparse QR implementation did not bring any performance gains, a QR decomposition algorithm for dense matrices was used whose runtime, unsurprisingly, mainly depends on the matrix dimensions, i.e.\ on \(w\).
 As such the runtime of determining a preconditioner depends mainly on \(w\), so we chose a moderate value of \(w=2m\) and a large value of \(s=5\) for the following experiments.
 
 \section{Impact of the CG Tolerance}\label{sec:experiment-cg-tolerance}
 
 Any direct solver for a linear system takes a fixed amount of time to achieve a solution of very high accuracy.
 Iterative solvers come with the benefit that the solutions are refined in every iteration so that a trade-off between running time and accuracy is possible.
-Due to numerical difficulties iterative solvers cannot achieve arbitrarily low errors, so we decided to fix the number of CG iterations at different values to see how they influence the solver accuracy and subsequently the course of the IPM.
+Due to numerical difficulties iterative solvers cannot achieve arbitrarily low errors, so we decided to fix the number of CG iterations at different values to see how they influence the solver accuracy and subsequently the course of the IPM\@.
 
 \begin{figure}[tbp]
   \centering%
@@ -225,7 +225,7 @@ Evidently, the CG method applied to the preconditioned system fails to improve t
   }{%
     \import{plots/}{tolerances_accuracy_vs_time.pgf}%
   }
-  \caption{Solution accuracy vs. time per IPM iteration}%
+  \caption{Solution accuracy vs.\ time per IPM iteration}%
   \label{fig:accuracy_vs_time}
 \end{figure}
 

@@ -56,7 +56,7 @@ Their main results are described above and will be presented in detail in the fo
 This thesis is structured as follows.
 The notation for Interior-Point Methods and the specific long-step infeasible IPM used in~\cite{Monteiro-ConvergenceAnalysisLongStepInfeasibleIPMs} along with a convergence result will be presented in \cref{chap:ipm}.
 \cref{chap:sketching} will be concerned with the concepts of sketching that are useful for us and how its approximation guarantees lead to good preconditioners.
-Compared to~\cite{Avron-FasterRandomizedInfeasibleIPMs} we will show that a QR decomposition of the sketched matrix produces a preconditioner of the same quality as an SVD.
+Compared to~\cite{Avron-FasterRandomizedInfeasibleIPMs} we will show that a QR decomposition of the sketched matrix produces a preconditioner of the same quality as an SVD\@.
 \cref{chap:convergence} will contain all the proofs to show that under suitable conditions the preconditioning technique can be used to obtain a high accuracy LP solution using \(O(n^2 \log(n) (m^3 + \nnz(\mat{A})))\) operations with only a small failure probability.
 The proofs are adapted from \textcite{Avron-FasterRandomizedInfeasibleIPMs} and simplified to first establish the effectiveness of the preconditioner and the convergence result for the IPM separately and combine them afterwards.
 This way, the preconditioning technique can be integrated into convergence proofs for other IPMs more easily in the future.

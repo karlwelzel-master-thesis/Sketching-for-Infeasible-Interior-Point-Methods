@@ -2,7 +2,7 @@
 
 This appendix contains the two key elements of the implementation:
 The function \mintinline{python}{_construct_sketching_matrix} is concerned with generating the sketching matrix.
-It is capable of generating sparse sketching matrices and Gaussian sketches but only sparse sketches were used in our experiments.
+It is capable of generating sparse sketching matrices and Gaussian sketches, but only sparse sketches were used in our experiments.
 The function \mintinline{python}{_get_solver} determines how the normal equation is solved and is capable of handling the three methods discussed in \cref{sec:experiment-direct-comparison}.
 
 \begin{minted}[breaklines]{python}
@@ -121,7 +121,7 @@ def _get_solver(A, Dinv, options):
     if method is Solver.CHOLESKY:
         # The function scipy.sparse.diags turns a 1-D vector into a
         # sparse diagonal matrix where the vector entries are on the
-        # diagonal, "@" is they Python operator for matrix
+        # diagonal, "@" is the Python operator for matrix
         # multiplication
         M = A @ scipy.sparse.diags(Dinv, 0, format="csc") @ A.T
 
